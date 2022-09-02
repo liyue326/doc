@@ -1,0 +1,3647 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>文件系统 | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-fs">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="fs" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#fs_file_system">fs (文件系统)</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_threadpool_usage">线程池的使用</a></span></li>
+<li><span class="stability_1"><a href="#fs_whatwg_url_object_support">WHATWG URL object support</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_buffer_api">Buffer API</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_class_fs_fswatcher">fs.FSWatcher 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_event_change">&apos;change&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_event_error">&apos;error&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_watcher_close">watcher.close()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#fs_class_fs_readstream">fs.ReadStream 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_event_close">&apos;close&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_event_open">&apos;open&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_readstream_bytesread">readStream.bytesRead</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_readstream_path">readStream.path</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#fs_class_fs_stats">fs.Stats 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_stat_time_values">Stat 时间值</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#fs_class_fs_writestream">fs.WriteStream 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_event_close_1">&apos;close&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_event_open_1">&apos;open&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_writestream_byteswritten">writeStream.bytesWritten</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_writestream_path">writeStream.path</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#fs_fs_access_path_mode_callback">fs.access(path[, mode], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_accesssync_path_mode">fs.accessSync(path[, mode])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_appendfile_file_data_options_callback">fs.appendFile(file, data[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_appendfilesync_file_data_options">fs.appendFileSync(file, data[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_chmod_path_mode_callback">fs.chmod(path, mode, callback)</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_file_modes">File modes</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#fs_fs_chmodsync_path_mode">fs.chmodSync(path, mode)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_chown_path_uid_gid_callback">fs.chown(path, uid, gid, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_chownsync_path_uid_gid">fs.chownSync(path, uid, gid)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_close_fd_callback">fs.close(fd, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_closesync_fd">fs.closeSync(fd)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_constants">fs.constants</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_copyfile_src_dest_flags_callback">fs.copyFile(src, dest[, flags], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_copyfilesync_src_dest_flags">fs.copyFileSync(src, dest[, flags])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_createreadstream_path_options">fs.createReadStream(path[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_createwritestream_path_options">fs.createWriteStream(path[, options])</a></span></li>
+<li><span class="stability_0"><a href="#fs_fs_exists_path_callback">fs.exists(path, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_existssync_path">fs.existsSync(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fchmod_fd_mode_callback">fs.fchmod(fd, mode, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fchmodsync_fd_mode">fs.fchmodSync(fd, mode)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fchown_fd_uid_gid_callback">fs.fchown(fd, uid, gid, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fchownsync_fd_uid_gid">fs.fchownSync(fd, uid, gid)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fdatasync_fd_callback">fs.fdatasync(fd, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fdatasyncsync_fd">fs.fdatasyncSync(fd)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fstat_fd_callback">fs.fstat(fd, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fstatsync_fd">fs.fstatSync(fd)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fsync_fd_callback">fs.fsync(fd, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_fsyncsync_fd">fs.fsyncSync(fd)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_ftruncate_fd_len_callback">fs.ftruncate(fd[, len], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_ftruncatesync_fd_len">fs.ftruncateSync(fd[, len])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_futimes_fd_atime_mtime_callback">fs.futimes(fd, atime, mtime, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_futimessync_fd_atime_mtime">fs.futimesSync(fd, atime, mtime)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_lchmod_path_mode_callback">fs.lchmod(path, mode, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_lchmodsync_path_mode">fs.lchmodSync(path, mode)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_lchown_path_uid_gid_callback">fs.lchown(path, uid, gid, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_lchownsync_path_uid_gid">fs.lchownSync(path, uid, gid)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_link_existingpath_newpath_callback">fs.link(existingPath, newPath, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_linksync_existingpath_newpath">fs.linkSync(existingPath, newPath)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_lstat_path_callback">fs.lstat(path, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_lstatsync_path">fs.lstatSync(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_mkdir_path_mode_callback">fs.mkdir(path[, mode], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_mkdirsync_path_mode">fs.mkdirSync(path[, mode])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_mkdtemp_prefix_options_callback">fs.mkdtemp(prefix[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_mkdtempsync_prefix_options">fs.mkdtempSync(prefix[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_open_path_flags_mode_callback">fs.open(path, flags[, mode], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_opensync_path_flags_mode">fs.openSync(path, flags[, mode])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_read_fd_buffer_offset_length_position_callback">fs.read(fd, buffer, offset, length, position, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readdir_path_options_callback">fs.readdir(path[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readdirsync_path_options">fs.readdirSync(path[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readfile_path_options_callback">fs.readFile(path[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readfilesync_path_options">fs.readFileSync(path[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readlink_path_options_callback">fs.readlink(path[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readlinksync_path_options">fs.readlinkSync(path[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_readsync_fd_buffer_offset_length_position">fs.readSync(fd, buffer, offset, length, position)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_realpath_path_options_callback">fs.realpath(path[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_realpathsync_path_options">fs.realpathSync(path[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_rename_oldpath_newpath_callback">fs.rename(oldPath, newPath, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_renamesync_oldpath_newpath">fs.renameSync(oldPath, newPath)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_rmdir_path_callback">fs.rmdir(path, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_rmdirsync_path">fs.rmdirSync(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_stat_path_callback">fs.stat(path, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_statsync_path">fs.statSync(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_symlink_target_path_type_callback">fs.symlink(target, path[, type], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_symlinksync_target_path_type">fs.symlinkSync(target, path[, type])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_truncate_path_len_callback">fs.truncate(path[, len], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_truncatesync_path_len">fs.truncateSync(path[, len])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_unlink_path_callback">fs.unlink(path, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_unlinksync_path">fs.unlinkSync(path)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_unwatchfile_filename_listener">fs.unwatchFile(filename[, listener])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_utimes_path_atime_mtime_callback">fs.utimes(path, atime, mtime, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_utimessync_path_atime_mtime">fs.utimesSync(path, atime, mtime)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_watch_filename_options_listener">fs.watch(filename[, options][, listener])</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_caveats">说明</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_availability">可用性</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_inodes">索引节点</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_filename_argument">文件名参数</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#fs_fs_watchfile_filename_options_listener">fs.watchFile(filename[, options], listener)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_write_fd_buffer_offset_length_position_callback">fs.write(fd, buffer[, offset[, length[, position]]], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_write_fd_string_position_encoding_callback">fs.write(fd, string[, position[, encoding]], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_writefile_file_data_options_callback">fs.writeFile(file, data[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_writefilesync_file_data_options">fs.writeFileSync(file, data[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_writesync_fd_buffer_offset_length_position">fs.writeSync(fd, buffer[, offset[, length[, position]]])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_writesync_fd_string_position_encoding">fs.writeSync(fd, string[, position[, encoding]])</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_fs_constants_1">fs 常量</a></span><ul>
+<li><span class="stability_undefined"><a href="#fs_file_access_constants">文件访问常量</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_file_open_constants">文件打开常量</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_file_type_constants">文件类型常量</a></span></li>
+<li><span class="stability_undefined"><a href="#fs_file_mode_constants">文件模式常量</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>fs (文件系统)<span><a class="mark" href="#fs_file_system" id="fs_file_system">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><!--name=fs-->
+<p>文件 I/O 是对标准 POSIX 函数的简单封装。
+通过 <code>require(&apos;fs&apos;)</code> 使用该模块。
+所有的方法都有异步和同步的形式。</p>
+<p>异步方法的最后一个参数都是一个回调函数。
+传给回调函数的参数取决于具体方法，但回调函数的第一个参数都会保留给异常。
+如果操作成功完成，则第一个参数会是 <code>null</code> 或 <code>undefined</code>。</p>
+<p>当使用同步方法时，任何异常都会被立即抛出。
+可以使用 <code>try</code>/<code>catch</code> 来处理异常，或让异常向上冒泡。</p>
+<p>异步方法的例子：</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+
+fs.unlink(&apos;/tmp/hello&apos;, (err) =&gt; {
+  if (err) throw err;
+  console.log(&apos;成功删除 /tmp/hello&apos;);
+});
+</code></pre>
+<p>同步方法的例子：</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+
+fs.unlinkSync(&apos;/tmp/hello&apos;);
+console.log(&apos;成功删除 /tmp/hello&apos;);
+</code></pre>
+<p>异步的方法不能保证执行顺序。
+所以下面的例子可能会出错：</p>
+<pre><code class="lang-js">fs.rename(&apos;/tmp/hello&apos;, &apos;/tmp/world&apos;, (err) =&gt; {
+  if (err) throw err;
+  console.log(&apos;重命名完成&apos;);
+});
+fs.stat(&apos;/tmp/world&apos;, (err, stats) =&gt; {
+  if (err) throw err;
+  console.log(`文件属性: ${JSON.stringify(stats)}`);
+});
+</code></pre>
+<p><code>fs.stat</code> 可能在 <code>fs.rename</code> 之前执行。
+正确的方法是把回调链起来。</p>
+<pre><code class="lang-js">fs.rename(&apos;/tmp/hello&apos;, &apos;/tmp/world&apos;, (err) =&gt; {
+  if (err) throw err;
+  fs.stat(&apos;/tmp/world&apos;, (err, stats) =&gt; {
+    if (err) throw err;
+    console.log(`文件属性: ${JSON.stringify(stats)}`);
+  });
+});
+</code></pre>
+<p>在繁忙的进程中，建议使用异步的方法。
+同步的方法会阻塞整个进程，直到完成（停止所有连接）。</p>
+<p>可以使用文件名的相对路径。
+路径是相对 <code>process.cwd()</code> 的。</p>
+<p>大多数 fs 函数可以省略回调函数，在这种情况下，会使用默认的回调函数。
+若要追踪最初的调用点，可设置 <code>NODE_DEBUG</code> 环境变量：</p>
+<p>注意：不建议省略异步方法的回调函数，未来的版本可能会导致抛出错误。</p>
+<pre><code class="lang-txt">$ cat script.js
+function bad() {
+  require(&apos;fs&apos;).readFile(&apos;/&apos;);
+}
+bad();
+
+$ env NODE_DEBUG=fs node script.js
+fs.js:88
+        throw backtrace;
+        ^
+Error: EISDIR: illegal operation on a directory, read
+    &lt;stack trace.&gt;
+</code></pre>
+<p>注意：在 Windows 上 Node.js 遵循单驱动器工作目录的理念。
+当使用驱动器路径且不带反斜杠时就能体验到该特征。
+例如，<code>fs.readdirSync(&apos;c:\\&apos;)</code> 可能返回与 <code>fs.readdirSync(&apos;c:&apos;)</code> 不同的结果。
+详见 <a href="javascript:;">MSDN 路径文档</a>。</p>
+<p><em>注意:</em> 在 Windows 上，使用 <code>w</code> 选项(通过 <code>fs.open</code> 或 <code>fs.writeFile</code>) 打开已有隐藏文件将会失败，错误信息为 <code>EPERM</code> 。已有隐藏文件可以通过 <code>r+</code> 选项打开。调用 <code>fs.ftruncate</code> 可以用来重置文件内容。</p>
+<h2>线程池的使用<span><a class="mark" href="#fs_threadpool_usage" id="fs_threadpool_usage">#</a></span></h2>
+<p>注意: 在所有的文件系统 API 中，除了 <code>fs.FSWatcher()</code> 和那些显式同步之外都可以使用 libuv 的线程池，这对于某些应用程序可能会产生出乎意料问题和负面的性能影响，相关详细信息，请参阅 <a href="cli.html#cli_uv_threadpool_size_size"><code>UV_THREADPOOL_SIZE</code></a> 文档。</p>
+<h2>WHATWG URL object support<span><a class="mark" href="#fs_whatwg_url_object_support" id="fs_whatwg_url_object_support">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v7.6.0</span>
+</div><div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">稳定性: 1</a> - 实验性的</div><p>对于大多数 <code>fs</code> 模块的函数， <code>path</code> 或者 <code>filename</code> 参数可以当作一个 WHATWG <a href="url.html#url_the_whatwg_url_api"><code>URL</code></a> 对象传入。
+只有 <a href="url.html#url_the_whatwg_url_api"><code>URL</code></a> 对象使用被支持的 <code>file:</code> 协议。</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+const { URL } = require(&apos;url&apos;);
+const fileUrl = new URL(&apos;file:///tmp/hello&apos;);
+
+fs.readFileSync(fileUrl);
+</code></pre>
+<p><em>注意</em>： <code>file:</code> URLS 必须是绝对路径。</p>
+<p>使用 WHATWG <a href="url.html#url_the_whatwg_url_api"><code>URL</code></a> 对象在不同的平台会有特定的行为。</p>
+<p>在 Windows 上， 携带主机名的 <code>file:</code> URLs 被转换为 UNC 路径， 而有硬盘盘符的 <code>file:</code> URLs 会被转换成
+本地绝对路径。既没有主机名，也没有盘符的 <code>file:</code> URLs 在转换时会抛出错误。</p>
+<pre><code class="lang-js">// 在Windows上 :
+
+// - WHATWG 标准的 URLs 会将携带主机名的 file: 转换为 UNC 路径
+// file://hostname/p/a/t/h/file =&gt; \\hostname\p\a\t\h\file
+fs.readFileSync(new URL(&apos;file://hostname/p/a/t/h/file&apos;));
+
+// - WHATWG 标准的 URLs 会将携带本地磁盘盘符的 file: 转换为 绝对路径
+// file:///C:/tmp/hello =&gt; C:\tmp\hello
+fs.readFileSync(new URL(&apos;file:///C:/tmp/hello&apos;));
+
+// - WHATWG 标准的 URLs 在转换内容时，如果不携带主机名，则必须包含本地磁盘盘符
+fs.readFileSync(new URL(&apos;file:///notdriveletter/p/a/t/h/file&apos;));
+fs.readFileSync(new URL(&apos;file:///c/p/a/t/h/file&apos;));
+// TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must be absolute
+</code></pre>
+<p><em>注意</em>： 携带盘符的 <code>file:</code> URLs 必须使用 <code>:</code> 作为盘符后的分隔符。使用其他符号会抛出错误。</p>
+<p>在其他所有的平台上， 都不支持携带主机名的 <code>file:</code> URLs，且会抛出错误。 </p>
+<pre><code class="lang-js">// 在其他平台上:
+
+// - WHATWG 标准的 URLs 不支持携带 hostname 的 file: 进行转换
+// file://hostname/p/a/t/h/file =&gt; throw!
+fs.readFileSync(new URL(&apos;file://hostname/p/a/t/h/file&apos;));
+// TypeError [ERR_INVALID_FILE_URL_PATH]: must be absolute
+
+// - WHATWG 标准的 URLs 会将 file: 转换绝对路径 
+// file:///tmp/hello =&gt; /tmp/hello
+fs.readFileSync(new URL(&apos;file:///tmp/hello&apos;));
+</code></pre>
+<p>当 <code>file:</code> URL 包含已经编码的斜线符号会在所有平台抛出错误。</p>
+<pre><code class="lang-js">// 在 Windows 上
+fs.readFileSync(new URL(&apos;file:///C:/p/a/t/h/%2F&apos;));
+fs.readFileSync(new URL(&apos;file:///C:/p/a/t/h/%2f&apos;));
+/* TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must not include encoded
+\ or / characters */
+
+// 在 POSIX 上
+fs.readFileSync(new URL(&apos;file:///p/a/t/h/%2F&apos;));
+fs.readFileSync(new URL(&apos;file:///p/a/t/h/%2f&apos;));
+/* TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must not include encoded
+/ characters */
+</code></pre>
+<p>在 Windows 上， 携带已编码的反斜线 <code>file:</code> URLs 在编码是会抛出错误。</p>
+<pre><code class="lang-js">// 在 Windows 上
+fs.readFileSync(new URL(&apos;file:///C:/path/%5C&apos;));
+fs.readFileSync(new URL(&apos;file:///C:/path/%5c&apos;));
+/* TypeError [ERR_INVALID_FILE_URL_PATH]: File URL path must not include encoded
+\ or / characters */
+</code></pre>
+<h2>Buffer API<span><a class="mark" href="#fs_buffer_api" id="fs_buffer_api">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v6.0.0</span>
+</div><p><code>fs</code> 函数支持传递和接收字符串路径与 Buffer 路径。
+后者的目的是使其可以在允许非 UTF-8 文件名的文件系统中工作。
+对于大多数普通用途，使用 Buffer 路径是不必要的，因为字符串 API 会自动与 UTF-8 相互转换。</p>
+<p><strong>注意</strong>，在某些文件系统（如 NTFS 和 HFS+），文件名总是被编码为 UTF-8。
+在这些文件系统中，传入非 UTF-8 编码的 Buffer 到 <code>fs</code> 函数将无法像预期那样工作。</p>
+<h2>fs.FSWatcher 类<span><a class="mark" href="#fs_class_fs_fswatcher" id="fs_class_fs_fswatcher">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>从 <a href="#fs_fs_watch_filename_options_listener"><code>fs.watch()</code></a> 返回的对象是该类型。</p>
+<p>提供给 <code>fs.watch()</code> 的 <code>listener</code> 回调会接收返回的 FSWatcher 的 <code>change</code> 事件。</p>
+<p>该对象本身可触发以下事件：</p>
+<h3>&apos;change&apos; 事件<span><a class="mark" href="#fs_event_change" id="fs_event_change">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><ul>
+<li><code>eventType</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> fs 变化的类型</li>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> 变化的文件名（如果是相关的/可用的）</li>
+</ul>
+<p>当一个被监视的目录或文件有变化时触发。
+详见 <a href="#fs_fs_watch_filename_options_listener"><code>fs.watch()</code></a>。</p>
+<p><code>filename</code> 参数可能不会被提供，这依赖于操作系统支持。
+如果提供了 <code>filename</code>，则若 <code>fs.watch()</code> 被调用时 <code>encoding</code> 选项被设置为 <code>&apos;buffer&apos;</code> 则它会是一个 <code>Buffer</code>，否则 <code>filename</code> 是一个字符串。</p>
+<pre><code class="lang-js">// 例子，处理 fs.watch 监听器
+fs.watch(&apos;./tmp&apos;, { encoding: &apos;buffer&apos; }, (eventType, filename) =&gt; {
+  if (filename) {
+    console.log(filename);
+    // 输出: &lt;Buffer ...&gt;
+  }
+});
+</code></pre>
+<h3>&apos;error&apos; 事件<span><a class="mark" href="#fs_event_error" id="fs_event_error">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><ul>
+<li><code>error</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+<p>当发生错误时触发。</p>
+<h3>watcher.close()<span><a class="mark" href="#fs_watcher_close" id="fs_watcher_close">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>停止监听 <code>fs.FSWatcher</code> 的变化。</p>
+<h2>fs.ReadStream 类<span><a class="mark" href="#fs_class_fs_readstream" id="fs_class_fs_readstream">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><p><code>ReadStream</code> 是一个<a href="stream.html#stream_class_stream_readable">可读流</a>。</p>
+<h3>&apos;close&apos; 事件<span><a class="mark" href="#fs_event_close" id="fs_event_close">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><p>当 <code>ReadStream</code> 底层的文件描述符被关闭时触发。</p>
+<h3>&apos;open&apos; 事件<span><a class="mark" href="#fs_event_open" id="fs_event_open">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 被 ReadStream 使用的整数文件描述符。</li>
+</ul>
+<p>当 ReadStream 的文件被打开时触发。</p>
+<h3>readStream.bytesRead<span><a class="mark" href="#fs_readstream_bytesread" id="fs_readstream_bytesread">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: 6.4.0</span>
+</div><p>已读取的字节数。</p>
+<h3>readStream.path<span><a class="mark" href="#fs_readstream_path" id="fs_readstream_path">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><p>流正在读取的文件的路径，指定在 <code>fs.createReadStream()</code> 的第一个参数。
+如果 <code>path</code> 传入的是一个字符串，则 <code>readStream.path</code> 是一个字符串。
+如果 <code>path</code> 传入的是一个 <code>Buffer</code>，则 <code>readStream.path</code> 是一个 <code>Buffer</code>。</p>
+<h2>fs.Stats 类<span><a class="mark" href="#fs_class_fs_stats" id="fs_class_fs_stats">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.1.0</td>
+<td><p>Added times as numbers.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>从 <a href="#fs_fs_stat_path_callback"><code>fs.stat()</code></a>、<a href="#fs_fs_lstat_path_callback"><code>fs.lstat()</code></a> 和 <a href="#fs_fs_fstat_fd_callback"><code>fs.fstat()</code></a> 及其同步版本返回的对象都是该类型。</p>
+<ul>
+<li><code>stats.isFile()</code></li>
+<li><code>stats.isDirectory()</code></li>
+<li><code>stats.isBlockDevice()</code></li>
+<li><code>stats.isCharacterDevice()</code></li>
+<li><code>stats.isSymbolicLink()</code> (仅对 <a href="#fs_fs_lstat_path_callback"><code>fs.lstat()</code></a> 有效)</li>
+<li><code>stats.isFIFO()</code></li>
+<li><code>stats.isSocket()</code></li>
+</ul>
+<p>对于一个普通文件，<a href="util.html#util_util_inspect_object_options"><code>util.inspect(stats)</code></a> 会返回一个类似如下的字符串：</p>
+<pre><code class="lang-console">Stats {
+  dev: 2114,
+  ino: 48064969,
+  mode: 33188,
+  nlink: 1,
+  uid: 85,
+  gid: 100,
+  rdev: 0,
+  size: 527,
+  blksize: 4096,
+  blocks: 8,
+  atimeMs: 1318289051000.1,
+  mtimeMs: 1318289051000.1,
+  ctimeMs: 1318289051000.1,
+  birthtimeMs: 1318289051000.1,
+  atime: Mon, 10 Oct 2011 23:24:11 GMT,
+  mtime: Mon, 10 Oct 2011 23:24:11 GMT,
+  ctime: Mon, 10 Oct 2011 23:24:11 GMT,
+  birthtime: Mon, 10 Oct 2011 23:24:11 GMT }
+</code></pre>
+<p><em>注意</em>：<code>atimeMs</code>，<code>mtimeMs</code>，<code>ctimeMs</code>，<code>birthtimeMs</code> 是以单位为毫秒保存相对应时间的数字 <a href="javascript:;">numbers</a>。
+他们的精度由所在的平台决定。<code>atime</code>，<code>mtime</code>，<code>ctime</code> 以及 <code>birthtime</code> 是表示各个时间的日期对象 <code>[Date][MDN-Date]</code>。
+<code>Date</code> 与数值并没有关联。对数值进行重新赋值，或者改变 <code>Date</code> 的值，不会反映到相对应的表示中。</p>
+<h3>Stat 时间值<span><a class="mark" href="#fs_stat_time_values" id="fs_stat_time_values">#</a></span></h3>
+<p>stat 对象中的时间有以下语义：</p>
+<ul>
+<li><code>atime</code> &quot;访问时间&quot; - 文件数据最近被访问的时间。
+会被 <a href="javascript:;">mknod(2)</a>、 <a href="javascript:;">utimes(2)</a> 和 <a href="javascript:;">read(2)</a> 系统调用改变。</li>
+<li><code>mtime</code> &quot;修改时间&quot; - 文件数据最近被修改的时间。
+会被 <a href="javascript:;">mknod(2)</a>、 <a href="javascript:;">utimes(2)</a> 和 <a href="javascript:;">write(2)</a> 系统调用改变。</li>
+<li><code>ctime</code> &quot;变化时间&quot; - 文件状态最近更改的时间（修改索引节点数据）
+会被 <a href="javascript:;">chmod(2)</a>、 <a href="javascript:;">chown(2)</a>、 <a href="javascript:;">link(2)</a>、 <a href="javascript:;">mknod(2)</a>、 <a href="javascript:;">rename(2)</a>、 <a href="javascript:;">unlink(2)</a>、 <a href="javascript:;">utimes(2)</a>、 <a href="javascript:;">read(2)</a> 和 <a href="javascript:;">write(2)</a> 系统调用改变。</li>
+<li><code>birthtime</code> &quot;创建时间&quot; -  文件创建的时间。
+当文件被创建时设定一次。
+在创建时间不可用的文件系统中，该字段可能被替代为 <code>ctime</code> 或 <code>1970-01-01T00:00Z</code>（如 Unix 的纪元时间戳 <code>0</code>）。
+注意，该值在此情况下可能会大于 <code>atime</code> 或 <code>mtime</code>。
+在 Darwin 和其它的 FreeBSD 衍生系统中，如果 <code>atime</code> 被使用 <a href="javascript:;">utimes(2)</a> 系统调用显式地设置为一个比当前 <code>birthtime</code> 更早的值，也会有这种情况。</li>
+</ul>
+<p>在 Node.js v0.12 之前的版本中，<code>ctime</code> 在 Windows 系统中保存 <code>birthtime</code>。
+注意，在 v0.12 中，<code>ctime</code> 不是“创建时间”，并且在 Unix 系统中，它从来都不是。</p>
+<h2>fs.WriteStream 类<span><a class="mark" href="#fs_class_fs_writestream" id="fs_class_fs_writestream">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><p><code>WriteStream</code> 一个<a href="stream.html#stream_class_stream_writable">可写流</a>。</p>
+<h3>&apos;close&apos; 事件<span><a class="mark" href="#fs_event_close_1" id="fs_event_close_1">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><p>当 <code>WriteStream</code> 底层的文件描述符被关闭时触发。</p>
+<h3>&apos;open&apos; 事件<span><a class="mark" href="#fs_event_open_1" id="fs_event_open_1">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 被 WriteStream 使用的整数文件描述符。</li>
+</ul>
+<p>当 WriteStream 的文件被打开时触发。</p>
+<h3>writeStream.bytesWritten<span><a class="mark" href="#fs_writestream_byteswritten" id="fs_writestream_byteswritten">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.4.7</span>
+</div><p>已写入的字节数。
+不包括仍在排队等待写入的数据。</p>
+<h3>writeStream.path<span><a class="mark" href="#fs_writestream_path" id="fs_writestream_path">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.93</span>
+</div><p>流正在写入的文件的路径，指定在 <code>fs.createWriteStream()</code> 的第一个参数。
+如果 <code>path</code> 传入的是一个字符串，则 <code>writeStream.path</code> 是一个字符串。
+如果 <code>path</code> 传入的是一个 <code>Buffer</code>，则 <code>writeStream.path</code> 是一个 <code>Buffer</code>。</p>
+<h2>fs.access(path[, mode], callback)<span><a class="mark" href="#fs_fs_access_path_mode_callback" id="fs_fs_access_path_mode_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v6.3.0</td>
+<td><p>The constants like <code>fs.R_OK</code>, etc which were present directly on <code>fs</code> were moved into <code>fs.constants</code> as a soft deprecation. Thus for Node <code>&lt; v6.3.0</code> use <code>fs</code> to access those constants, or do something like <code>(fs.constants || fs).R_OK</code> to work with all versions.</p>
+</td></tr>
+<tr><td>v0.11.15</td>
+<td><p><span>新增于: v0.11.15</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>fs.constants.F_OK</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>测试 <code>path</code> 指定的文件或目录的用户权限。
+<code>mode</code> 是一个可选的整数，指定要执行的可访问性检查。
+以下常量定义了 <code>mode</code> 的可能值。
+可以创建由两个或更多个值的位或组成的掩码（例如 <code>fs.constants.W_OK | fs.constants.R_OK</code>）。</p>
+<ul>
+<li><code>fs.constants.F_OK</code> - <code>path</code> 文件对调用进程可见。
+这在确定文件是否存在时很有用，但不涉及 <code>rwx</code> 权限。
+如果没指定 <code>mode</code>，则默认为该值。</li>
+<li><code>fs.constants.R_OK</code> - <code>path</code> 文件可被调用进程读取。</li>
+<li><code>fs.constants.W_OK</code> - <code>path</code> 文件可被调用进程写入。</li>
+<li><code>fs.constants.X_OK</code> - <code>path</code> 文件可被调用进程执行。
+对 Windows 系统没作用（相当于 <code>fs.constants.F_OK</code>）。</li>
+</ul>
+<p>最后一个参数 <code>callback</code> 是一个回调函数，会带有一个可能的错误参数被调用。
+如果可访问性检查有任何的失败，则错误参数会是一个 <code>Error</code> 对象。
+下面的例子会检查 <code>/etc/passwd</code> 文件是否可以被当前进程读取和写入。</p>
+<pre><code class="lang-js">fs.access(&apos;/etc/passwd&apos;, fs.constants.R_OK | fs.constants.W_OK, (err) =&gt; {
+  console.log(err ? &apos;no access!&apos; : &apos;can read/write&apos;);
+});
+</code></pre>
+<p>不建议在调用 <code>fs.open()</code> 、 <code>fs.readFile()</code> 或 <code>fs.writeFile()</code> 之前使用 <code>fs.access()</code> 检查一个文件的可访问性。
+如此处理会造成紊乱情况，因为其他进程可能在两个调用之间改变该文件的状态。
+作为替代，用户代码应该直接打开/读取/写入文件，当文件无法访问时再处理错误。</p>
+<p>例子：</p>
+<p><strong>写入（不推荐）</strong></p>
+<pre><code class="lang-js">fs.access(&apos;myfile&apos;, (err) =&gt; {
+  if (!err) {
+    console.error(&apos;myfile already exists&apos;);
+    return;
+  }
+
+  fs.open(&apos;myfile&apos;, &apos;wx&apos;, (err, fd) =&gt; {
+    if (err) throw err;
+    writeMyData(fd);
+  });
+});
+</code></pre>
+<p><strong>写入（推荐）</strong></p>
+<pre><code class="lang-js">fs.open(&apos;myfile&apos;, &apos;wx&apos;, (err, fd) =&gt; {
+  if (err) {
+    if (err.code === &apos;EEXIST&apos;) {
+      console.error(&apos;myfile already exists&apos;);
+      return;
+    }
+
+    throw err;
+  }
+
+  writeMyData(fd);
+});
+</code></pre>
+<p><strong>读取（不推荐）</strong></p>
+<pre><code class="lang-js">fs.access(&apos;myfile&apos;, (err) =&gt; {
+  if (err) {
+    if (err.code === &apos;ENOENT&apos;) {
+      console.error(&apos;myfile does not exist&apos;);
+      return;
+    }
+
+    throw err;
+  }
+
+  fs.open(&apos;myfile&apos;, &apos;r&apos;, (err, fd) =&gt; {
+    if (err) throw err;
+    readMyData(fd);
+  });
+});
+</code></pre>
+<p><strong>读取（推荐）</strong></p>
+<pre><code class="lang-js">fs.open(&apos;myfile&apos;, &apos;r&apos;, (err, fd) =&gt; {
+  if (err) {
+    if (err.code === &apos;ENOENT&apos;) {
+      console.error(&apos;myfile does not exist&apos;);
+      return;
+    }
+
+    throw err;
+  }
+
+  readMyData(fd);
+});
+</code></pre>
+<p>以上<strong>不推荐</strong>的例子检查可访问性之后再使用文件；
+<strong>推荐</strong>的例子更好，因为它们直接使用文件并处理任何错误。</p>
+<p>通常，仅在文件不会被直接使用时才检查一个文件的可访问性，例如当它的可访问性是来自另一个进程的信号。</p>
+<h2>fs.accessSync(path[, mode])<span><a class="mark" href="#fs_fs_accesssync_path_mode" id="fs_fs_accesssync_path_mode">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.11.15</td>
+<td><p><span>新增于: v0.11.15</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>fs.constants.F_OK</code></li>
+<li>返回: <code>undefined</code></li>
+</ul>
+<p>同步地测试 <code>path</code> 指定的文件或目录的用户权限。 <code>mode</code> 是一个可选的整数，指定要执行的可访问性检查。 以下常量定义了 mode 的可能值。 可以创建由两个或更多个值的位或组成的掩码（例如 fs.constants.W_OK | fs.constants.R_OK）。</p>
+<ul>
+<li><code>fs.constants.F_OK</code> - <code>path</code> 文件对调用进程可见。 这在确定文件是否存在时很有用，但不涉及 <code>rwx</code> 权限。 如果没指定 <code>mode</code> ，则默认为该值</li>
+<li><code>fs.constants.R_OK</code> - <code>path</code> 文件可被调用进程读取。</li>
+<li><code>fs.constants.W_OK</code> - <code>path</code> 文件可被调用进程写入。</li>
+<li><code>fs.constants.X_OK</code> - <code>path</code> 文件可被调用进程执行。 对 <code>Windows</code> 系统没作用（相当于 <code>fs.constants.F_OK</code>）。</li>
+</ul>
+<p>如果可访问性检查有任何的失败，则错误参数会是一个 <code>Error</code> 对象。 否则返回 <code>undefined</code>。</p>
+<pre><code class="lang-js">try {
+  fs.accessSync(&apos;etc/passwd&apos;, fs.constants.R_OK | fs.constants.W_OK);
+  console.log(&apos;can read/write&apos;);
+} catch (err) {
+  console.error(&apos;no access!&apos;);
+}
+</code></pre>
+<h2>fs.appendFile(file, data[, options], callback)<span><a class="mark" href="#fs_fs_appendfile_file_data_options_callback" id="fs_fs_appendfile_file_data_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The passed <code>options</code> object will never be modified.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>The <code>file</code> parameter can be a file descriptor now.</p>
+</td></tr>
+<tr><td>v0.6.7</td>
+<td><p><span>新增于: v0.6.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>file</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 文件名或文件描述符</li>
+<li><code>data</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> 默认为 <code>&apos;utf8&apos;</code></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认为 <code>0o666</code></li>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认为 <code>&apos;a&apos;</code></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地追加数据到一个文件，如果文件不存在则创建文件。
+<code>data</code> 可以是一个字符串或 <a href="buffer.html#buffer_buffer"><code>Buffer</code></a>。</p>
+<p>例子：</p>
+<pre><code class="lang-js">fs.appendFile(&apos;message.txt&apos;, &apos;data to append&apos;, (err) =&gt; {
+  if (err) throw err;
+  console.log(&apos;The &quot;data to append&quot; was appended to file!&apos;);
+});
+</code></pre>
+<p>如果 <code>options</code> 是一个字符串，则它指定了字符编码。例如：</p>
+<pre><code class="lang-js">fs.appendFile(&apos;message.txt&apos;, &apos;data to append&apos;, &apos;utf8&apos;, callback);
+</code></pre>
+<p><code>file</code> 可能是一个被打开用来追加数据的数字文件描述符（通过 <code>fs.open()</code> 或者 <code>fs.openSync()</code>）。这样的文件描述符将不会被自动关闭。</p>
+<pre><code class="lang-js">fs.open(&apos;message.txt&apos;, &apos;a&apos;, (err, fd) =&gt; {
+  if (err) throw err;
+  fs.appendFile(fd, &apos;data to append&apos;, &apos;utf8&apos;, (err) =&gt; {
+    fs.close(fd, (err) =&gt; {
+      if (err) throw err;
+    });
+    if (err) throw err;
+  });
+});
+</code></pre>
+<h2>fs.appendFileSync(file, data[, options])<span><a class="mark" href="#fs_fs_appendfilesync_file_data_options" id="fs_fs_appendfilesync_file_data_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The passed <code>options</code> object will never be modified.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>The <code>file</code> parameter can be a file descriptor now.</p>
+</td></tr>
+<tr><td>v0.6.7</td>
+<td><p><span>新增于: v0.6.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>file</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 文件名或文件描述符</li>
+<li><code>data</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> 默认为 <code>&apos;utf8&apos;</code></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认为 <code>0o666</code></li>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认为 <code>&apos;a&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p>Synchronously append data to a file, creating the file if it does not yet
+exist. <code>data</code> can be a string or a <a href="buffer.html#buffer_buffer"><code>Buffer</code></a>.</p>
+<p>Example:</p>
+<pre><code class="lang-js">try {
+  fs.appendFileSync(&apos;message.txt&apos;, &apos;data to append&apos;);
+  console.log(&apos;The &quot;data to append&quot; was appended to file!&apos;);
+} catch (err) {
+  /* Handle the error */
+}
+</code></pre>
+<p>If <code>options</code> is a string, then it specifies the encoding. Example:</p>
+<pre><code class="lang-js">fs.appendFileSync(&apos;message.txt&apos;, &apos;data to append&apos;, &apos;utf8&apos;);
+</code></pre>
+<p>The <code>file</code> may be specified as a numeric file descriptor that has been opened
+for appending (using <code>fs.open()</code> or <code>fs.openSync()</code>). The file descriptor will
+not be closed automatically.</p>
+<pre><code class="lang-js">let fd;
+
+try {
+  fd = fs.openSync(&apos;message.txt&apos;, &apos;a&apos;);
+  fs.appendFileSync(fd, &apos;data to append&apos;, &apos;utf8&apos;);
+} catch (err) {
+  /* Handle the error */
+} finally {
+  if (fd !== undefined)
+    fs.closeSync(fd);
+}
+</code></pre>
+<h2>fs.chmod(path, mode, callback)<span><a class="mark" href="#fs_fs_chmod_path_mode_callback" id="fs_fs_chmod_path_mode_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.30</td>
+<td><p><span>新增于: v0.1.30</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地改变文件的权限。
+完成回调只有一个可能的异常参数。</p>
+<p>详见 <a href="javascript:;">chmod(2)</a>。</p>
+<h3>File modes<span><a class="mark" href="#fs_file_modes" id="fs_file_modes">#</a></span></h3>
+<p><code>mode</code> 参数会在 <code>fs.chmod()</code> 和 <code>fs.chmodSync()</code>方法中用到，它是用下面的常量进行逻辑或(logical OR)操作后的数字掩码：</p>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Octal</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>fs.constants.S_IRUSR</code></td>
+<td><code>0o400</code></td>
+<td>read by owner</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IWUSR</code></td>
+<td><code>0o200</code></td>
+<td>write by owner</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IXUSR</code></td>
+<td><code>0o100</code></td>
+<td>execute/search by owner</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IRGRP</code></td>
+<td><code>0o40</code></td>
+<td>read by group</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IWGRP</code></td>
+<td><code>0o20</code></td>
+<td>write by group</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IXGRP</code></td>
+<td><code>0o10</code></td>
+<td>execute/search by group</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IROTH</code></td>
+<td><code>0o4</code></td>
+<td>read by others</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IWOTH</code></td>
+<td><code>0o2</code></td>
+<td>write by others</td>
+</tr>
+<tr>
+<td><code>fs.constants.S_IXOTH</code></td>
+<td><code>0o1</code></td>
+<td>execute/search by others</td>
+</tr>
+</tbody>
+</table>
+<p>一个构造 <code>mode</code> 的更简单的方式是使用3位八进制串（比如，765）。最左侧的数字（例中的7）代表了文件所有者的权限。中间一位（例中的6）代表了组的权限。最右侧的数字（例中的5）代表其他人的权限。
+A</p>
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>7</code></td>
+<td>read, write, and execute</td>
+</tr>
+<tr>
+<td><code>6</code></td>
+<td>read and write</td>
+</tr>
+<tr>
+<td><code>5</code></td>
+<td>read and execute</td>
+</tr>
+<tr>
+<td><code>4</code></td>
+<td>read only</td>
+</tr>
+<tr>
+<td><code>3</code></td>
+<td>write and execute</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>write only</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>execute only</td>
+</tr>
+<tr>
+<td><code>0</code></td>
+<td>no permission</td>
+</tr>
+</tbody>
+</table>
+<p>举个例子，八进制值 <code>0o765</code> 表示：</p>
+<ul>
+<li>文件所有者可以进行读、写和执行。</li>
+<li>文件所属组可以读和写。</li>
+<li>其他人可以对文件进行读和执行。</li>
+</ul>
+<h2>fs.chmodSync(path, mode)<span><a class="mark" href="#fs_fs_chmodsync_path_mode" id="fs_fs_chmodsync_path_mode">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.6.7</td>
+<td><p><span>新增于: v0.6.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步地改变文件的权限。
+返回 <code>undefined</code>。
+<a href="#fs_fs_chmod_path_mode_callback"><code>fs.chmod()</code></a>的同步版本。</p>
+<p>详见 <a href="javascript:;">chmod(2)</a>。</p>
+<h2>fs.chown(path, uid, gid, callback)<span><a class="mark" href="#fs_fs_chown_path_uid_gid_callback" id="fs_fs_chown_path_uid_gid_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.97</td>
+<td><p><span>新增于: v0.1.97</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>uid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>gid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地改变文件的所有者和群组。
+完成回调只有一个可能的异常参数。</p>
+<p>详见 <a href="javascript:;">chown(2)</a>。</p>
+<h2>fs.chownSync(path, uid, gid)<span><a class="mark" href="#fs_fs_chownsync_path_uid_gid" id="fs_fs_chownsync_path_uid_gid">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.97</td>
+<td><p><span>新增于: v0.1.97</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>uid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>gid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步地改变文件的所有者和群组。
+返回 <code>undefined</code>。
+<a href="#fs_fs_chown_path_uid_gid_callback"><code>fs.chown()</code></a> 的同步版本。</p>
+<p>详见 <a href="javascript:;">chown(2)</a>。</p>
+<h2>fs.close(fd, callback)<span><a class="mark" href="#fs_fs_close_fd_callback" id="fs_fs_close_fd_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">close(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.closeSync(fd)<span><a class="mark" href="#fs_fs_closesync_fd" id="fs_fs_closesync_fd">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">close(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.constants<span><a class="mark" href="#fs_fs_constants" id="fs_fs_constants">#</a></span></h2>
+<p>返回一个包含常用文件系统操作的常量的对象。
+具体的常量定义在 <a href="#fs_fs_constants_1">FS Constants</a> 中描述。</p>
+<h2>fs.copyFile(src, dest[, flags], callback)<span><a class="mark" href="#fs_fs_copyfile_src_dest_flags_callback" id="fs_fs_copyfile_src_dest_flags_callback">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v8.5.0</span>
+</div><ul>
+<li><code>src</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> 要被拷贝的源文件名称</li>
+<li><code>dest</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> 拷贝操作的目标文件名</li>
+<li><code>flags</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 拷贝操作修饰符 <strong>默认:</strong> <code>0</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a></li>
+</ul>
+<p>异步的将 <code>src</code> 拷贝到 <code>dest</code>。Asynchronously copies <code>src</code> to <code>dest</code>. 默认情况下，如果 <code>dest</code> 已经存在会被覆盖。回调函数没有给出除了异常以外的参数。Node.js 不能保证拷贝操作的原子性。如果目标文件打开后出现错误，Node.js 将尝试删除它。</p>
+<p><code>flags</code> 是一个可选的整数，用于指定行为的拷贝操作。唯一支持的 flag 是 <code>fs.constants.COPYFILE_EXCL</code> ，如果 <code>dest</code> 已经存在，则会导致拷贝操作失败。</p>
+<p>例:</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+
+// 默认情况下，destination.txt 将创建或覆盖
+fs.copyFile(&apos;source.txt&apos;, &apos;destination.txt&apos;, (err) =&gt; {
+  if (err) throw err;
+  console.log(&apos;source.txt was copied to destination.txt&apos;);
+});
+</code></pre>
+<p>如果第三个参数是数字，那么肯定是 <code>flags</code>，代码如下所示:  </p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+const { COPYFILE_EXCL } = fs.constants;
+
+// 使用 COPYFILE_EXCL ，如果 destination.txt 文件存在，操作将失败。
+fs.copyFile(&apos;source.txt&apos;, &apos;destination.txt&apos;, COPYFILE_EXCL, callback);
+</code></pre>
+<h2>fs.copyFileSync(src, dest[, flags])<span><a class="mark" href="#fs_fs_copyfilesync_src_dest_flags" id="fs_fs_copyfilesync_src_dest_flags">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v8.5.0</span>
+</div><ul>
+<li><code>src</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> 要被拷贝的源文件名称</li>
+<li><code>dest</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> 拷贝操作的目标文件名</li>
+<li><code>flags</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 拷贝操作修饰符 <strong>默认:</strong> <code>0</code></li>
+</ul>
+<p>同步的将 <code>src</code> 拷贝到 <code>dest</code>。默认情况下，如果 <code>dest</code> 已经存在会被覆盖。返回值是 <code>undefined</code>。Node.js 不能保证拷贝操作的原子性。如果目标文件打开后出现错误，Node.js 将尝试删除它。</p>
+<p><code>flags</code> 是一个可选的整数，用于指定行为的拷贝操作。唯一支持的 flag 是 <code>fs.constants.COPYFILE_EXCL</code> ，如果 <code>dest</code> 已经存在，则会导致拷贝操作失败。</p>
+<p>例:</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+
+// 默认情况下，destination.txt 将创建或覆盖
+fs.copyFileSync(&apos;source.txt&apos;, &apos;destination.txt&apos;);
+console.log(&apos;source.txt was copied to destination.txt&apos;);
+</code></pre>
+<p>如果第三个参数是数字，那么肯定是 <code>flags</code>，代码如下所示:</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+const { COPYFILE_EXCL } = fs.constants;
+
+// 使用 COPYFILE_EXCL ，如果 destination.txt 文件存在，操作将失败。
+fs.copyFileSync(&apos;source.txt&apos;, &apos;destination.txt&apos;, COPYFILE_EXCL);
+</code></pre>
+<h2>fs.createReadStream(path[, options])<span><a class="mark" href="#fs_fs_createreadstream_path_options" id="fs_fs_createreadstream_path_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The passed <code>options</code> object will never be modified.</p>
+</td></tr>
+<tr><td>v2.3.0</td>
+<td><p>The passed <code>options</code> object can be a string now.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>flags</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>autoClose</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+<li><code>start</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>end</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>highWaterMark</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>返回一个新建的 <a href="#fs_class_fs_readstream"><code>ReadStream</code></a> 对象（详见<a href="stream.html#stream_class_stream_readable">可读流</a>）。</p>
+<p>不同于在一个可读流上设置的 <code>highWaterMark</code> 默认值（16 kb），该方法在相同参数下返回的流具有 64 kb 的默认值。</p>
+<p><code>options</code> 是一个带有以下默认值的对象或字符串：</p>
+<pre><code class="lang-js">const defaults = {
+  flags: &apos;r&apos;,
+  encoding: null,
+  fd: null,
+  mode: 0o666,
+  autoClose: true,
+  highWaterMark: 64 * 1024
+};
+</code></pre>
+<p><code>options</code> 可以包括 <code>start</code> 和 <code>end</code> 值，使其可以从文件读取一定范围的字节而不是整个文件。
+<code>start</code> 和 <code>end</code> 都是包括在内的，并且起始值是 0。
+如果指定了 <code>fd</code> 且 <code>start</code> 不传或为 <code>undefined</code>，则 <code>fs.createReadStream()</code> 从当前文件位置按顺序地读取。
+<code>encoding</code> 可以是任何可以被 <a href="buffer.html#buffer_buffer"><code>Buffer</code></a> 接受的值。</p>
+<p>如果指定了 <code>fd</code>，则 <code>ReadStream</code> 会忽略 <code>path</code> 参数并且会使用指定的文件描述符。
+这意味着不会触发 <code>&apos;open&apos;</code> 事件。
+注意，<code>fd</code> 应该是阻塞的；非阻塞的 <code>fd</code> 们应该传给 <a href="net.html#net_class_net_socket"><code>net.Socket</code></a>。</p>
+<p>如果 <code>autoClose</code> 为 <code>false</code>，则文件描述符不会被关闭，即使有错误。
+应用程序需要负责关闭它，并且确保没有文件描述符泄漏。
+如果 <code>autoClose</code> 被设置为 <code>true</code>（默认），则在 <code>error</code> 或 <code>end</code> 时，文件描述符会被自动关闭。</p>
+<p><code>mode</code> 用于设置文件模式（权限和粘结位），但仅限创建文件时。</p>
+<p>例子，从一个 100 字节长的文件中读取最后 10 个字节：</p>
+<pre><code class="lang-js">fs.createReadStream(&apos;sample.txt&apos;, { start: 90, end: 99 });
+</code></pre>
+<p>如果 <code>options</code> 是一个字符串，则它指定了字符编码。</p>
+<h2>fs.createWriteStream(path[, options])<span><a class="mark" href="#fs_fs_createwritestream_path_options" id="fs_fs_createwritestream_path_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The passed <code>options</code> object will never be modified.</p>
+</td></tr>
+<tr><td>v5.5.0</td>
+<td><p>The <code>autoClose</code> option is supported now.</p>
+</td></tr>
+<tr><td>v2.3.0</td>
+<td><p>The passed <code>options</code> object can be a string now.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>flags</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>autoClose</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+<li><code>start</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>返回一个新建的 <a href="#fs_class_fs_writestream"><code>WriteStream</code></a> 对象（详见<a href="stream.html#stream_class_stream_writable">可写流</a>）。</p>
+<p><code>options</code> 是一个带有以下默认值的对象或字符串：</p>
+<pre><code class="lang-js">const defaults = {
+  flags: &apos;w&apos;,
+  encoding: &apos;utf8&apos;,
+  fd: null,
+  mode: 0o666,
+  autoClose: true
+};
+</code></pre>
+<p><code>options</code> 也可以包括一个 <code>start</code> 选项，使其可以写入数据到文件某个位置。
+如果是修改一个文件而不是覆盖它，则需要<code>flags</code> 模式为 <code>r+</code> 而不是默认的 <code>w</code> 模式。
+<code>encoding</code> 可以是任何可以被 <a href="buffer.html#buffer_buffer"><code>Buffer</code></a> 接受的值。</p>
+<p>如果 <code>autoClose</code> 被设置为 <code>true</code>（默认），则在 <code>error</code> 或 <code>end</code> 时，文件描述符会被自动关闭。
+如果 <code>autoClose</code> 为 <code>false</code>，则文件描述符不会被关闭，即使有错误。
+应用程序需要负责关闭它，并且确保没有文件描述符泄漏。</p>
+<p>类似 <a href="#fs_class_fs_readstream"><code>ReadStream</code></a>，如果指定了 <code>fd</code>，则 <code>WriteStream</code> 会忽略 <code>path</code> 参数并且会使用指定的文件描述符。
+这意味着不会触发 <code>&apos;open&apos;</code> 事件。
+注意，<code>fd</code> 应该是阻塞的；非阻塞的 <code>fd</code> 们应该传给 <a href="net.html#net_class_net_socket"><code>net.Socket</code></a>。</p>
+<p>如果 <code>options</code> 是一个字符串，则它指定了字符编码。</p>
+<h2>fs.exists(path, callback)<span><a class="mark" href="#fs_fs_exists_path_callback" id="fs_fs_exists_path_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v1.0.0</td>
+<td><p><span>废弃于: v1.0.0</span></p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">稳定性: 0</a> - 废弃的: 使用 <a href="#fs_fs_stat_path_callback"><code>fs.stat()</code></a> 或 <a href="#fs_fs_access_path_mode_callback"><code>fs.access()</code></a> 代替。</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>exists</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>通过检查文件系统来测试给定的路径是否存在。然后使用 true 或 false 为参数调用 <code>callback</code>。例子：</p>
+<pre><code class="lang-js">fs.exists(&apos;/etc/passwd&apos;, (exists) =&gt; {
+  console.log(exists ? &apos;it\&apos;s there&apos; : &apos;no passwd!&apos;);
+});
+</code></pre>
+<p><strong>注意此回调的参数和其他 Node.js 回调的参数不一致。</strong> 通常，Node.js 回调的第一个参数是 <code>err</code>, 接下来是一些其他可选参数。 <code>fs.exists()</code> 只有一个布尔类型的参数。这也是为什么推荐使用 <code>fs.access()</code> 代替 <code>fs.exists()</code>。</p>
+<p>不推荐在调用 <code>fs.open</code>，<code>fs.readFile()</code>，<code>fs.writeFile()</code> 之前使用 <code>fs.exists()</code> 检测文件是否存在。这样做会引起竞争条件，因为在两次调用之间，其他进程可能修改文件。作为替代，用户应该直接开/读取/写入文件，当文件不存在时再处理错误。</p>
+<p>例子：</p>
+<p><strong>write (不推荐)</strong></p>
+<pre><code class="lang-js">fs.exists(&apos;myfile&apos;, (exists) =&gt; {
+  if (exists) {
+    console.error(&apos;myfile already exists&apos;);
+  } else {
+    fs.open(&apos;myfile&apos;, &apos;wx&apos;, (err, fd) =&gt; {
+      if (err) throw err;
+      writeMyData(fd);
+    });
+  }
+});
+</code></pre>
+<p><strong>write (推荐)</strong></p>
+<pre><code class="lang-js">fs.open(&apos;myfile&apos;, &apos;wx&apos;, (err, fd) =&gt; {
+  if (err) {
+    if (err.code === &apos;EEXIST&apos;) {
+      console.error(&apos;myfile already exists&apos;);
+      return;
+    }
+
+    throw err;
+  }
+
+  writeMyData(fd);
+});
+</code></pre>
+<p><strong>read (不推荐)</strong></p>
+<pre><code class="lang-js">fs.exists(&apos;myfile&apos;, (exists) =&gt; {
+  if (exists) {
+    fs.open(&apos;myfile&apos;, &apos;r&apos;, (err, fd) =&gt; {
+      readMyData(fd);
+    });
+  } else {
+    console.error(&apos;myfile does not exist&apos;);
+  }
+});
+</code></pre>
+<p><strong>read (推荐)</strong></p>
+<pre><code class="lang-js">fs.open(&apos;myfile&apos;, &apos;r&apos;, (err, fd) =&gt; {
+  if (err) {
+    if (err.code === &apos;ENOENT&apos;) {
+      console.error(&apos;myfile does not exist&apos;);
+      return;
+    }
+
+    throw err;
+  }
+
+  readMyData(fd);
+});
+</code></pre>
+<p>上面这些 <strong>不推荐</strong> 的例子先检测文件是否存在再使用文件；<strong>推荐</strong> 的例子更好因为它直接使用文件并处理任何错误。</p>
+<p>通常，仅在文件不会被直接使用时才检查一个文件的可访问性，例如当它的可访问性是来自另一个进程的信号。</p>
+<h2>fs.existsSync(path)<span><a class="mark" href="#fs_fs_existssync_path" id="fs_fs_existssync_path">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p><a href="#fs_fs_exists_path_callback"><code>fs.exists()</code></a> 的同步版本。
+如果路径存在，则返回 <code>true</code>，否则返回 <code>false</code>。</p>
+<p>注意，虽然 <code>fs.exists()</code> 是废弃的，但 <code>fs.existsSync()</code> 不是。
+（<code>fs.exists()</code> 的回调接收的参数与其他 Node.js 回调不一致，<code>fs.existsSync()</code> 不使用回调。）</p>
+<h2>fs.fchmod(fd, mode, callback)<span><a class="mark" href="#fs_fs_fchmod_fd_mode_callback" id="fs_fs_fchmod_fd_mode_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.4.7</td>
+<td><p><span>新增于: v0.4.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">fchmod(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.fchmodSync(fd, mode)<span><a class="mark" href="#fs_fs_fchmodsync_fd_mode" id="fs_fs_fchmodsync_fd_mode">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.4.7</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">fchmod(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.fchown(fd, uid, gid, callback)<span><a class="mark" href="#fs_fs_fchown_fd_uid_gid_callback" id="fs_fs_fchown_fd_uid_gid_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.4.7</td>
+<td><p><span>新增于: v0.4.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>uid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>gid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">fchown(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.fchownSync(fd, uid, gid)<span><a class="mark" href="#fs_fs_fchownsync_fd_uid_gid" id="fs_fs_fchownsync_fd_uid_gid">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.4.7</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>uid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>gid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">fchown(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.fdatasync(fd, callback)<span><a class="mark" href="#fs_fs_fdatasync_fd_callback" id="fs_fs_fdatasync_fd_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.96</td>
+<td><p><span>新增于: v0.1.96</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">fdatasync(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.fdatasyncSync(fd)<span><a class="mark" href="#fs_fs_fdatasyncsync_fd" id="fs_fs_fdatasyncsync_fd">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.96</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">fdatasync(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.fstat(fd, callback)<span><a class="mark" href="#fs_fs_fstat_fd_callback" id="fs_fs_fstat_fd_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.95</td>
+<td><p><span>新增于: v0.1.95</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>stats</code> <span class="type">&lt;fs.Stats&gt;</span></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">fstat(2)</a>。
+回调获得两个参数 <code>(err, stats)</code>，其中 <code>stats</code> 是一个 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 对象。
+<code>fstat()</code> 与 <a href="#fs_fs_stat_path_callback"><code>stat()</code></a> 类似，除了文件是通过文件描述符 <code>fd</code> 指定的。</p>
+<h2>fs.fstatSync(fd)<span><a class="mark" href="#fs_fs_fstatsync_fd" id="fs_fs_fstatsync_fd">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.95</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">fstat(2)</a>。返回一个 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 实例。</p>
+<h2>fs.fsync(fd, callback)<span><a class="mark" href="#fs_fs_fsync_fd_callback" id="fs_fs_fsync_fd_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.96</td>
+<td><p><span>新增于: v0.1.96</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">fsync(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.fsyncSync(fd)<span><a class="mark" href="#fs_fs_fsyncsync_fd" id="fs_fs_fsyncsync_fd">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.96</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">fsync(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.ftruncate(fd[, len], callback)<span><a class="mark" href="#fs_fs_ftruncate_fd_len_callback" id="fs_fs_ftruncate_fd_len_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.8.6</td>
+<td><p><span>新增于: v0.8.6</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>len</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认 = <code>0</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">ftruncate(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<p>如果文件描述符指向的文件大于 <code>len</code> 个字节，则只有前面 <code>len</code> 个字节会保留在文件中。</p>
+<p>例子，下面的程序会只保留文件前4个字节。</p>
+<pre><code class="lang-js">console.log(fs.readFileSync(&apos;temp.txt&apos;, &apos;utf8&apos;));
+// 输出: Node.js
+
+// 获取要截断的文件的文件描述符
+const fd = fs.openSync(&apos;temp.txt&apos;, &apos;r+&apos;);
+
+// 截断文件至前4个字节
+fs.ftruncate(fd, 4, (err) =&gt; {
+  assert.ifError(err);
+  console.log(fs.readFileSync(&apos;temp.txt&apos;, &apos;utf8&apos;));
+});
+// 输出: Node
+</code></pre>
+<p>如果前面的文件小于 <code>len</code> 个字节，则扩展文件，且扩展的部分用空字节（&apos;\0&apos;）填充。例子：</p>
+<pre><code class="lang-js">console.log(fs.readFileSync(&apos;temp.txt&apos;, &apos;utf8&apos;));
+// 输出: Node.js
+
+// 获取要截断的文件的文件描述符
+const fd = fs.openSync(&apos;temp.txt&apos;, &apos;r+&apos;);
+
+// 截断文件至前10个字节，但实际大小是7个字节
+fs.ftruncate(fd, 10, (err) =&gt; {
+  assert.ifError(err);
+  console.log(fs.readFileSync(&apos;temp.txt&apos;));
+});
+// 输出: &lt;Buffer 4e 6f 64 65 2e 6a 73 00 00 00&gt;
+// (&apos;Node.js\0\0\0&apos; in UTF8)
+</code></pre>
+<p>最后3个字节是空字节（&apos;\0&apos;），用于补充超出的截断。</p>
+<h2>fs.ftruncateSync(fd[, len])<span><a class="mark" href="#fs_fs_ftruncatesync_fd_len" id="fs_fs_ftruncatesync_fd_len">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.8.6</span>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>len</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认 = <code>0</code></li>
+</ul>
+<p>同步的 <a href="javascript:;">ftruncate(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.futimes(fd, atime, mtime, callback)<span><a class="mark" href="#fs_fs_futimes_fd_atime_mtime_callback" id="fs_fs_futimes_fd_atime_mtime_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v4.1.0</td>
+<td><p>Numeric strings, <code>NaN</code> and <code>Infinity</code> are now allowed time specifiers.</p>
+</td></tr>
+<tr><td>v0.4.2</td>
+<td><p><span>新增于: v0.4.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>atime</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Date&gt;</a></li>
+<li><code>mtime</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Date&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>改变由所提供的文件描述符所指向的对象的文件系统时间戳。详见 <a href="#fs_fs_utimes_path_atime_mtime_callback"><code>fs.utimes()</code></a>。</p>
+<p><em>请注意</em>: 该函数不支持AIX 7.1以下版本，在AIX 7.1以下版本会返回<code>UV_ENOSYS</code>错误。</p>
+<h2>fs.futimesSync(fd, atime, mtime)<span><a class="mark" href="#fs_fs_futimessync_fd_atime_mtime" id="fs_fs_futimessync_fd_atime_mtime">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v4.1.0</td>
+<td><p>Numeric strings, <code>NaN</code> and <code>Infinity</code> are now allowed time specifiers.</p>
+</td></tr>
+<tr><td>v0.4.2</td>
+<td><p><span>新增于: v0.4.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>atime</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>mtime</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p><a href="#fs_fs_futimes_fd_atime_mtime_callback"><code>fs.futimes()</code></a> 的同步版本。返回 <code>undefined</code>。</p>
+<h2>fs.lchmod(path, mode, callback)<span><a class="mark" href="#fs_fs_lchmod_path_mode_callback" id="fs_fs_lchmod_path_mode_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.4.7</td>
+<td><p><span>废弃于: v0.4.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">lchmod(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<p>只在 macOS 有效。</p>
+<h2>fs.lchmodSync(path, mode)<span><a class="mark" href="#fs_fs_lchmodsync_path_mode" id="fs_fs_lchmodsync_path_mode">#</a></span></h2>
+<div class="api_metadata">
+<span>废弃于: v0.4.7</span>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">lchmod(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.lchown(path, uid, gid, callback)<span><a class="mark" href="#fs_fs_lchown_path_uid_gid_callback" id="fs_fs_lchown_path_uid_gid_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.4.7</td>
+<td><p><span>废弃于: v0.4.7</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>uid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>gid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">lchown(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.lchownSync(path, uid, gid)<span><a class="mark" href="#fs_fs_lchownsync_path_uid_gid" id="fs_fs_lchownsync_path_uid_gid">#</a></span></h2>
+<div class="api_metadata">
+<span>废弃于: v0.4.7</span>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>uid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>gid</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">lchown(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.link(existingPath, newPath, callback)<span><a class="mark" href="#fs_fs_link_existingpath_newpath_callback" id="fs_fs_link_existingpath_newpath_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>existingPath</code> and <code>newPath</code> parameters can be WHATWG <code>URL</code> objects using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>existingPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>newPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">link(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.linkSync(existingPath, newPath)<span><a class="mark" href="#fs_fs_linksync_existingpath_newpath" id="fs_fs_linksync_existingpath_newpath">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>existingPath</code> and <code>newPath</code> parameters can be WHATWG <code>URL</code> objects using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>existingPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>newPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">link(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.lstat(path, callback)<span><a class="mark" href="#fs_fs_lstat_path_callback" id="fs_fs_lstat_path_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.30</td>
+<td><p><span>新增于: v0.1.30</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>stats</code> <span class="type">&lt;fs.Stats&gt;</span></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">lstat(2)</a>。
+回调获得两个参数 <code>(err, stats)</code>，其中 <code>stats</code> 是一个 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 对象。
+<code>lstat()</code> 与 <a href="#fs_fs_stat_path_callback"><code>stat()</code></a> 类似，除非 <code>path</code> 是一个符号链接，则自身就是该链接，它指向的并不是文件。</p>
+<h2>fs.lstatSync(path)<span><a class="mark" href="#fs_fs_lstatsync_path" id="fs_fs_lstatsync_path">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.30</td>
+<td><p><span>新增于: v0.1.30</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">lstat(2)</a>。返回一个 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 实例。</p>
+<h2>fs.mkdir(path[, mode], callback)<span><a class="mark" href="#fs_fs_mkdir_path_mode_callback" id="fs_fs_mkdir_path_mode_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.8</td>
+<td><p><span>新增于: v0.1.8</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>0o777</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地创建目录。
+完成回调只有一个可能的异常参数。
+<code>mode</code> 默认为 <code>0o777</code>。</p>
+<p>详见 <a href="javascript:;">mkdir(2)</a>。</p>
+<h2>fs.mkdirSync(path[, mode])<span><a class="mark" href="#fs_fs_mkdirsync_path_mode" id="fs_fs_mkdirsync_path_mode">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>0o777</code></li>
+</ul>
+<p>同步地创建目录。
+返回 <code>undefined</code>。
+<a href="#fs_fs_mkdir_path_mode_callback"><code>fs.mkdir()</code></a> 的同步版本。</p>
+<p>详见 <a href="javascript:;">mkdir(2)</a>。</p>
+<h2>fs.mkdtemp(prefix[, options], callback)<span><a class="mark" href="#fs_fs_mkdtemp_prefix_options_callback" id="fs_fs_mkdtemp_prefix_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v6.2.1</td>
+<td><p>The <code>callback</code> parameter is optional now.</p>
+</td></tr>
+<tr><td>v5.10.0</td>
+<td><p><span>新增于: v5.10.0</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>prefix</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>folder</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>创建一个唯一的临时目录。</p>
+<p>生成六位随机字符附加到一个要求的 <code>prefix</code> 后面，然后创建一个唯一的临时目录。</p>
+<p>创建的目录路径会作为字符串传给回调的第二个参数。</p>
+<p>可选的 <code>options</code> 参数可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。</p>
+<p>例子：</p>
+<pre><code class="lang-js">fs.mkdtemp(path.join(os.tmpdir(), &apos;foo-&apos;), (err, folder) =&gt; {
+  if (err) throw err;
+  console.log(folder);
+  // 输出: /tmp/foo-itXde2 or C:\Users\...\AppData\Local\Temp\foo-itXde2
+});
+</code></pre>
+<p><strong>注意</strong>：<code>fs.mkdtemp()</code> 方法会直接附加六位随机选择的字符串到 <code>prefix</code> 字符串。
+例如，指定一个目录 <code>/tmp</code>，如果目的是要在 <code>/tmp</code> 里创建一个临时目录，则 <code>prefix</code> <strong>必须</strong> 以一个指定平台的路径分隔符（<code>require(&apos;path&apos;).sep</code>）结尾。</p>
+<pre><code class="lang-js">// 新建的临时目录的父目录
+const tmpDir = os.tmpdir();
+
+// 该方法是 *错误的*：
+fs.mkdtemp(tmpDir, (err, folder) =&gt; {
+  if (err) throw err;
+  console.log(folder);
+  // 会输出类似于 `/tmpabc123`。
+  // 注意，一个新的临时目录会被创建在文件系统的根目录，而不是在 /tmp 目录里。
+});
+
+// 该方法是 *正确的*：
+const { sep } = require(&apos;path&apos;);
+fs.mkdtemp(`${tmpDir}${sep}`, (err, folder) =&gt; {
+  if (err) throw err;
+  console.log(folder);
+  // 会输出类似于 `/tmp/abc123`。
+  // 一个新的临时目录会被创建在 /tmp 目录里。
+});
+</code></pre>
+<h2>fs.mkdtempSync(prefix[, options])<span><a class="mark" href="#fs_fs_mkdtempsync_prefix_options" id="fs_fs_mkdtempsync_prefix_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v5.10.0</span>
+</div><ul>
+<li><code>prefix</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p><a href="#fs_fs_mkdtemp_prefix_options_callback"><code>fs.mkdtemp()</code></a> 的同步版本。
+返回创建的目录的路径。</p>
+<p>可选的 <code>options</code> 参数可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。</p>
+<h2>fs.open(path, flags[, mode], callback)<span><a class="mark" href="#fs_fs_open_path_flags_mode_callback" id="fs_fs_open_path_flags_mode_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>flags</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>0o666</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地打开文件。详见 <a href="javascript:;">open(2)</a>。
+<code>flags</code> 可以是：</p>
+<ul>
+<li><p><code>&apos;r&apos;</code> - 以读取模式打开文件。如果文件不存在则发生异常。</p>
+</li>
+<li><p><code>&apos;r+&apos;</code> - 以读写模式打开文件。如果文件不存在则发生异常。</p>
+</li>
+<li><p><code>&apos;rs+&apos;</code> - 以同步读写模式打开文件。命令操作系统绕过本地文件系统缓存。</p>
+<p>这对 NFS 挂载模式下打开文件很有用，因为它可以让你跳过潜在的旧本地缓存。
+它对 I/O 的性能有明显的影响，所以除非需要，否则不要使用此标志。</p>
+<p>注意，这不会使 <code>fs.open()</code> 进入同步阻塞调用。
+如果那是你想要的，则应该使用 <code>fs.openSync()</code>。</p>
+</li>
+<li><p><code>&apos;w&apos;</code> - 以写入模式打开文件。文件会被创建（如果文件不存在）或截断（如果文件存在）。</p>
+</li>
+<li><p><code>&apos;wx&apos;</code> - 类似 <code>&apos;w&apos;</code>，但如果 <code>path</code> 存在，则失败。</p>
+</li>
+<li><p><code>&apos;w+&apos;</code> - 以读写模式打开文件。文件会被创建（如果文件不存在）或截断（如果文件存在）。</p>
+</li>
+<li><p><code>&apos;wx+&apos;</code> - 类似 <code>&apos;w+&apos;</code>，但如果 <code>path</code> 存在，则失败。</p>
+</li>
+<li><p><code>&apos;a&apos;</code> - 以追加模式打开文件。如果文件不存在，则会被创建。</p>
+</li>
+<li><p><code>&apos;ax&apos;</code> - 类似于 <code>&apos;a&apos;</code>，但如果 <code>path</code> 存在，则失败。</p>
+</li>
+<li><p><code>&apos;a+&apos;</code> - 以读取和追加模式打开文件。如果文件不存在，则会被创建。</p>
+</li>
+<li><p><code>&apos;ax+&apos;</code> - 类似于 <code>&apos;a+&apos;</code>，但如果 <code>path</code> 存在，则失败。</p>
+</li>
+</ul>
+<p><code>mode</code> 可设置文件模式（权限和 sticky 位），但只有当文件被创建时才有效。默认为 <code>0o666</code>，可读写。</p>
+<p>该回调有两个参数 <code>(err, fd)</code>。</p>
+<p>特有的标志 <code>&apos;x&apos;</code>（在 <a href="javascript:;">open(2)</a> 中的 <code>O_EXCL</code> 标志）确保 <code>path</code> 是新创建的。
+在 POSIX 操作系统中，<code>path</code> 会被视为存在，即使是一个链接到一个不存在的文件的符号。
+该特有的标志有可能在网络文件系统中无法使用。</p>
+<p><code>flags</code> 也可以是一个数字，[open(2)] 文档中有描述；
+常用的常量可从 <code>fs.constants</code> 获取。
+在 Windows 系统中，标志会被转换为与它等同的替代者，例如，<code>O_WRONLY</code> 转换为 <code>FILE_GENERIC_WRITE</code>、或 <code>O_EXCL|O_CREAT</code> 转换为 <code>CREATE_NEW</code>，通过 CreateFileW 接受。</p>
+<p>在 Linux 中，当文件以追加模式打开时，定位的写入不起作用。
+内核会忽略位置参数，并总是附加数据到文件的末尾。</p>
+<p>注意：<code>fs.open()</code> 某些标志的行为是与平台相关的。
+因此，在 macOS 和 Linux 下用 <code>&apos;a+&apos;</code> 标志打开一个目录（见下面的例子），会返回一个错误。
+与此相反，在 Windows 和 FreeBSD，则会返回一个文件描述符。</p>
+<pre><code class="lang-js">// macOS 与 Linux
+fs.open(&apos;&lt;directory&gt;&apos;, &apos;a+&apos;, (err, fd) =&gt; {
+  // =&gt; [Error: EISDIR: illegal operation on a directory, open &lt;directory&gt;]
+});
+
+// Windows 与 FreeBSD
+fs.open(&apos;&lt;directory&gt;&apos;, &apos;a+&apos;, (err, fd) =&gt; {
+  // =&gt; null, &lt;fd&gt;
+});
+</code></pre>
+<p>有些字符 (<code>&lt; &gt; : &quot; / \ | ? *</code>) 在Windows下保留，通过<a href="javascript:;">命名文件、路径和命名空间</a>来记录。 在NTFS下，如果文件名包含冒号，Node.js 将打开一个文件系统流， 具体描述在 <a href="javascript:;">MSDN页</a>。</p>
+<p>许多函数也是基于 <code>fs.open()</code> 拥有这样的效果。例:
+<code>fs.writeFile()</code>, <code>fs.readFile()</code>, 等。</p>
+<h2>fs.openSync(path, flags[, mode])<span><a class="mark" href="#fs_fs_opensync_path_flags_mode" id="fs_fs_opensync_path_flags_mode">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>flags</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>0o666</code></li>
+</ul>
+<p><a href="#fs_fs_open_path_flags_mode_callback"><code>fs.open()</code></a> 的同步版本。
+返回一个表示文件描述符的整数。</p>
+<h2>fs.read(fd, buffer, offset, length, position, callback)<span><a class="mark" href="#fs_fs_read_fd_buffer_offset_length_position_callback" id="fs_fs_read_fd_buffer_offset_length_position_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.4.0</td>
+<td><p>The <code>buffer</code> parameter can now be a <code>Uint8Array</code>.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The <code>length</code> parameter can now be <code>0</code>.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+<li><code>offset</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>length</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>position</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>bytesRead</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>从 <code>fd</code> 指定的文件中读取数据。</p>
+<p><code>buffer</code> 是数据将被写入到的 buffer。</p>
+<p><code>offset</code> 是 buffer 中开始写入的偏移量。</p>
+<p><code>length</code> 是一个整数，指定要读取的字节数。</p>
+<p><code>position</code> 指定从文件中开始读取的位置。
+如果 <code>position</code> 为 <code>null</code>，则数据从当前文件读取位置开始读取，且文件读取位置会被更新。
+如果 <code>position</code> 为一个整数，则文件读取位置保持不变。</p>
+<p>回调有三个参数 <code>(err, bytesRead, buffer)</code>。</p>
+<p>如果调用该方法的 <a href="util.html#util_util_promisify_original"><code>util.promisify()</code></a> 版本，将会返回一个包含 <code>bytesRead</code> 和 <code>buffer</code> 属性的 Promise。</p>
+<h2>fs.readdir(path[, options], callback)<span><a class="mark" href="#fs_fs_readdir_path_options_callback" id="fs_fs_readdir_path_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The <code>options</code> parameter was added.</p>
+</td></tr>
+<tr><td>v0.1.8</td>
+<td><p><span>新增于: v0.1.8</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>files</code> 
+            <a href="javascript:;" class="type">&lt;string[]&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer[]&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">readdir(3)</a>。
+读取一个目录的内容。
+回调有两个参数 <code>(err, files)</code>，其中 <code>files</code> 是目录中不包括 <code>&apos;.&apos;</code> 和 <code>&apos;..&apos;</code> 的文件名的数组。</p>
+<p>可选的 <code>options</code> 参数用于传入回调的文件名，它可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。
+如果 <code>encoding</code> 设为 <code>&apos;buffer&apos;</code>，则返回的文件名会被作为 <code>Buffer</code> 对象传入。
+注意: &apos;path&apos; 的路径是以当前文件为基准进行查找的,而不是运行的时候的相对路径</p>
+<h2>fs.readdirSync(path[, options])<span><a class="mark" href="#fs_fs_readdirsync_path_options" id="fs_fs_readdirsync_path_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p>同步的 <a href="javascript:;">readdir(3)</a>. 
+返回一个不包括 <code>&apos;.&apos;</code> 和 <code>&apos;..&apos;</code> 的文件名的数组。</p>
+<p>可选的 <code>options</code> 参数用于传入回调的文件名，它可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。
+如果 <code>encoding</code> 设为 <code>&apos;buffer&apos;</code>，则返回的文件名会被作为 <code>Buffer</code> 对象传入。</p>
+<h2>fs.readFile(path[, options], callback)<span><a class="mark" href="#fs_fs_readfile_path_options_callback" id="fs_fs_readfile_path_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>参数 <code>path</code> 可以是一个使用 <code>file:</code> 协议的 WHATWG <code>URL</code> 对象。 该支持目前仍为试验性的。</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>参数 <code>callback</code> 不再是可选的。 不传入它会触发一个警告。</p>
+</td></tr>
+<tr><td>v5.1.0</td>
+<td><p>当成功时，<code>callback</code> 被调用时会带上 <code>null</code> 作为 <code>error</code> 参数的值。</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>参数 <code>path</code> 可以是一个文件描述符。</p>
+</td></tr>
+<tr><td>v0.1.29</td>
+<td><p><span>新增于: v0.1.29</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 文件名或文件描述符。</li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> 默认为 <code>null</code>。</li>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认为 <code>&apos;r&apos;</code>。</li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>data</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地读取一个文件的全部内容。
+例子：</p>
+<pre><code class="lang-js">fs.readFile(&apos;/etc/passwd&apos;, (err, data) =&gt; {
+  if (err) throw err;
+  console.log(data);
+});
+</code></pre>
+<p>回调有两个参数 <code>(err, data)</code>，其中 <code>data</code> 是文件的内容。</p>
+<p>如果未指定字符编码，则返回原始的 buffer。</p>
+<p>如果 <code>options</code> 是一个字符串，则它指定了字符编码。
+例子：</p>
+<pre><code class="lang-js">fs.readFile(&apos;/etc/passwd&apos;, &apos;utf8&apos;, callback);
+</code></pre>
+<p>注意：当 <code>path</code> 是一个目录时，<code>fs.readFile()</code> 与 <a href="#fs_fs_readfilesync_path_options"><code>fs.readFileSync()</code></a> 的行为与平台有关。
+在 macOS、Linux 与 Windows 上，会返回一个错误。
+在 FreeBSD 上，会返回目录内容的表示。</p>
+<pre><code class="lang-js">// 在 macOS、Linux 与 Windows 上：
+fs.readFile(&apos;&lt;directory&gt;&apos;, (err, data) =&gt; {
+  // =&gt; [Error: EISDIR: illegal operation on a directory, read &lt;directory&gt;]
+});
+
+//  在 FreeBSD 上：
+fs.readFile(&apos;&lt;directory&gt;&apos;, (err, data) =&gt; {
+  // =&gt; null, &lt;data&gt;
+});
+</code></pre>
+<p>任何指定的文件描述符必须支持读取。</p>
+<p>注意：如果一个文件描述符被指定为 <code>path</code>，则它不会被自动关闭。</p>
+<p><em>Note</em>: <code>fs.readFile()</code> reads the entire file in a single threadpool request.
+To minimize threadpool task length variation, prefer the partitioned APIs
+<code>fs.read()</code> and <code>fs.createReadStream()</code> when reading files as part of
+fulfilling a client request.</p>
+<h2>fs.readFileSync(path[, options])<span><a class="mark" href="#fs_fs_readfilesync_path_options" id="fs_fs_readfilesync_path_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>The <code>path</code> parameter can be a file descriptor now.</p>
+</td></tr>
+<tr><td>v0.1.8</td>
+<td><p><span>新增于: v0.1.8</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 文件名或文件描述符</li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> 默认 = <code>null</code></li>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;r&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p><a href="#fs_fs_readfile_path_options_callback"><code>fs.readFile()</code></a> 的同步版本。
+返回 <code>path</code> 的内容。</p>
+<p>如果指定了 <code>encoding</code> 选项，则该函数返回一个字符串，否则返回一个 buffer。</p>
+<p><em>请注意</em>: 与<a href="#fs_fs_readfile_path_options_callback"><code>fs.readFile()</code></a>相似, 当路径是目录时，<code>fs.readFileSync()</code>的行为是基于平台的。</p>
+<pre><code class="lang-js">// macOS, Linux 和 Windows
+fs.readFileSync(&apos;&lt;directory&gt;&apos;);
+// =&gt; [Error: EISDIR: illegal operation on a directory, read &lt;directory&gt;]
+
+//  FreeBSD
+fs.readFileSync(&apos;&lt;directory&gt;&apos;); // =&gt; null, &lt;data&gt;
+</code></pre>
+<h2>fs.readlink(path[, options], callback)<span><a class="mark" href="#fs_fs_readlink_path_options_callback" id="fs_fs_readlink_path_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>linkString</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">readlink(2)</a>。
+回调有两个参数  <code>(err, linkString)</code>。</p>
+<p>可选的 <code>options</code> 参数用于传入回调的链接路径，它可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。
+如果 <code>encoding</code> 设为 <code>&apos;buffer&apos;</code>，则返回的链接路径会被作为 <code>Buffer</code> 对象传入。</p>
+<h2>fs.readlinkSync(path[, options])<span><a class="mark" href="#fs_fs_readlinksync_path_options" id="fs_fs_readlinksync_path_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p>同步的 <a href="javascript:;">readlink(2)</a>。
+返回符号链接的字符串值。</p>
+<p>可选的 <code>options</code> 参数用于传入回调的链接路径，它可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。
+如果 <code>encoding</code> 设为 <code>&apos;buffer&apos;</code>，则返回的链接路径会被作为 <code>Buffer</code> 对象传入。</p>
+<h2>fs.readSync(fd, buffer, offset, length, position)<span><a class="mark" href="#fs_fs_readsync_fd_buffer_offset_length_position" id="fs_fs_readsync_fd_buffer_offset_length_position">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v6.0.0</td>
+<td><p>The <code>length</code> parameter can now be <code>0</code>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+<li><code>offset</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>length</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>position</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p><a href="#fs_fs_read_fd_buffer_offset_length_position_callback"><code>fs.read()</code></a> 的同步版本。
+返回 <code>bytesRead</code> 的数量。</p>
+<h2>fs.realpath(path[, options], callback)<span><a class="mark" href="#fs_fs_realpath_path_options_callback" id="fs_fs_realpath_path_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Pipe/Socket resolve support was added.</p>
+</td></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v6.4.0</td>
+<td><p>Calling <code>realpath</code> now works again for various edge cases on Windows.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The <code>cache</code> parameter was removed.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>resolvedPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">realpath(3)</a>。
+<code>callback</code> 有两个参数 <code>(err, resolvedPath)</code>。
+可以使用 <code>process.cwd</code> 解析相对路径。</p>
+<p>只支持可转换成 UTF8 字符串的路径。</p>
+<p>可选的 <code>options</code> 参数用于传入回调的路径，它可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。
+如果 <code>encoding</code> 设为 <code>&apos;buffer&apos;</code>，则返回的路径会被作为 <code>Buffer</code> 对象传入。</p>
+<p><em>注意</em>: 如果路径解析到套接字或 pipe ，函数将返回与该对象相关的系统名称。</p>
+<h2>fs.realpathSync(path[, options])<span><a class="mark" href="#fs_fs_realpathsync_path_options" id="fs_fs_realpathsync_path_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Pipe/Socket resolve support was added.</p>
+</td></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v6.4.0</td>
+<td><p>Calling <code>realpathSync</code> now works again for various edge cases on Windows.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The <code>cache</code> parameter was removed.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p>同步的 <a href="javascript:;">realpath(3)</a>。
+返回解析的路径。</p>
+<p>只支持可转换成 UTF8 字符串的路径。</p>
+<p>可选的 <code>options</code> 参数用于传入回调的路径，它可以是一个字符串并指定一个字符编码，或是一个对象且由一个 <code>encoding</code> 属性指定使用的字符编码。
+如果 <code>encoding</code> 设为 <code>&apos;buffer&apos;</code>，则返回的路径会被作为 <code>Buffer</code> 对象传入。</p>
+<p><em>注意</em>: 如果 <code>path</code> 解析成一个 socket 或者管道，该函数将返回包含系统相关名称的对象。</p>
+<h2>fs.rename(oldPath, newPath, callback)<span><a class="mark" href="#fs_fs_rename_oldpath_newpath_callback" id="fs_fs_rename_oldpath_newpath_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>oldPath</code> and <code>newPath</code> parameters can be WHATWG <code>URL</code> objects using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>oldPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>newPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">rename(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.renameSync(oldPath, newPath)<span><a class="mark" href="#fs_fs_renamesync_oldpath_newpath" id="fs_fs_renamesync_oldpath_newpath">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>oldPath</code> and <code>newPath</code> parameters can be WHATWG <code>URL</code> objects using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>oldPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>newPath</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">rename(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.rmdir(path, callback)<span><a class="mark" href="#fs_fs_rmdir_path_callback" id="fs_fs_rmdir_path_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameters can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">rmdir(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<p><em>请注意</em>: 在文件上（而不是目录上）使用<code>fs.rmdir()</code>，在Windows平台将会导致<code>ENOENT</code>错误，而在POSIX平台将会导致<code>ENOTDIR</code>错误。</p>
+<h2>fs.rmdirSync(path)<span><a class="mark" href="#fs_fs_rmdirsync_path" id="fs_fs_rmdirsync_path">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameters can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">rmdir(2)</a>。返回 <code>undefined</code>。</p>
+<p><em>请注意</em>: 在文件上（而不是目录上）使用<code>fs.rmdirSync()</code>，在Windows平台将会导致<code>ENOENT</code>错误，而在POSIX平台将会导致<code>ENOTDIR</code>错误。</p>
+<h2>fs.stat(path, callback)<span><a class="mark" href="#fs_fs_stat_path_callback" id="fs_fs_stat_path_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>stats</code> <span class="type">&lt;fs.Stats&gt;</span></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">stat(2)</a>。
+回调有两个参数 <code>(err, stats)</code> 其中 <code>stats</code> 是一个 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 对象。</p>
+<p>如果发生错误，则 <code>err.code</code> 会是<a href="errors.html#errors_common_system_errors">常见系统错误</a>之一。</p>
+<p>不建议在调用 <code>fs.open()</code> 、<code>fs.readFile()</code> 或 <code>fs.writeFile()</code> 之前使用 <code>fs.stat()</code> 检查一个文件是否存在。
+作为替代，用户代码应该直接打开/读取/写入文件，当文件无效时再处理错误。</p>
+<p>如果要检查一个文件是否存在且不操作它，推荐使用 <a href="#fs_fs_access_path_mode_callback"><code>fs.access()</code></a>。</p>
+<h2>fs.statSync(path)<span><a class="mark" href="#fs_fs_statsync_path" id="fs_fs_statsync_path">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">stat(2)</a>。
+返回一个 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 实例。</p>
+<h2>fs.symlink(target, path[, type], callback)<span><a class="mark" href="#fs_fs_symlink_target_path_type_callback" id="fs_fs_symlink_target_path_type_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>target</code> and <code>path</code> parameters can be WHATWG <code>URL</code> objects using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>target</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>type</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> <strong>Default:</strong> <code>&apos;file&apos;</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">symlink(2)</a>。
+完成回调只有一个可能的异常参数。
+<code>type</code> 参数可以设为 <code>&apos;dir&apos;</code>、<code>&apos;file&apos;</code> 或 <code>&apos;junction&apos;</code>（默认为 <code>&apos;file&apos;</code>），且仅在 Windows 上有效（在其他平台上忽略）。
+注意，Windows 结点要求目标路径是绝对的。
+当使用 <code>&apos;junction&apos;</code> 时，<code>target</code> 参数会被自动标准化为绝对路径。</p>
+<p>例子：</p>
+<pre><code class="lang-js">fs.symlink(&apos;./foo&apos;, &apos;./new-port&apos;, callback);
+</code></pre>
+<p>它创建了一个名为 &quot;new-port&quot; 且指向 &quot;foo&quot; 的符号链接。</p>
+<h2>fs.symlinkSync(target, path[, type])<span><a class="mark" href="#fs_fs_symlinksync_target_path_type" id="fs_fs_symlinksync_target_path_type">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>target</code> and <code>path</code> parameters can be WHATWG <code>URL</code> objects using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>target</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>type</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> <strong>默认值:</strong> <code>&apos;file&apos;</code></li>
+</ul>
+<p>同步的 <a href="javascript:;">symlink(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.truncate(path[, len], callback)<span><a class="mark" href="#fs_fs_truncate_path_len_callback" id="fs_fs_truncate_path_len_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.8.6</td>
+<td><p><span>新增于: v0.8.6</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>len</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认 = <code>0</code></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">truncate(2)</a>。
+完成回调只有一个可能的异常参数。
+文件描述符也可以作为第一个参数传入，在这种情况下，<code>fs.ftruncate()</code> 会被调用。</p>
+<h2>fs.truncateSync(path[, len])<span><a class="mark" href="#fs_fs_truncatesync_path_len" id="fs_fs_truncatesync_path_len">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.8.6</span>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>len</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认 = <code>0</code></li>
+</ul>
+<p>同步的 <a href="javascript:;">truncate(2)</a>。
+返回 <code>undefined</code>。
+文件描述符也可以作为第一个参数传入，在这种情况下，<code>fs.ftruncateSync()</code> 会被调用。</p>
+<h2>fs.unlink(path, callback)<span><a class="mark" href="#fs_fs_unlink_path_callback" id="fs_fs_unlink_path_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步的 <a href="javascript:;">unlink(2)</a>。
+完成回调只有一个可能的异常参数。</p>
+<h2>fs.unlinkSync(path)<span><a class="mark" href="#fs_fs_unlinksync_path" id="fs_fs_unlinksync_path">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+</ul>
+<p>同步的 <a href="javascript:;">unlink(2)</a>。返回 <code>undefined</code>。</p>
+<h2>fs.unwatchFile(filename[, listener])<span><a class="mark" href="#fs_fs_unwatchfile_filename_listener" id="fs_fs_unwatchfile_filename_listener">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.31</span>
+</div><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>listener</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> Optional, a listener previously attached using <code>fs.watchFile()</code></li>
+</ul>
+<p>停止监视 <code>filename</code> 文件的变化。
+如果指定了 <code>listener</code>，则只移除特定的监听器。
+否则，<strong>所有</strong>的监听器都会被移除，且已经有效地停止监视 <code>filename</code>。</p>
+<p>调用 <code>fs.unwatchFile()</code> 且带上一个未被监视的文件名，将会是一个空操作，而不是一个错误。</p>
+<p>注意：<a href="#fs_fs_watch_filename_options_listener"><code>fs.watch()</code></a> 比 <code>fs.watchFile()</code> 和 <code>fs.unwatchFile()</code> 更高效。
+可能的话，应该使用 <code>fs.watch()</code> 而不是 <code>fs.watchFile()</code> 和 <code>fs.unwatchFile()</code>。</p>
+<h2>fs.utimes(path, atime, mtime, callback)<span><a class="mark" href="#fs_fs_utimes_path_atime_mtime_callback" id="fs_fs_utimes_path_atime_mtime_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p><code>NaN</code>, <code>Infinity</code>, and <code>-Infinity</code> are no longer valid time specifiers.</p>
+</td></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v4.1.0</td>
+<td><p>Numeric strings, <code>NaN</code> and <code>Infinity</code> are now allowed time specifiers.</p>
+</td></tr>
+<tr><td>v0.4.2</td>
+<td><p><span>新增于: v0.4.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>atime</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Date&gt;</a></li>
+<li><code>mtime</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Date&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>改变 <code>path</code> 所指向的对象的文件系统时间戳。</p>
+<p><code>atime</code> 参数和 <code>mtime</code> 参数遵循以下规则：</p>
+<ul>
+<li>值可以是 Unix 时间戳数值、<code>Date</code> 对象、或数值字符串如 <code>&apos;123456789.0&apos;</code>。</li>
+<li>如果值不能被转换为数值，或值是 <code>NaN</code> 、 <code>Infinity</code> 或 <code>-Infinity</code>，则会抛出错误。</li>
+</ul>
+<h2>fs.utimesSync(path, atime, mtime)<span><a class="mark" href="#fs_fs_utimessync_path_atime_mtime" id="fs_fs_utimessync_path_atime_mtime">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p><code>NaN</code>, <code>Infinity</code>, and <code>-Infinity</code> are no longer valid time specifiers.</p>
+</td></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>path</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v4.1.0</td>
+<td><p>Numeric strings, <code>NaN</code> and <code>Infinity</code> are now allowed time specifiers.</p>
+</td></tr>
+<tr><td>v0.4.2</td>
+<td><p><span>新增于: v0.4.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>path</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>atime</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>mtime</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p><a href="#fs_fs_utimes_path_atime_mtime_callback"><code>fs.utimes()</code></a> 的同步版本。返回 <code>undefined</code>。</p>
+<h2>fs.watch(filename[, options][, listener])<span><a class="mark" href="#fs_fs_watch_filename_options_listener" id="fs_fs_watch_filename_options_listener">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>filename</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The passed <code>options</code> object will never be modified.</p>
+</td></tr>
+<tr><td>v0.5.10</td>
+<td><p><span>新增于: v0.5.10</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>persistent</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 指明如果文件正在被监视，进程是否应该继续运行。默认 = <code>true</code></li>
+<li><code>recursive</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 指明是否全部子目录应该被监视，或只是当前目录。
+适用于当一个目录被指定时，且只在支持的平台（详见 <a href="#fs_caveats">Caveats</a>）。默认 = <code>false</code></li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 指定用于传给监听器的文件名的字符编码。默认 = <code>&apos;utf8&apos;</code></li>
+</ul>
+</li>
+<li><code>listener</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;undefined&gt;</a> <strong>Default:</strong> <code>undefined</code><ul>
+<li><code>eventType</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>监视 <code>filename</code> 的变化，<code>filename</code> 可以是一个文件或一个目录。
+返回的对象是一个 <a href="#fs_class_fs_fswatcher"><code>fs.FSWatcher</code></a>。</p>
+<p>第二个参数是可选的。
+如果提供的 <code>options</code> 是一个字符串，则它指定了 <code>encoding</code>。
+否则 <code>options</code> 应该以一个对象传入。</p>
+<p>监听器回调有两个参数 <code>(eventType, filename)</code>。
+<code>eventType</code> 可以是 <code>&apos;rename&apos;</code> 或 <code>&apos;change&apos;</code>，<code>filename</code> 是触发事件的文件的名称。</p>
+<p>注意，在大多数平台，当一个文件出现或消失在一个目录里时，<code>&apos;rename&apos;</code> 会被触发。</p>
+<p>还需要注意，监听器回调是绑定在由 <a href="#fs_class_fs_fswatcher"><code>fs.FSWatcher</code></a> 触发的 <code>&apos;change&apos;</code> 事件上，但它跟 <code>eventType</code> 的 <code>&apos;change&apos;</code> 值不是同一个东西。</p>
+<h3>说明<span><a class="mark" href="#fs_caveats" id="fs_caveats">#</a></span></h3>
+<!--type=misc-->
+<p><code>fs.watch</code> API 不是 100％ 跨平台一致的，且在某些情况下不可用。</p>
+<p>递归选项只支持 macOS 和 Windows。</p>
+<h4>可用性<span><a class="mark" href="#fs_availability" id="fs_availability">#</a></span></h4>
+<!--type=misc-->
+<p>该特性依赖于底层操作系统提供的一种方法来通知文件系统的变化。</p>
+<ul>
+<li>在 Linux 系统中，使用 <a href="javascript:;"><code>inotify</code></a>。</li>
+<li>在 BSD 系统中，使用 <a href="javascript:;"><code>kqueue</code></a>。</li>
+<li>在 macOS 系统中，对文件使用 <a href="javascript:;"><code>kqueue</code></a>，对目录使用 <a href="javascript:;"><code>FSEvents</code></a>。</li>
+<li>在 SunOS 系统（包括 Solaris 和 SmartOS）中，使用 <a href="javascript:;"><code>event ports</code></a>。</li>
+<li>在 Windows 系统中，该特性依赖 <a href="javascript:;"><code>ReadDirectoryChangesW</code></a>。</li>
+<li>在 Aix 系统中，该特性依赖 <a href="javascript:;"><code>AHAFS</code></a> 必须是启动的。</li>
+</ul>
+<p>如果底层功能因某些原因不可用，则 <code>fs.watch</code> 也无法正常工作。
+例如，当使用虚拟化软件如 Vagrant、Docker 等时，在网络文件系统（NFS、SMB 等）或主文件系统中监视文件或目录可能是不可靠的。</p>
+<p>您仍然可以使用基于stat轮询的<code>fs.watchFile()</code>，但是这种方法更慢，可靠性也更低。</p>
+<h4>索引节点<span><a class="mark" href="#fs_inodes" id="fs_inodes">#</a></span></h4>
+<!--type=misc-->
+<p>在 Linux 或 macOS 系统中，<code>fs.watch()</code> 解析路径到一个<a href="javascript:;">索引节点</a>，并监视该索引节点。
+如果监视的路径被删除或重建，则它会被分配一个新的索引节点。
+监视器会发出一个删除事件，但会继续监视<strong>原始的</strong>索引节点。
+新建的索引节点的事件不会被触发。
+这是正常的行为。</p>
+<p>AIX 文件在文件的生命周期中保留相同的 inode。在 AIX 上保存并关闭监视的文件将触发两个通知（一个用于添加新内容，一共用于拦截）。</p>
+<h4>文件名参数<span><a class="mark" href="#fs_filename_argument" id="fs_filename_argument">#</a></span></h4>
+<!--type=misc-->
+<p>回调中提供的 <code>filename</code> 参数仅在 Linux、macOS、Windows、以及 AIX 系统上支持。
+即使在支持的平台中，<code>filename</code> 也不能保证提供。
+因此，不要以为 <code>filename</code> 参数总是在回调中提供，如果它是空的，需要有一定的后备逻辑。</p>
+<pre><code class="lang-js">fs.watch(&apos;somedir&apos;, (eventType, filename) =&gt; {
+  console.log(`事件类型是: ${eventType}`);
+  if (filename) {
+    console.log(`提供的文件名: ${filename}`);
+  } else {
+    console.log(&apos;未提供文件名&apos;);
+  }
+});
+</code></pre>
+<h2>fs.watchFile(filename[, options], listener)<span><a class="mark" href="#fs_fs_watchfile_filename_options_listener" id="fs_fs_watchfile_filename_options_listener">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.6.0</td>
+<td><p>The <code>filename</code> parameter can be a WHATWG <code>URL</code> object using <code>file:</code> protocol. Support is currently still <em>experimental</em>.</p>
+</td></tr>
+<tr><td>v0.1.31</td>
+<td><p><span>新增于: v0.1.31</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>persistent</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> <strong>Default:</strong> <code>true</code></li>
+<li><code>interval</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> <strong>Default:</strong> <code>5007</code></li>
+</ul>
+</li>
+<li><code>listener</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>current</code> <span class="type">&lt;fs.Stats&gt;</span></li>
+<li><code>previous</code> <span class="type">&lt;fs.Stats&gt;</span></li>
+</ul>
+</li>
+</ul>
+<p>监视 <code>filename</code> 的变化。
+回调 <code>listener</code> 会在每次访问文件时被调用。</p>
+<p><code>options</code> 参数可被省略。
+如果提供的话，它应该是一个对象。
+<code>options</code> 对象可能包含一个名为 <code>persistent</code> 的布尔值，表明当文件正在被监视时，进程是否应该继续运行。
+<code>options</code> 对象可以指定一个 <code>interval</code> 属性，表示目标应该每隔多少毫秒被轮询。
+默认值为 <code>{ persistent: true, interval: 5007 }</code>。</p>
+<p><code>listener</code> 有两个参数，当前的状态对象和以前的状态对象：</p>
+<pre><code class="lang-js">fs.watchFile(&apos;message.text&apos;, (curr, prev) =&gt; {
+  console.log(`the current mtime is: ${curr.mtime}`);
+  console.log(`the previous mtime was: ${prev.mtime}`);
+});
+</code></pre>
+<p>这里的状态对象是 <code>fs.Stat</code> 实例。</p>
+<p>如果你想在文件被修改而不只是访问时得到通知，则需要比较 <code>curr.mtime</code> 和 <code>prev.mtime</code>。</p>
+<p>注意：当一个 <code>fs.watchFile</code> 的运行结果是一个 <code>ENOENT</code> 错误时，它会调用监听器一次，且将所有字段置零（或将日期设为 Unix 纪元）。
+在 Windows 中，<code>blksize</code> 和 <code>blocks</code> 字段会是 <code>undefined</code> 而不是零。
+如果文件是在那之后创建的，则监听器会被再次调用，且带上最新的状态对象。
+这是在 v0.10 版之后在功能上的变化。</p>
+<p>注意：<a href="#fs_fs_watch_filename_options_listener"><code>fs.watch()</code></a> 比 <code>fs.watchFile</code> 和 <code>fs.unwatchFile</code> 更高效。
+可能的话，应该使用 <code>fs.watch</code> 而不是 <code>fs.watchFile</code> 和 <code>fs.unwatchFile</code>。</p>
+<p><em>注意:</em> 当 <code>fs.watchFile()</code> 所监听的文件消失并重新出现时，第二个回调函数中返回的 previousstat (文件重新出现)将与第一个回调函数的 previousstat (消失)相同。</p>
+<p>这种情况会发生在:</p>
+<ul>
+<li>该文件被删除，然后又恢复</li>
+<li>文件重命名两次 - 第二次重命名与其原名称相同</li>
+</ul>
+<h2>fs.write(fd, buffer[, offset[, length[, position]]], callback)<span><a class="mark" href="#fs_fs_write_fd_buffer_offset_length_position_callback" id="fs_fs_write_fd_buffer_offset_length_position_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.4.0</td>
+<td><p>The <code>buffer</code> parameter can now be a <code>Uint8Array</code>.</p>
+</td></tr>
+<tr><td>v7.2.0</td>
+<td><p>The <code>offset</code> and <code>length</code> parameters are optional now.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.0.2</td>
+<td><p><span>新增于: v0.0.2</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+<li><code>offset</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>length</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>position</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>bytesWritten</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>写入 <code>buffer</code> 到 <code>fd</code> 指定的文件。</p>
+<p><code>offset</code> 决定 buffer 中被写入的部分，<code>length</code> 是一个整数，指定要写入的字节数。</p>
+<p><code>position</code> 指向从文件开始写入数据的位置的偏移量。
+如果 <code>typeof position !== &apos;number&apos;</code>，则数据从当前位置写入。详见 <a href="javascript:;">pwrite(2)</a>。</p>
+<p>回调有三个参数 <code>(err, bytesWritten, buffer)</code>，其中 <code>bytesWritten</code> 指定从 <code>buffer</code> 写入了多少<strong>字节</strong>。</p>
+<p>如果以 <a href="util.html#util_util_promisify_original"><code>util.promisify()</code></a> 的形式调用该方法，则会返回包含 <code>bytesWritten</code> 和 <code>buffer</code> 属性的 Promise 的对象。</p>
+<p>注意，多次对同一文件使用 <code>fs.write</code> 且不等待回调，是不安全的。
+对于这种情况，强烈推荐使用 <code>fs.createWriteStream</code>。</p>
+<p>在 Linux 上，当文件以追加模式打开时，指定位置的写入是不起作用的。
+内核会忽略位置参数，并总是将数据追加到文件的末尾。</p>
+<h2>fs.write(fd, string[, position[, encoding]], callback)<span><a class="mark" href="#fs_fs_write_fd_string_position_encoding_callback" id="fs_fs_write_fd_string_position_encoding_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.2.0</td>
+<td><p>The <code>position</code> parameter is optional now.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v0.11.5</td>
+<td><p><span>新增于: v0.11.5</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>string</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>position</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+<li><code>written</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>string</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>写入 <code>string</code> 到 <code>fd</code> 指定的文件。
+如果 <code>string</code> 不是一个字符串，则该值将被强制转换为一个字符串。</p>
+<p><code>position</code> 指向从文件开始写入数据的位置的偏移量。
+如果 <code>typeof position !== &apos;number&apos;</code>，则数据从当前位置写入。详见 <a href="javascript:;">pwrite(2)</a>。</p>
+<p><code>encoding</code> 是期望的字符串编码。</p>
+<p>回调有三个参数 <code>(err, written, string)</code>，其中 <code>written</code> 指定传入的字符串被写入多少字节。
+注意，写入的字节与字符串的字符是不同的。详见 <a href="buffer.html#buffer_class_method_buffer_bytelength_string_encoding"><code>Buffer.byteLength</code></a>。</p>
+<p>不同于写入 <code>buffer</code>，该方法整个字符串必须被写入。
+不能指定子字符串。
+这是因为结果数据的字节偏移量可能与字符串的偏移量不同。</p>
+<p>注意，多次对同一文件使用 <code>fs.write</code> 且不等待回调，是不安全的。
+对于这种情况，强烈推荐使用 <code>fs.createWriteStream</code>。</p>
+<p>在 Linux 上，当文件以追加模式打开时，指定位置的写入是不起作用的。
+内核会忽略位置参数，并总是将数据追加到文件的末尾。</p>
+<h2>fs.writeFile(file, data[, options], callback)<span><a class="mark" href="#fs_fs_writefile_file_data_options_callback" id="fs_fs_writefile_file_data_options_callback">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.4.0</td>
+<td><p>The <code>data</code> parameter can now be a <code>Uint8Array</code>.</p>
+</td></tr>
+<tr><td>v7.0.0</td>
+<td><p>The <code>callback</code> parameter is no longer optional. Not passing it will emit a deprecation warning.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>The <code>file</code> parameter can be a file descriptor now.</p>
+</td></tr>
+<tr><td>v0.1.29</td>
+<td><p><span>新增于: v0.1.29</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>file</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 文件名或文件描述符</li>
+<li><code>data</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认 = <code>0o666</code></li>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;w&apos;</code></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+</li>
+</ul>
+<p>异步地写入数据到文件，如果文件已经存在，则替代文件。
+<code>data</code> 可以是一个字符串或一个 buffer。</p>
+<p>如果 <code>data</code> 是一个 buffer，则忽略 <code>encoding</code> 选项。它默认为 <code>&apos;utf8&apos;</code>。</p>
+<p>例子：</p>
+<pre><code class="lang-js">fs.writeFile(&apos;message.txt&apos;, &apos;Hello Node.js&apos;, (err) =&gt; {
+  if (err) throw err;
+  console.log(&apos;The file has been saved!&apos;);
+});
+</code></pre>
+<p>如果 <code>options</code> 是一个字符串，则它指定了字符编码。例如：</p>
+<pre><code class="lang-js">fs.writeFile(&apos;message.txt&apos;, &apos;Hello Node.js&apos;, &apos;utf8&apos;, callback);
+</code></pre>
+<p>任何指定的文件描述符必须支持写入。</p>
+<p>注意，多次对同一文件使用 <code>fs.writeFile</code> 且不等待回调，是不安全的。
+对于这种情况，强烈推荐使用 <code>fs.createWriteStream</code>。</p>
+<p><strong>注意：如果 <code>file</code> 指定为一个文件描述符，则它不会被自动关闭。</strong></p>
+<h2>fs.writeFileSync(file, data[, options])<span><a class="mark" href="#fs_fs_writefilesync_file_data_options" id="fs_fs_writefilesync_file_data_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.4.0</td>
+<td><p>The <code>data</code> parameter can now be a <code>Uint8Array</code>.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>The <code>file</code> parameter can be a file descriptor now.</p>
+</td></tr>
+<tr><td>v0.1.29</td>
+<td><p><span>新增于: v0.1.29</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>file</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="url.html#url_the_whatwg_url_api" class="type">&lt;URL&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 文件名或文件描述符</li>
+<li><code>data</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> 默认 = <code>&apos;utf8&apos;</code></li>
+<li><code>mode</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 默认 = <code>0o666</code></li>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认 = <code>&apos;w&apos;</code></li>
+</ul>
+</li>
+</ul>
+<p><a href="#fs_fs_writefile_file_data_options_callback"><code>fs.writeFile()</code></a> 的同步版本。返回 <code>undefined</code>。</p>
+<h2>fs.writeSync(fd, buffer[, offset[, length[, position]]])<span><a class="mark" href="#fs_fs_writesync_fd_buffer_offset_length_position" id="fs_fs_writesync_fd_buffer_offset_length_position">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.4.0</td>
+<td><p>The <code>buffer</code> parameter can now be a <code>Uint8Array</code>.</p>
+</td></tr>
+<tr><td>v7.2.0</td>
+<td><p>The <code>offset</code> and <code>length</code> parameters are optional now.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+<li><code>offset</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>length</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>position</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<h2>fs.writeSync(fd, string[, position[, encoding]])<span><a class="mark" href="#fs_fs_writesync_fd_string_position_encoding" id="fs_fs_writesync_fd_string_position_encoding">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.2.0</td>
+<td><p>The <code>position</code> parameter is optional now.</p>
+</td></tr>
+<tr><td>v0.11.5</td>
+<td><p><span>新增于: v0.11.5</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>fd</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>string</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>position</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><a href="#fs_fs_write_fd_buffer_offset_length_position_callback"><code>fs.write()</code></a> 的同步版本。返回写入的字节数。</p>
+<h2>fs 常量<span><a class="mark" href="#fs_fs_constants_1" id="fs_fs_constants_1">#</a></span></h2>
+<p>以下常量由 <code>fs.constants</code> 输出。</p>
+<p><strong>注意：</strong>不是所有的常量在每一个操作系统上都是可用的。</p>
+<h3>文件访问常量<span><a class="mark" href="#fs_file_access_constants" id="fs_file_access_constants">#</a></span></h3>
+<p>以下常量用于 <a href="#fs_fs_access_path_mode_callback"><code>fs.access()</code></a>。</p>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>F_OK</code></td>
+    <td>该标志表明文件对于调用进程是可见的。</td>
+  </tr>
+  <tr>
+    <td><code>R_OK</code></td>
+    <td>该标志表明文件可被调用进程读取。</td>
+  </tr>
+  <tr>
+    <td><code>W_OK</code></td>
+    <td>该标志表明文件可被调用进程写入。</td>
+  </tr>
+  <tr>
+    <td><code>X_OK</code></td>
+    <td>该标志表明文件可被调用进程执行。</td>
+  </tr>
+</tbody></table>
+
+
+<h3>文件打开常量<span><a class="mark" href="#fs_file_open_constants" id="fs_file_open_constants">#</a></span></h3>
+<p>以下常量用于 <code>fs.open()</code>。</p>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>O_RDONLY</code></td>
+    <td>该标志表明打开一个文件用于只读访问。</td>
+  </tr>
+  <tr>
+    <td><code>O_WRONLY</code></td>
+    <td>该标志表明打开一个文件用于只写访问。</td>
+  </tr>
+  <tr>
+    <td><code>O_RDWR</code></td>
+    <td>该标志表明打开一个文件用于读写访问。</td>
+  </tr>
+  <tr>
+    <td><code>O_CREAT</code></td>
+    <td>该标志表明如果文件不存在则创建一个文件。</td>
+  </tr>
+  <tr>
+    <td><code>O_EXCL</code></td>
+    <td>该标志表明如果设置了 <code>O_CREAT</code> 标志且文件已经存在，则打开一个文件应该失败。</td>
+  </tr>
+  <tr>
+    <td><code>O_NOCTTY</code></td>
+    <td>该标志表明如果路径是一个终端设备，则打开该路径不应该造成该终端变成进程的控制终端（如果进程还没有终端）。</td>
+  </tr>
+  <tr>
+    <td><code>O_TRUNC</code></td>
+    <td>该标志表明如果文件存在且为一个常规文件、且文件被成功打开为写入访问，则它的长度应该被截断至零。</td>
+  </tr>
+  <tr>
+    <td><code>O_APPEND</code></td>
+    <td>该标志表明数据会被追加到文件的末尾。</td>
+  </tr>
+  <tr>
+    <td><code>O_DIRECTORY</code></td>
+    <td>该标志表明如果路径不是一个目录，则打开应该失败。</td>
+  </tr>
+  <tr>
+  <td><code>O_NOATIME</code></td>
+    <td>该标志表明文件系统的读取访问权不再引起相关文件 <code>atime</code> 信息的更新。该标志只在 Linux 操作系统有效。</td>
+  </tr>
+  <tr>
+    <td><code>O_NOFOLLOW</code></td>
+    <td>该标志表明如果路径是一个符号链接，则打开应该失败。</td>
+  </tr>
+  <tr>
+    <td><code>O_SYNC</code></td>
+    <td>该标志表明文件打开用于同步 I/O。</td>
+  </tr>
+  <tr>
+    <td><code>O_DSYNC</code></td>
+    <td>该标志标明文件为同步I/O打开，写入操作会等待数据完整性</td>
+  </tr>
+  <tr>
+    <td><code>O_SYMLINK</code></td>
+    <td>该标志表明打开符号链接自身，而不是它指向的资源。</td>
+  </tr>
+  <tr>
+    <td><code>O_DIRECT</code></td>
+    <td>当设置它时，会尝试最小化文件 I/O 的缓存效果。</td>
+  </tr>
+  <tr>
+    <td><code>O_NONBLOCK</code></td>
+    <td>该标志表明当可能时以非阻塞模式打开文件。</td>
+  </tr>
+</tbody></table>
+
+
+<h3>文件类型常量<span><a class="mark" href="#fs_file_type_constants" id="fs_file_type_constants">#</a></span></h3>
+<p>以下常量用于 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 对象中用于决定一个文件的类型的 <code>mode</code> 属性。</p>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>S_IFMT</code></td>
+    <td>用于提取文件类型码的位掩码。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFREG</code></td>
+    <td>表示一个常规文件的文件类型常量。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFDIR</code></td>
+    <td>表示一个目录的文件类型常量。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFCHR</code></td>
+    <td>表示一个面向字符的设备文件的文件类型常量。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFBLK</code></td>
+    <td>表示一个面向块的设备文件的文件类型常量。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFIFO</code></td>
+    <td>表示一个 FIFO/pipe 的文件类型常量。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFLNK</code></td>
+    <td>表示一个符号链接的文件类型常量。</td>
+  </tr>
+  <tr>
+    <td><code>S_IFSOCK</code></td>
+    <td>表示一个 socket 的文件类型常量。</td>
+  </tr>
+</tbody></table>
+
+
+<h3>文件模式常量<span><a class="mark" href="#fs_file_mode_constants" id="fs_file_mode_constants">#</a></span></h3>
+<p>以下常量用于 <a href="#fs_class_fs_stats"><code>fs.Stats</code></a> 对象中用于决定一个文件访问权限的 <code>mode</code> 属性。</p>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>S_IRWXU</code></td>
+    <td>该文件模式表明可被所有者读取、写入、执行。</td>
+  </tr>
+  <tr>
+    <td><code>S_IRUSR</code></td>
+    <td>该文件模式表明可被所有者读取。</td>
+  </tr>
+  <tr>
+    <td><code>S_IWUSR</code></td>
+    <td>该文件模式表明可被所有者写入。</td>
+  </tr>
+  <tr>
+    <td><code>S_IXUSR</code></td>
+    <td>该文件模式表明可被所有者执行。</td>
+  </tr>
+  <tr>
+    <td><code>S_IRWXG</code></td>
+    <td>该文件模式表明可被群组读取、写入、执行。</td>
+  </tr>
+  <tr>
+    <td><code>S_IRGRP</code></td>
+    <td>该文件模式表明可被群组读取。</td>
+  </tr>
+  <tr>
+    <td><code>S_IWGRP</code></td>
+    <td>该文件模式表明可被群组写入。</td>
+  </tr>
+  <tr>
+    <td><code>S_IXGRP</code></td>
+    <td>该文件模式表明可被群组执行。</td>
+  </tr>
+  <tr>
+    <td><code>S_IRWXO</code></td>
+    <td>该文件模式表明可被其他人读取、写入、执行。</td>
+  </tr>
+  <tr>
+    <td><code>S_IROTH</code></td>
+    <td>该文件模式表明可被其他人读取。</td>
+  </tr>
+  <tr>
+    <td><code>S_IWOTH</code></td>
+    <td>该文件模式表明可被其他人写入。</td>
+  </tr>
+  <tr>
+    <td><code>S_IXOTH</code></td>
+    <td>该文件模式表明可被其他人执行。</td>
+  </tr>
+</tbody></table>
+
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

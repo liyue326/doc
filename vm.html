@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>虚拟机（JavaScript 执行环境） | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-vm">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="vm" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#vm_vm_executing_javascript">vm (虚拟机)</a></span><ul>
+<li><span class="stability_undefined"><a href="#vm_class_vm_script">Class: vm.Script</a></span><ul>
+<li><span class="stability_undefined"><a href="#vm_new_vm_script_code_options">new vm.Script(code, options)</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_script_runincontext_contextifiedsandbox_options">script.runInContext(contextifiedSandbox[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_script_runinnewcontext_sandbox_options">script.runInNewContext([sandbox[, options]])</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_script_runinthiscontext_options">script.runInThisContext([options])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#vm_vm_createcontext_sandbox">vm.createContext([sandbox])</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_vm_iscontext_sandbox">vm.isContext(sandbox)</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_vm_runincontext_code_contextifiedsandbox_options">vm.runInContext(code, contextifiedSandbox[, options])</a></span></li>
+<li><span class="stability_0"><a href="#vm_vm_runindebugcontext_code">vm.runInDebugContext(code)</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_vm_runinnewcontext_code_sandbox_options">vm.runInNewContext(code[, sandbox][, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_vm_runinthiscontext_code_options">vm.runInThisContext(code[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_example_running_an_http_server_within_a_vm">Example: Running an HTTP Server within a VM</a></span></li>
+<li><span class="stability_undefined"><a href="#vm_what_does_it_mean_to_contextify_an_object">What does it mean to &quot;contextify&quot; an object?</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>vm (虚拟机)<span><a class="mark" href="#vm_vm_executing_javascript" id="vm_vm_executing_javascript">#</a></span></h1>
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><!--name=vm-->
+<p><code>vm</code> 模块提供了一系列 API 用于在 V8 虚拟机环境中编译和运行代码。</p>
+<p>JavaScript 代码可以被编译并立即运行，或编译、保存然后再运行。</p>
+<p>A common use case is to run the code in a sandboxed environment.
+The sandboxed code uses a different V8 Context, meaning that
+it has a different global object than the rest of the code.</p>
+<p>One can provide the context by <a href="#vm_what_does_it_mean_to_contextify_an_object">&quot;contextifying&quot;</a> a sandbox
+object. The sandboxed code treats any property on the sandbox like a
+global variable. Any changes on global variables caused by the sandboxed
+code are reflected in the sandbox object.</p>
+<pre><code class="lang-js">const vm = require(&apos;vm&apos;);
+
+const x = 1;
+
+const sandbox = { x: 2 };
+vm.createContext(sandbox); // Contextify the sandbox.
+
+const code = &apos;x += 40; var y = 17;&apos;;
+// x and y are global variables in the sandboxed environment.
+// Initially, x has the value 2 because that is the value of sandbox.x.
+vm.runInContext(code, sandbox);
+
+console.log(sandbox.x); // 42
+console.log(sandbox.y); // 17
+
+console.log(x); // 1; y is not defined.
+</code></pre>
+<p><em>注意</em>: vm模块并不是实现代码安全性的一套机制。
+<strong>绝不要试图用其运行未经信任的代码</strong>.</p>
+<h2>Class: vm.Script<span><a class="mark" href="#vm_class_vm_script" id="vm_class_vm_script">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.1</span>
+</div><p> <code>vm.Script</code>类型的实例包含若干预编译的脚本，这些脚本能够在特定的沙箱（或者上下文）中被运行。</p>
+<h3>new vm.Script(code, options)<span><a class="mark" href="#vm_new_vm_script_code_options" id="vm_new_vm_script_code_options">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v5.7.0</td>
+<td><p>新增对<code>cachedData</code>和<code>produceCachedData</code>选项的支持</p>
+</td></tr>
+<tr><td>v0.3.1</td>
+<td><p><span>新增于: v0.3.1</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>code</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 需要被解析的JavaScript代码</li>
+<li><code>options</code><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误<a href="errors.html#errors_class_error"><code>Error</code></a>，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误[Error][]。</li>
+<li><code>cachedData</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> 为源码提供一个可选的存有v8代码缓存数据的Buffer。一旦提供了此Buffer，取决于v8引擎对Buffer中数据的接受状况，cachedDataRejected值将会被设为要么
+真要么为假。</li>
+<li><code>produceCachedData</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真且cachedData不存在的时候，v8将会试图为code生成代码缓存数据。一旦成功，一个有V8代码缓存数据的Buffer将会被生成和储存在vm.Script返回的实例的cachedData属性里。
+取决于代码缓存数据是否被成功生成，cachedDataProduced的值会被设置为true或者false。</li>
+</ul>
+</li>
+</ul>
+<p>创建一个新的vm.Script对象只编译代码但不会执行它。编译过的vm.Script此后可以被多次执行。code是不绑定于任何全局对象的，相反，它仅仅绑定于每次执行它的对象。</p>
+<h3>script.runInContext(contextifiedSandbox[, options])<span><a class="mark" href="#vm_script_runincontext_contextifiedsandbox_options" id="vm_script_runincontext_contextifiedsandbox_options">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v6.3.0</td>
+<td><p>现已支持<code>breakOnSigint</code>选项。</p>
+</td></tr>
+<tr><td>v0.3.1</td>
+<td><p><span>新增于: v0.3.1</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>contextifiedSandbox</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 由<code>vm.createContext()</code>返回的[<code>contextified</code>][]对象</li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误<a href="errors.html#errors_class_error"><code>Error</code></a>，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误<a href="errors.html#errors_class_error"><code>Error</code></a>。</li>
+<li><code>breakOnSigint</code>: 若值为真，当收到<code>SIGINT</code> (Ctrl+C)事件时，代码会被终止执行。此外，通过<code>process.on(&quot;SIGINT&quot;)</code>方法所设置的消息响应机制在代码被执行时会被屏蔽，但代码被终止后会被恢复。如果执行被终止，一个错误<a href="errors.html#errors_class_error"><code>Error</code></a>会被抛出。</li>
+</ul>
+</li>
+</ul>
+<p>在指定的<code>contextifiedSandbox</code>中执行<code>vm.Script</code>对象中被编译后的代码并返回其结果。被执行的代码无法获取本地作用域。</p>
+<p>以下的例子会编译一段代码，该代码会递增一个全局变量，给另外一个全局变量赋值。同时该代码被编译后会被多次执行。全局变量会被置于<code>sandbox</code>对象内。</p>
+<pre><code class="lang-js">const util = require(&apos;util&apos;);
+const vm = require(&apos;vm&apos;);
+
+const sandbox = {
+  animal: &apos;cat&apos;,
+  count: 2
+};
+
+const script = new vm.Script(&apos;count += 1; name = &quot;kitty&quot;;&apos;);
+
+const context = vm.createContext(sandbox);
+for (let i = 0; i &lt; 10; ++i) {
+  script.runInContext(context);
+}
+
+console.log(util.inspect(sandbox));
+
+// { animal: &apos;cat&apos;, count: 12, name: &apos;kitty&apos; }
+</code></pre>
+<p><em>注意</em>: 使用<code>timeout</code>或者<code>breakOnSigint</code>选项会导致若干新的事件循环以及对应的线程，这有一个非零的性能消耗。</p>
+<h3>script.runInNewContext([sandbox[, options]])<span><a class="mark" href="#vm_script_runinnewcontext_sandbox_options" id="vm_script_runinnewcontext_sandbox_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.1</span>
+</div><ul>
+<li><code>sandbox</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> An object that will be <a href="#vm_what_does_it_mean_to_contextify_an_object">contextified</a>. If <code>undefined</code>, a
+new object will be created. 一个将被[<code>contextified</code>][]的对象。如果是<code>undefined</code>, 会生成一个新的对象</li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误<a href="errors.html#errors_class_error"><code>Error</code></a>，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误<a href="errors.html#errors_class_error"><code>Error</code></a>。</li>
+</ul>
+</li>
+</ul>
+<p>首先给指定的<code>sandbox</code>提供一个隔离的上下文, 再在此上下文中执行<code>vm.Script</code>中被编译的代码，最后返回结果。运行中的代码无法获取本地作用域。</p>
+<p>以下的例子会编译一段代码，该代码会递增一个全局变量，给另外一个全局变量赋值。同时该代码被编译后会被多次执行。全局变量会被置于各个独立的<code>sandbox</code>对象内。</p>
+<pre><code class="lang-js">const util = require(&apos;util&apos;);
+const vm = require(&apos;vm&apos;);
+
+const script = new vm.Script(&apos;globalVar = &quot;set&quot;&apos;);
+
+const sandboxes = [{}, {}, {}];
+sandboxes.forEach((sandbox) =&gt; {
+  script.runInNewContext(sandbox);
+});
+
+console.log(util.inspect(sandboxes));
+
+// [{ globalVar: &apos;set&apos; }, { globalVar: &apos;set&apos; }, { globalVar: &apos;set&apos; }]
+</code></pre>
+<h3>script.runInThisContext([options])<span><a class="mark" href="#vm_script_runinthiscontext_options" id="vm_script_runinthiscontext_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.1</span>
+</div><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误<a href="errors.html#errors_class_error"><code>Error</code></a>，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误<a href="errors.html#errors_class_error"><code>Error</code></a>。</li>
+</ul>
+</li>
+</ul>
+<p>在指定的<code>global</code>对象的上下文中执行<code>vm.Script</code>对象里被编译的代码并返回其结果。被执行的代码虽然无法获取本地作用域，但是能获取<code>global</code>对象。</p>
+<p>以下的例子会编译一段代码，该代码会递增一个<code>global</code>变量。同时该代码被编译后会被多次执行。</p>
+<pre><code class="lang-js">const vm = require(&apos;vm&apos;);
+
+global.globalVar = 0;
+
+const script = new vm.Script(&apos;globalVar += 1&apos;, { filename: &apos;myfile.vm&apos; });
+
+for (let i = 0; i &lt; 1000; ++i) {
+  script.runInThisContext();
+}
+
+console.log(globalVar);
+
+// 1000
+</code></pre>
+<h2>vm.createContext([sandbox])<span><a class="mark" href="#vm_vm_createcontext_sandbox" id="vm_vm_createcontext_sandbox">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.1</span>
+</div><ul>
+<li><code>sandbox</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a></li>
+</ul>
+<p>给定一个<code>sandbox</code>对象， <code>vm.createContext()</code>会<a href="#vm_what_does_it_mean_to_contextify_an_object">设置此<code>sandbox</code></a>，从而让它具备在<a href="#vm_vm_runincontext_code_contextifiedsandbox_options"><code>vm.runInContext()</code></a>或者<a href="#vm_script_runincontext_contextifiedsandbox_options"><code>script.runInContext()</code></a>中被使用的能力。对于此二方法中所调用的脚本，他们的全局对象不仅拥有我们提供的<code>sandbox</code>对象的所有属性，同时还有任何<a href="javascript:;">global object</a>所拥有的属性。对于这些脚本之外的所有代码，他们的全局变量将保持不变。</p>
+<pre><code class="lang-js">const util = require(&apos;util&apos;);
+const vm = require(&apos;vm&apos;);
+
+global.globalVar = 3;
+
+const sandbox = { globalVar: 1 };
+vm.createContext(sandbox);
+
+vm.runInContext(&apos;globalVar *= 2;&apos;, sandbox);
+
+console.log(util.inspect(sandbox)); // { globalVar: 2 }
+
+console.log(util.inspect(globalVar)); // 3
+</code></pre>
+<p>如果未提供<code>sandbox</code>（或者传入<code>undefined</code>），那么会返回一个全新的，空的，<a href="#vm_what_does_it_mean_to_contextify_an_object">上下文隔离化</a>后的<code>sandbox</code>对象。</p>
+<p><code>vm.createContext()</code>主要是用于创建一个能运行多个脚本的<code>sandbox</code>。比如说，在模拟一个网页浏览器时，此方法可以被用于创建一个单独的<code>sandbox</code>来代表一个窗口的全局对象，然后所有的<code>&lt;script&gt;</code>标签都可以在这个<code>sandbox</code>的上下文中运行。</p>
+<h2>vm.isContext(sandbox)<span><a class="mark" href="#vm_vm_iscontext_sandbox" id="vm_vm_iscontext_sandbox">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.11.7</span>
+</div><ul>
+<li><code>sandbox</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a></li>
+</ul>
+<p>当给定的<code>sandbox</code>对象已经被<a href="#vm_vm_createcontext_sandbox"><code>vm.createContext()</code></a>上下文隔离化，则返回真。</p>
+<h2>vm.runInContext(code, contextifiedSandbox[, options])<span><a class="mark" href="#vm_vm_runincontext_code_contextifiedsandbox_options" id="vm_vm_runincontext_code_contextifiedsandbox_options">#</a></span></h2>
+<div class="signature"><ul>
+<li><code>code</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 将被编译和运行的JavaScript代码</li>
+<li><code>contextifiedSandbox</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 一个被<a href="#vm_what_does_it_mean_to_contextify_an_object">上下文隔离化</a>过的对象，会在代码被编译和执行之后充当<code>global</code>对象</li>
+<li><code>options</code><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误<a href="errors.html#errors_class_error"><code>Error</code></a>，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误<a href="errors.html#errors_class_error"><code>Error</code></a></li>
+</ul>
+</li>
+</ul>
+</div><p><code>vm.runInContext()</code>在指定的<code>contextifiedSandbox</code>的上下文里执行vm.Script对象中被编译后的代码并返回其结果。被执行的代码无法获取本地作用域。<code>contextifiedSandbox</code><em>必须</em>是事先被<a href="#vm_vm_createcontext_sandbox"><code>vm.createContext()</code></a><a href="#vm_what_does_it_mean_to_contextify_an_object">上下文隔离化</a>过的对象。</p>
+<p>以下例子使用一个单独的, <a href="#vm_what_does_it_mean_to_contextify_an_object">上下文隔离化</a>过的对象来编译并运行几个不同的脚本:</p>
+<pre><code class="lang-js">const util = require(&apos;util&apos;);
+const vm = require(&apos;vm&apos;);
+
+const sandbox = { globalVar: 1 };
+vm.createContext(sandbox);
+
+for (let i = 0; i &lt; 10; ++i) {
+  vm.runInContext(&apos;globalVar *= 2;&apos;, sandbox);
+}
+console.log(util.inspect(sandbox));
+
+// { globalVar: 1024 }
+</code></pre>
+<h2>vm.runInDebugContext(code)<span><a class="mark" href="#vm_vm_runindebugcontext_code" id="vm_vm_runindebugcontext_code">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.11.14</span>
+</div><div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">稳定性: 0</a> - 失效。一个替代方案正在开发中。</div><ul>
+<li><code>code</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 要被编译和执行的JavaScript代码</li>
+</ul>
+<p><code>vm.runInDebugContext()</code>会在V8的调试上下文中编译并执行<code>code</code>。此方法主要在需要获取V8<code>Debug</code>对象的时候使用。</p>
+<pre><code class="lang-js">const vm = require(&apos;vm&apos;)
+const Debug = vm.runInDebugContext(&apos;Debug&apos;);
+console.log(Debug.findScript(process.emit).name);  // &apos;events.js&apos;
+console.log(Debug.findScript(process.exit).name);  // &apos;internal/process.js&apos;
+</code></pre>
+<p><em>注意</em>: 调试上下文和对象从本质而言是从属于V8调试器的，故有可能会在没有事先警告的情况下被改变（甚至被移除）</p>
+<p><code>Debug</code>对象另外还可以通过特定于V8的<code>--expose_debug_as</code><a href="cli.html">命令行选项</a>获得。</p>
+<h2>vm.runInNewContext(code[, sandbox][, options])<span><a class="mark" href="#vm_vm_runinnewcontext_code_sandbox_options" id="vm_vm_runinnewcontext_code_sandbox_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.1</span>
+</div><ul>
+<li><code>code</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 将被编译和运行的JavaScript代码</li>
+<li><p><code>sandbox</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 一个将被<a href="#vm_what_does_it_mean_to_contextify_an_object">上下文隔离化</a>的对象。如果是undefined, 会生成一个新的对象</p>
+</li>
+<li><p><code>options</code></p>
+<ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误Error，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误<a href="errors.html#errors_class_error"><code>Error</code></a></li>
+</ul>
+</li>
+</ul>
+<p>首先给指定的sandbox（若为<code>undefined</code>，则会新建一个<code>sandbox</code>）提供一个隔离的上下文, 再在此上下文中执行vm.Script中被编译的代码，最后返回结果。运行中的代码无法获取本地作用域。</p>
+<p>以下的例子会编译一段代码，该代码会递增一个全局变量，给另外一个全局变量赋值。同时该代码被编译后会被多次执行。全局变量会被置于<code>sandbox</code>对象内。</p>
+<pre><code class="lang-js">const util = require(&apos;util&apos;);
+const vm = require(&apos;vm&apos;);
+
+const sandbox = {
+  animal: &apos;cat&apos;,
+  count: 2
+};
+
+vm.runInNewContext(&apos;count += 1; name = &quot;kitty&quot;&apos;, sandbox);
+console.log(util.inspect(sandbox));
+
+// { animal: &apos;cat&apos;, count: 3, name: &apos;kitty&apos; }
+</code></pre>
+<h2>vm.runInThisContext(code[, options])<span><a class="mark" href="#vm_vm_runinthiscontext_code_options" id="vm_vm_runinthiscontext_code_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.1</span>
+</div><ul>
+<li><code>code</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 将被编译和运行的JavaScript代码</li>
+<li><code>options</code><ul>
+<li><code>filename</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 定义供脚本生成的堆栈跟踪信息所使用的文件名</li>
+<li><code>lineOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的行号偏移</li>
+<li><code>columnOffset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义脚本生成的堆栈跟踪信息所显示的列号偏移</li>
+<li><code>displayErrors</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 当值为真的时候，假如在解析代码的时候发生错误Error，引起错误的行将会被加入堆栈跟踪信息</li>
+<li><code>timeout</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 定义在被终止执行之前此code被允许执行的最大毫秒数。假如执行被终止，将会抛出一个错误<a href="errors.html#errors_class_error"><code>Error</code></a></li>
+</ul>
+</li>
+</ul>
+<p><code>vm.runInThisContext()</code>在当前的<code>global</code>对象的上下文中编译并执行<code>code</code>，最后返回结果。运行中的代码无法获取本地作用域，但可以获取当前的<code>global</code>对象。</p>
+<p>下面的例子演示了使用<code>vm.runInThisContext()</code>和JavaScript的<a href="javascript:;"><code>eval()</code></a>方法去执行相同的一段代码：</p>
+<!-- eslint-disable prefer-const -->
+<pre><code class="lang-js">const vm = require(&apos;vm&apos;);
+let localVar = &apos;initial value&apos;;
+
+const vmResult = vm.runInThisContext(&apos;localVar = &quot;vm&quot;;&apos;);
+console.log(&apos;vmResult:&apos;, vmResult);
+console.log(&apos;localVar:&apos;, localVar);
+
+const evalResult = eval(&apos;localVar = &quot;eval&quot;;&apos;);
+console.log(&apos;evalResult:&apos;, evalResult);
+console.log(&apos;localVar:&apos;, localVar);
+
+// vmResult: &apos;vm&apos;, localVar: &apos;initial value&apos;
+// evalResult: &apos;eval&apos;, localVar: &apos;eval&apos;
+</code></pre>
+<p>正因<code>vm.runInThisContext()</code>无法获取本地作用域，故<code>localVar</code>的值不变。相反，<a href="javascript:;"><code>eval()</code></a><em>确实</em>能获取本地作用域，所以<code>localVar</code>的值被改变了。如此看来，<code>vm.runInThisContext()</code>更像是<a href="javascript:;">间接的执行<code>eval()</code></a>, 就像<code>(0, eval)(&apos;code&apos;)</code></p>
+<h2>Example: Running an HTTP Server within a VM<span><a class="mark" href="#vm_example_running_an_http_server_within_a_vm" id="vm_example_running_an_http_server_within_a_vm">#</a></span></h2>
+<p>在使用<a href="#vm_script_runinthiscontext_options"><code>script.runInThisContext()</code></a>或者<a href="#vm_vm_runinthiscontext_code_options"><code>vm.runInThisContext()</code></a>时，目标代码是在当前的V8全局对象的上下文中执行的。被传入此虚拟机上下文的目标代码会有自己独立的作用域。</p>
+<p>要想用<code>http</code>模块搭建一个简易的服务器，被传入的代码必须要么自己执行<code>require(&apos;http&apos;)</code>，要么引用一个<code>http</code>，比如：</p>
+<pre><code class="lang-js">&apos;use strict&apos;;
+const vm = require(&apos;vm&apos;);
+
+const code = `
+((require) =&gt; {
+  const http = require(&apos;http&apos;);
+
+  http.createServer((request, response) =&gt; {
+    response.writeHead(200, { &apos;Content-Type&apos;: &apos;text/plain&apos; });
+    response.end(&apos;Hello World\\n&apos;);
+  }).listen(8124);
+
+  console.log(&apos;Server running at http://127.0.0.1:8124/&apos;);
+})`;
+
+vm.runInThisContext(code)(require);
+</code></pre>
+<p><em>注意</em>: 上述例子中的<code>require()</code>和导出它的上下文共享状态。这在运行未经认证的代码时可能会引入风险，比如在不理想的情况下修改上下文中的对象。</p>
+<h2>What does it mean to &quot;contextify&quot; an object?<span><a class="mark" href="#vm_what_does_it_mean_to_contextify_an_object" id="vm_what_does_it_mean_to_contextify_an_object">#</a></span></h2>
+<p>所有用Node.js所运行的JavaScript代码都是在一个“上下文”的作用域中被执行的。
+根据<a href="javascript:;">V8 Embedder&apos;s Guide</a>：</p>
+<blockquote>
+<p>在V8中，一个上下文是一个执行环境，它允许分离的，无关的JavaScript应用在一个V8的单例中被运行。
+你必须明确地指定用于运行所有JavaScript代码的上下文。</p>
+</blockquote>
+<p>当调用<code>vm.createContext()</code>时，传入的<code>sandbox</code>对象（或者新建的一个<code>sandbox</code>对象，若原<code>sandbox</code>为<code>undefined</code>)在底层会和一个新的V8上下文实例联系上。这个V8上下文在一个隔离的全局环境中，使用<code>vm</code>模块的方法运行<code>code</code>。创建V8上下文和使之联系上<code>sandbox</code>的过程在此文档中被称作为&quot;上下文隔离化&quot;<code>sandbox</code>。</p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

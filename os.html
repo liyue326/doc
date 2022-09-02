@@ -1,0 +1,1273 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>操作系统（OS） | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-os">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="os" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#os_os">os (操作系统)</a></span><ul>
+<li><span class="stability_undefined"><a href="#os_os_eol">os.EOL</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_arch">os.arch()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_constants">os.constants</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_cpus">os.cpus()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_endianness">os.endianness()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_freemem">os.freemem()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_homedir">os.homedir()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_hostname">os.hostname()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_loadavg">os.loadavg()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_networkinterfaces">os.networkInterfaces()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_platform">os.platform()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_release">os.release()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_tmpdir">os.tmpdir()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_totalmem">os.totalmem()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_type">os.type()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_uptime">os.uptime()</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_userinfo_options">os.userInfo([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#os_os_constants_1">OS 常量</a></span><ul>
+<li><span class="stability_undefined"><a href="#os_signal_constants">信号常量</a></span></li>
+<li><span class="stability_undefined"><a href="#os_error_constants">错误常量</a></span><ul>
+<li><span class="stability_undefined"><a href="#os_posix_error_constants">POSIX 错误常量</a></span></li>
+<li><span class="stability_undefined"><a href="#os_windows_specific_error_constants">Windows 系统特有的错误常量</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#os_libuv_constants">libuv 常量</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>os (操作系统)<span><a class="mark" href="#os_os" id="os_os">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><p><code>os</code> 模块提供了一些操作系统相关的实用方法。可以这么引用它:</p>
+<pre><code class="lang-js">const os = require(&apos;os&apos;);
+</code></pre>
+<h2>os.EOL<span><a class="mark" href="#os_os_eol" id="os_os_eol">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.7.8</span>
+</div><ul>
+<li>
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p>一个字符串常量,定义操作系统相关的行末标志:</p>
+<ul>
+<li><code>\n</code> 在 POSIX 系统上</li>
+<li><code>\r\n</code> 在 Windows系统上</li>
+</ul>
+<h2>os.arch()<span><a class="mark" href="#os_os_arch" id="os_os_arch">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.0</span>
+</div><ul>
+<li>返回: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.arch()</code>方法返回一个字符串, 表明 Node.js 二进制编译所用的
+操作系统CPU架构.</p>
+<p>现在可能的值有: <code>&apos;arm&apos;</code>, <code>&apos;arm64&apos;</code>, <code>&apos;ia32&apos;</code>, <code>&apos;mips&apos;</code>,
+<code>&apos;mipsel&apos;</code>, <code>&apos;ppc&apos;</code>, <code>&apos;ppc64&apos;</code>, <code>&apos;s390&apos;</code>, <code>&apos;s390x&apos;</code>, <code>&apos;x32&apos;</code>, <code>&apos;x64&apos;</code>。</p>
+<p>等价于 <a href="process.html#process_process_arch"><code>process.arch</code></a>.</p>
+<h2>os.constants<span><a class="mark" href="#os_os_constants" id="os_os_constants">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v6.3.0</span>
+</div><ul>
+<li>
+            <a href="javascript:;" class="type">&lt;Object&gt;</a></li>
+</ul>
+<p>返回一个包含错误码,处理信号等通用的操作系统特定常量的对象.
+现在, 这些特定的常量的定义被描述在<a href="#os_os_constants_1">OS Constants</a>。</p>
+<h2>os.cpus()<span><a class="mark" href="#os_os_cpus" id="os_os_cpus">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;Array&gt;</a></li>
+</ul>
+<p><code>os.cpus()</code> 方法返回一个对象数组, 包含每个逻辑 CPU 内核的信息. </p>
+<p>下面的属性包含在每个对象中:</p>
+<ul>
+<li><code>model</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>speed</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> (兆赫兹为单位)</li>
+<li><code>times</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>user</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> CPU花费在用户模式下的毫秒时间数.</li>
+<li><code>nice</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> CPU花费在良好模式下的毫秒时间数.</li>
+<li><code>sys</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> CPU花费在系统模式下的毫秒时间数.</li>
+<li><code>idle</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> CPU花费在空闲模式下的毫秒时间数.</li>
+<li><code>irq</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> CPU花费在中断请求模式下的毫秒时间数.</li>
+</ul>
+</li>
+</ul>
+<p>For example:</p>
+<!-- eslint-disable semi -->
+<pre><code class="lang-js">[
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 252020,
+      nice: 0,
+      sys: 30340,
+      idle: 1070356870,
+      irq: 0
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 306960,
+      nice: 0,
+      sys: 26980,
+      idle: 1071569080,
+      irq: 0
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 248450,
+      nice: 0,
+      sys: 21750,
+      idle: 1070919370,
+      irq: 0
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 256880,
+      nice: 0,
+      sys: 19430,
+      idle: 1070905480,
+      irq: 20
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 511580,
+      nice: 20,
+      sys: 40900,
+      idle: 1070842510,
+      irq: 0
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 291660,
+      nice: 0,
+      sys: 34360,
+      idle: 1070888000,
+      irq: 10
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 308260,
+      nice: 0,
+      sys: 55410,
+      idle: 1071129970,
+      irq: 880
+    }
+  },
+  {
+    model: &apos;Intel(R) Core(TM) i7 CPU         860  @ 2.80GHz&apos;,
+    speed: 2926,
+    times: {
+      user: 266450,
+      nice: 1480,
+      sys: 34920,
+      idle: 1072572010,
+      irq: 30
+    }
+  }
+]
+</code></pre>
+<p><em>注意</em>: 因为<code>nice</code>的值是UNIX相关的, 在Windows系统上,
+所有处理器的 <code>nice</code> 值总是0.</p>
+<h2>os.endianness()<span><a class="mark" href="#os_os_endianness" id="os_os_endianness">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.endianness()</code>方法返回一个字符串,表明<em>Node.js二进制编译环境的</em>字节顺序.</p>
+<p>可能的值:</p>
+<ul>
+<li><code>&apos;BE&apos;</code> 大端模式</li>
+<li><code>&apos;LE&apos;</code> 小端模式</li>
+</ul>
+<h2>os.freemem()<span><a class="mark" href="#os_os_freemem" id="os_os_freemem">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p><code>os.freemem()</code> 方法以整数的形式回空闲系统内存
+的字节数.</p>
+<h2>os.homedir()<span><a class="mark" href="#os_os_homedir" id="os_os_homedir">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v2.3.0</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.homedir()</code> 方法以字符串的形式返回当前用户的home目录.</p>
+<h2>os.hostname()<span><a class="mark" href="#os_os_hostname" id="os_os_hostname">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.hostname()</code>方法以字符串的形式返回操作系统的主机名.</p>
+<h2>os.loadavg()<span><a class="mark" href="#os_os_loadavg" id="os_os_loadavg">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;Array&gt;</a></li>
+</ul>
+<p><code>os.loadavg()</code>方法返回一个数组,包含1, 5, 15分钟平均负载.</p>
+<p>平均负载是系统活动的测量,由操作系统计算得出,表达为一个分数.
+一般来说,平均负载应该理想地比系统的逻辑CPU的数目要少.
+平均负载是UNIX相关的概念,在Windows平台上没有对应的概念.
+在Windows上,其返回值总是<code>[0, 0, 0]</code>.</p>
+<h2>os.networkInterfaces()<span><a class="mark" href="#os_os_networkinterfaces" id="os_os_networkinterfaces">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a></li>
+</ul>
+<p><code>os.networkInterfaces()</code>方法返回一个对象,包含只有被赋予网络地址的网络接口. </p>
+<p>在返回对象的每个关键词都指明了一个网络接口.</p>
+<p>返回的值是一个对象数组, 每个都描述了赋予的网络地址.</p>
+<p>被赋予网络地址的对象包含的属性:</p>
+<ul>
+<li><code>address</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 被赋予的 IPv4 或 IPv6 地址</li>
+<li><code>netmask</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a>  IPv4 或 IPv6 子网掩码</li>
+<li><code>family</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a>  <code>IPv4</code> 或 <code>IPv6</code></li>
+<li><code>mac</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 网络接口的MAC地址</li>
+<li><code>internal</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果 网络接口是loopback或相似的远程不能用的接口时,
+值为<code>true</code>,否则为<code>false</code></li>
+<li><code>scopeid</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> IPv6 数字领域识别码 (只有当 <code>family</code>
+是<code>IPv6</code>时可用)</li>
+<li><code>cidr</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 以 CIDR 表示法分配的带有路由前缀的 IPv4 或 IPv6 地址。如果 <code>netmask</code> 参数不可用，则该属性是 <code>null</code>。</li>
+</ul>
+<!-- eslint-skip -->
+<pre><code class="lang-js">{
+  lo: [
+    {
+      address: &apos;127.0.0.1&apos;,
+      netmask: &apos;255.0.0.0&apos;,
+      family: &apos;IPv4&apos;,
+      mac: &apos;00:00:00:00:00:00&apos;,
+      internal: true,
+      cidr: &apos;127.0.0.1/8&apos;
+    },
+    {
+      address: &apos;::1&apos;,
+      netmask: &apos;ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff&apos;,
+      family: &apos;IPv6&apos;,
+      mac: &apos;00:00:00:00:00:00&apos;,
+      internal: true,
+      cidr: &apos;::1/128&apos;
+    }
+  ],
+  eth0: [
+    {
+      address: &apos;192.168.1.108&apos;,
+      netmask: &apos;255.255.255.0&apos;,
+      family: &apos;IPv4&apos;,
+      mac: &apos;01:02:03:0a:0b:0c&apos;,
+      internal: false,
+      cidr: &apos;192.168.1.108/24&apos;
+    },
+    {
+      address: &apos;fe80::a00:27ff:fe4e:66a1&apos;,
+      netmask: &apos;ffff:ffff:ffff:ffff::&apos;,
+      family: &apos;IPv6&apos;,
+      mac: &apos;01:02:03:0a:0b:0c&apos;,
+      internal: false,
+      cidr: &apos;fe80::a00:27ff:fe4e:66a1/64&apos;
+    }
+  ]
+}
+</code></pre>
+<h2>os.platform()<span><a class="mark" href="#os_os_platform" id="os_os_platform">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.0</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.platform()</code> 方法返回一个字符串, 指定Node.js编译时的操作系统平台</p>
+<p>当前可能的值有:</p>
+<ul>
+<li><code>&apos;aix&apos;</code></li>
+<li><code>&apos;darwin&apos;</code></li>
+<li><code>&apos;freebsd&apos;</code></li>
+<li><code>&apos;linux&apos;</code></li>
+<li><code>&apos;openbsd&apos;</code></li>
+<li><code>&apos;sunos&apos;</code></li>
+<li><code>&apos;win32&apos;</code></li>
+</ul>
+<p>等价于 <a href="process.html#process_process_platform"><code>process.platform</code></a>.</p>
+<p><em>注意</em>: 如果Node.js 在Android操作系统上构建, <code>&apos;android&apos;</code>值
+可能被返回. 然而, Android支持Node.js在当前被认为是实验期.</p>
+<h2>os.release()<span><a class="mark" href="#os_os_release" id="os_os_release">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.release()</code>方法返回一个字符串, 指定操作系统的发行版.</p>
+<p><em>注意</em>: 在POSIX系统上, 操作系统发行版是通过
+调用 <a href="javascript:;">uname(3)</a> 得到的. 在 Windows系统上, 用<code>GetVersionExW()</code> . 请查看
+<a href="javascript:;">https://en.wikipedia.org/wiki/Uname#Examples</a> 获取更多信息.</p>
+<h2>os.tmpdir()<span><a class="mark" href="#os_os_tmpdir" id="os_os_tmpdir">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v2.0.0</td>
+<td><p>This function is now cross-platform consistent and no longer returns a path with a trailing slash on any platform</p>
+</td></tr>
+<tr><td>v0.9.9</td>
+<td><p><span>新增于: v0.9.9</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.tmpdir()</code>方法返回一个字符串, 表明操作系统的
+默认临时文件目录.</p>
+<h2>os.totalmem()<span><a class="mark" href="#os_os_totalmem" id="os_os_totalmem">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p><code>os.totalmem()</code>方法以整数的形式返回所有系统内存的字节数.</p>
+<h2>os.type()<span><a class="mark" href="#os_os_type" id="os_os_type">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>os.type()</code>方法返回一个字符串,表明操作系统的名字,
+由 <a href="javascript:;">uname(3)</a> 返回.举个例子, <code>&apos;Linux&apos;</code> 在 Linux系统上, <code>&apos;Darwin&apos;</code> 在 macOS 系统上,<code>&apos;Windows_NT&apos;</code> 在 Windows系统上.</p>
+<p>请查看<a href="javascript:;">https://en.wikipedia.org/wiki/Uname#Examples</a> 获取其他关于在不同
+操作系统上执行 <a href="javascript:;">uname(3)</a>,得到输出的信息.</p>
+<h2>os.uptime()<span><a class="mark" href="#os_os_uptime" id="os_os_uptime">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+<p><code>os.uptime()</code> 方法在几秒内返回操作系统的上线时间.</p>
+<p><em>注意</em>：在Windows平台上，这个方法返回的秒值包含分数，请用<code>Math.floor()</code>获取整数值</p>
+<h2>os.userInfo([options])<span><a class="mark" href="#os_os_userinfo_options" id="os_os_userinfo_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v6.0.0</span>
+</div><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 用于解释结果字符串的字符编码.
+如果<code>encoding</code> 被设置为<code>&apos;buffer&apos;</code>, <code>username</code>, <code>shell</code>, 和 <code>homedir</code>
+的值将成为 <code>Buffer</code>的实例. (默认是: &apos;utf8&apos;)</li>
+</ul>
+</li>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a></li>
+</ul>
+<p><code>os.userInfo()</code>方法当前有效用户的信息 -- 在 POSIX平台上, 这通常是password 文件的子集. 返回的对象包括 <code>username</code>, <code>uid</code>, <code>gid</code>, <code>shell</code>, 和 <code>homedir</code>.
+在Windows系统上, <code>uid</code> 和 <code>gid</code> 域是 <code>-1</code>, and <code>shell</code>是 <code>null</code>.</p>
+<p><code>homedir</code>的值由<code>os.userInfo()</code>返回, 由操作系统提供.
+这区别了<code>os.homedir()</code>的结果, 它在求助操作系统响应之前,
+为home目录请求几个环境变量.</p>
+<h2>OS 常量<span><a class="mark" href="#os_os_constants_1" id="os_os_constants_1">#</a></span></h2>
+<p>下面的常量被<code>os.constants</code> 所输出. </p>
+<p><strong>注意:</strong> 并不是所有的常量在每一个操作系统上都是可用的.</p>
+<h3>信号常量<span><a class="mark" href="#os_signal_constants" id="os_signal_constants">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v5.11.0</td>
+<td><p>Added support for <code>SIGINFO</code>.</p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>下面的信号常量由 <code>os.constants.signals</code> 给出:</p>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>SIGHUP</code></td>
+    <td>发送来表明当一个控制终端关闭或者是父进程退出.</td>
+  </tr>
+  <tr>
+    <td><code>SIGINT</code></td>
+    <td>发送来表明当一个用户期望中断一个进程时.
+    (<code>(Ctrl+C)</code>).</td>
+  </tr>
+  <tr>
+    <td><code>SIGQUIT</code></td>
+    <td>发送来表明当一个用户希望终止一个进程并且执行核心转储.</td>
+  </tr>
+  <tr>
+    <td><code>SIGILL</code></td>
+    <td>发送给一个进程来通知它已经试图执行一个非法的,畸形的,未知的或特权的指令.</td>
+  </tr>
+  <tr>
+    <td><code>SIGTRAP</code></td>
+    <td>发送给一个进程当异常已经发生了.</td>
+  </tr>
+  <tr>
+    <td><code>SIGABRT</code></td>
+    <td>发送给一个进程来请求终止</td>
+  </tr>
+  <tr>
+    <td><code>SIGIOT</code></td>
+    <td><code>SIGABRT</code>的同义词</td>
+  </tr>
+  <tr>
+    <td><code>SIGBUS</code></td>
+    <td>发送给一个进程来通知它已经造成了总线错误.</td>
+  </tr>
+  <tr>
+    <td><code>SIGFPE</code></td>
+    <td>发送给一个进程来通知它已经执行了一个非法的算术操作.</td>
+  </tr>
+  <tr>
+    <td><code>SIGKILL</code></td>
+    <td>发送给一个进程来立即终止它.</td>
+  </tr>
+  <tr>
+    <td><code>SIGUSR1</code> <code>SIGUSR2</code></td>
+    <td>发送给一个进程来确定它的用户定义情况.</td>
+  </tr>
+  <tr>
+    <td><code>SIGSEGV</code></td>
+    <td>发送给一个进程来通知段错误.</td>
+  </tr>
+  <tr>
+    <td><code>SIGPIPE</code></td>
+    <td>发送给一个进程当它试图写入一个非连接的管道时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGALRM</code></td>
+    <td>发送给一个进程当系统时钟消逝时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGTERM</code></td>
+    <td>发送给一个进程来请求终止.</td>
+  </tr>
+  <tr>
+    <td><code>SIGCHLD</code></td>
+    <td>发送给一个进程当一个子进程终止时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGSTKFLT</code></td>
+    <td>发送给一个进程来表明一个协处理器的栈错误.</td>
+  </tr>
+  <tr>
+    <td><code>SIGCONT</code></td>
+    <td>发送来通知操作系统继续一个暂停的进程.</td>
+  </tr>
+  <tr>
+    <td><code>SIGSTOP</code></td>
+    <td>发送来通知操作系统暂停一个进程.</td>
+  </tr>
+  <tr>
+    <td><code>SIGTSTP</code></td>
+    <td>发送给一个进程来请求它停止.</td>
+  </tr>
+  <tr>
+    <td><code>SIGBREAK</code></td>
+    <td>发送来表明当一个用户希望终止一个进程.</td>
+  </tr>
+  <tr>
+    <td><code>SIGTTIN</code></td>
+    <td>发送给一个进程当它在后台读取TTY时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGTTOU</code></td>
+    <td>发送给一个进程当它在后台写入TTY时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGURG</code></td>
+    <td>发送给一个进程当socket由紧急的数据需要读取时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGXCPU</code></td>
+    <td>发送给一个进程当它超过他在CPU使用上的限制时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGXFSZ</code></td>
+    <td>发送给一个进程当它文件成长的比最大允许的值还大时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGVTALRM</code></td>
+    <td>发送给一个进程当一个虚拟时钟消逝时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGPROF</code></td>
+    <td>发送给一个进程当一个系统时钟消逝时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGWINCH</code></td>
+    <td>发送给一个进程当控制终端改变它的大小.</td>
+  </tr>
+  <tr>
+    <td><code>SIGIO</code></td>
+    <td>发送给一个进程当I/O可用时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGPOLL</code></td>
+    <td><code>SIGIO</code>同义词</td>
+  </tr>
+  <tr>
+    <td><code>SIGLOST</code></td>
+    <td>发送给一个进程当文件锁丢失时.</td>
+  </tr>
+  <tr>
+    <td><code>SIGPWR</code></td>
+    <td>发送给一个进程来通知功率错误.</td>
+  </tr>
+  <tr>
+    <td><code>SIGINFO</code></td>
+    <td><code>SIGPWR</code>同义词</td>
+  </tr>
+  <tr>
+    <td><code>SIGSYS</code></td>
+    <td>发送给一个进程来通知有错误的参数.</td>
+  </tr>
+  <tr>
+    <td><code>SIGUNUSED</code></td>
+    <td><code>SIGSYS</code>的同义词</td>
+  </tr>
+</tbody></table>
+
+
+<h3>错误常量<span><a class="mark" href="#os_error_constants" id="os_error_constants">#</a></span></h3>
+<p>下面的错误常量由 <code>os.constants.errno</code> 给出:</p>
+<h4>POSIX 错误常量<span><a class="mark" href="#os_posix_error_constants" id="os_posix_error_constants">#</a></span></h4>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>E2BIG</code></td>
+    <td>表明参数列表比期望的要长.</td>
+  </tr>
+  <tr>
+    <td><code>EACCES</code></td>
+    <td>表明操作没有足够的权限.</td>
+  </tr>
+  <tr>
+    <td><code>EADDRINUSE</code></td>
+    <td>表明该网络地址已经在使用.</td>
+  </tr>
+  <tr>
+    <td><code>EADDRNOTAVAIL</code></td>
+    <td>表明该网络地址当前不能使用.</td>
+  </tr>
+  <tr>
+    <td><code>EAFNOSUPPORT</code></td>
+    <td>表明该网络地址簇不被支持.</td>
+  </tr>
+  <tr>
+    <td><code>EAGAIN</code></td>
+    <td>表明当前没有可用数据,稍后再次尝试操作.</td>
+  </tr>
+  <tr>
+    <td><code>EALREADY</code></td>
+    <td>表明socket有一个即将发生的连接在进行中.</td>
+  </tr>
+  <tr>
+    <td><code>EBADF</code></td>
+    <td>表明一个文件描述符不可用.</td>
+  </tr>
+  <tr>
+    <td><code>EBADMSG</code></td>
+    <td>表明一个无效的数据信息.</td>
+  </tr>
+  <tr>
+    <td><code>EBUSY</code></td>
+    <td>表明一个设备或资源处于忙碌中.</td>
+  </tr>
+  <tr>
+    <td><code>ECANCELED</code></td>
+    <td>表明一个操作被取消.</td>
+  </tr>
+  <tr>
+    <td><code>ECHILD</code></td>
+    <td>表明没有子进程.</td>
+  </tr>
+  <tr>
+    <td><code>ECONNABORTED</code></td>
+    <td>表明网络连接已经被终止.</td>
+  </tr>
+  <tr>
+    <td><code>ECONNREFUSED</code></td>
+    <td>表明网络连接被拒绝.</td>
+  </tr>
+  <tr>
+    <td><code>ECONNRESET</code></td>
+    <td>表明网络连接被重置 .</td>
+  </tr>
+  <tr>
+    <td><code>EDEADLK</code></td>
+    <td>表明一个资源死锁已经被避免 .</td>
+  </tr>
+  <tr>
+    <td><code>EDESTADDRREQ</code></td>
+    <td>表明需要目的地址 .</td>
+  </tr>
+  <tr>
+    <td><code>EDOM</code></td>
+    <td>表明参数超过了函数的作用域 .</td>
+  </tr>
+  <tr>
+    <td><code>EDQUOT</code></td>
+    <td>表明已经超过磁盘指标 .</td>
+  </tr>
+  <tr>
+    <td><code>EEXIST</code></td>
+    <td>表明文件已经存在 .</td>
+  </tr>
+  <tr>
+    <td><code>EFAULT</code></td>
+    <td>表明一个无效的指针地址 .</td>
+  </tr>
+  <tr>
+    <td><code>EFBIG</code></td>
+    <td>表明文件太大 .</td>
+  </tr>
+  <tr>
+    <td><code>EHOSTUNREACH</code></td>
+    <td>表明主机不可达 .</td>
+  </tr>
+  <tr>
+    <td><code>EIDRM</code></td>
+    <td>表明识别码已经被移除 .</td>
+  </tr>
+  <tr>
+    <td><code>EILSEQ</code></td>
+    <td>表明一个非法的字节序 .</td>
+  </tr>
+  <tr>
+    <td><code>EINPROGRESS</code></td>
+    <td>表明一个操作已经在进行中 .</td>
+  </tr>
+  <tr>
+    <td><code>EINTR</code></td>
+    <td>表明一个函数调用被中断 .</td>
+  </tr>
+  <tr>
+    <td><code>EINVAL</code></td>
+    <td>表明提供了一个无效的参数 .</td>
+  </tr>
+  <tr>
+    <td><code>EIO</code></td>
+    <td>表明一个其他的不确定的 I/O 错误.</td>
+  </tr>
+  <tr>
+    <td><code>EISCONN</code></td>
+    <td>表明socket已经连接 .</td>
+  </tr>
+  <tr>
+    <td><code>EISDIR</code></td>
+    <td>表明路径是目录 .</td>
+  </tr>
+  <tr>
+    <td><code>ELOOP</code></td>
+    <td>表明路径上有太多层次的符号连接 .</td>
+  </tr>
+  <tr>
+    <td><code>EMFILE</code></td>
+    <td>表明有太多打开的文件 .</td>
+  </tr>
+  <tr>
+    <td><code>EMLINK</code></td>
+    <td>表明文件上有太多的硬连接 .</td>
+  </tr>
+  <tr>
+    <td><code>EMSGSIZE</code></td>
+    <td>表明提供的信息太长 .</td>
+  </tr>
+  <tr>
+    <td><code>EMULTIHOP</code></td>
+    <td>表明多跳被尝试 .</td>
+  </tr>
+  <tr>
+    <td><code>ENAMETOOLONG</code></td>
+    <td>表明文件名太长 .</td>
+  </tr>
+  <tr>
+    <td><code>ENETDOWN</code></td>
+    <td>表明网络关闭 .</td>
+  </tr>
+  <tr>
+    <td><code>ENETRESET</code></td>
+    <td>表明连接被网络终止 .</td>
+  </tr>
+  <tr>
+    <td><code>ENETUNREACH</code></td>
+    <td>表明网络不可达 .</td>
+  </tr>
+  <tr>
+    <td><code>ENFILE</code></td>
+    <td>表明系统中打开了太多的文件 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOBUFS</code></td>
+    <td>表明没有有效的缓存空间 .</td>
+  </tr>
+  <tr>
+    <td><code>ENODATA</code></td>
+    <td>表明在流头读取队列上没有可用的信息 .</td>
+  </tr>
+  <tr>
+    <td><code>ENODEV</code></td>
+    <td>表明没有这样的设备 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOENT</code></td>
+    <td>表明没有这样的文件或目录 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOEXEC</code></td>
+    <td>表明一个执行格式错误 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOLCK</code></td>
+    <td>表明没有可用的锁 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOLINK</code></td>
+    <td>表明链接在服务 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOMEM</code></td>
+    <td>表明没有足够的空间 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOMSG</code></td>
+    <td>表明想要的数据类型没有信息 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOPROTOOPT</code></td>
+    <td>表明给定的协议不可用 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOSPC</code></td>
+    <td>表明该设备上没有可用的空间 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOSR</code></td>
+    <td>表明没有可用的流资源 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOSTR</code></td>
+    <td>表明给定的资源不是流 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOSYS</code></td>
+    <td>表明功能没有被实现 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOTCONN</code></td>
+    <td>表明socket没有连接 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOTDIR</code></td>
+    <td>表明路径不是目录 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOTEMPTY</code></td>
+    <td>表明目录是非空的 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOTSOCK</code></td>
+    <td>表明给定的项目不是socket .</td>
+  </tr>
+  <tr>
+    <td><code>ENOTSUP</code></td>
+    <td>表明给定的操作不受支持 .</td>
+  </tr>
+  <tr>
+    <td><code>ENOTTY</code></td>
+    <td>表明一个不适当的 I/O 控制操作.</td>
+  </tr>
+  <tr>
+    <td><code>ENXIO</code></td>
+    <td>表明没有该设备或地址 .</td>
+  </tr>
+  <tr>
+    <td><code>EOPNOTSUPP</code></td>
+    <td>表明一个操作不被socket所支持.
+    注意尽管<code>ENOTSUP</code> 和 <code>EOPNOTSUPP</code> 在Linux上有相同的值时,
+    根据 POSIX.1 规范,这些错误值应该不同.)</td>
+  </tr>
+  <tr>
+    <td><code>EOVERFLOW</code></td>
+    <td>表明一个值太大以至于难以用给定的数据类型存储.</td>
+  </tr>
+  <tr>
+    <td><code>EPERM</code></td>
+    <td>表明操作没有被许可.</td>
+  </tr>
+  <tr>
+    <td><code>EPIPE</code></td>
+    <td>表明破裂的管道 .</td>
+  </tr>
+  <tr>
+    <td><code>EPROTO</code></td>
+    <td>表明协议错误 .</td>
+  </tr>
+  <tr>
+    <td><code>EPROTONOSUPPORT</code></td>
+    <td>表明一个协议不被支持 .</td>
+  </tr>
+  <tr>
+    <td><code>EPROTOTYPE</code></td>
+    <td>表明socket错误的协议类型 .</td>
+  </tr>
+  <tr>
+    <td><code>ERANGE</code></td>
+    <td>表明结果太大了 .</td>
+  </tr>
+  <tr>
+    <td><code>EROFS</code></td>
+    <td>表明该文件系统是只读的 .</td>
+  </tr>
+  <tr>
+    <td><code>ESPIPE</code></td>
+    <td>表明无效的查询操作 .</td>
+  </tr>
+  <tr>
+    <td><code>ESRCH</code></td>
+    <td>表明没有这样的进程.</td>
+  </tr>
+  <tr>
+    <td><code>ESTALE</code></td>
+    <td>表明该文件处理是稳定的 .</td>
+  </tr>
+  <tr>
+    <td><code>ETIME</code></td>
+    <td>表明一个过期的时钟 .</td>
+  </tr>
+  <tr>
+    <td><code>ETIMEDOUT</code></td>
+    <td>表明该连接超时 .</td>
+  </tr>
+  <tr>
+    <td><code>ETXTBSY</code></td>
+    <td>表明一个文本文件处于忙碌 .</td>
+  </tr>
+  <tr>
+    <td><code>EWOULDBLOCK</code></td>
+    <td>表明该操作被屏蔽 .</td>
+  </tr>
+  <tr>
+    <td><code>EXDEV</code></td>
+    <td>表明一个不合适的连接 .
+  </td></tr>
+</tbody></table>
+
+
+<h4>Windows 系统特有的错误常量<span><a class="mark" href="#os_windows_specific_error_constants" id="os_windows_specific_error_constants">#</a></span></h4>
+<p>下面的错误码与Windows系统相关:</p>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>WSAEINTR</code></td>
+    <td>表明中断的函数调用 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEBADF</code></td>
+    <td>表明一个无效的文件句柄 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEACCES</code></td>
+    <td>表明权限不够完成操作 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEFAULT</code></td>
+    <td>表明无效的指针地址 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEINVAL</code></td>
+    <td>表明无效的参数被传递 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEMFILE</code></td>
+    <td>表明有太多打开的文件 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEWOULDBLOCK</code></td>
+    <td>表明资源暂时不可用 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEINPROGRESS</code></td>
+    <td>表明操作当前正在进行中 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEALREADY</code></td>
+    <td>表明操作已经在进行中 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENOTSOCK</code></td>
+    <td>表明资源不是 socket.</td>
+  </tr>
+  <tr>
+    <td><code>WSAEDESTADDRREQ</code></td>
+    <td>表明需要目的地址 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEMSGSIZE</code></td>
+    <td>表明消息太长 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEPROTOTYPE</code></td>
+    <td>表明socket协议类型错误 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENOPROTOOPT</code></td>
+    <td>表明错误的协议选项 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEPROTONOSUPPORT</code></td>
+    <td>表明协议不被支持 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAESOCKTNOSUPPORT</code></td>
+    <td>表明socket类型不被支持 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEOPNOTSUPP</code></td>
+    <td>表明操作不被支持 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEPFNOSUPPORT</code></td>
+    <td>表明协议簇不被支持 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEAFNOSUPPORT</code></td>
+    <td>表明地址簇不被支持 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEADDRINUSE</code></td>
+    <td>表明网络地址已经在使用 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEADDRNOTAVAIL</code></td>
+    <td>表明网络地址不可用.</td>
+  </tr>
+  <tr>
+    <td><code>WSAENETDOWN</code></td>
+    <td>表明网络关闭 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENETUNREACH</code></td>
+    <td>表明网络不可达 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENETRESET</code></td>
+    <td>表明网络连接被重置 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAECONNABORTED</code></td>
+    <td>表明连接被终止 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAECONNRESET</code></td>
+    <td>表明连接被同伴重置 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENOBUFS</code></td>
+    <td>表明没有可用的缓存空间 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEISCONN</code></td>
+    <td>表明socket已经连接 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENOTCONN</code></td>
+    <td>表明socket没有连接 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAESHUTDOWN</code></td>
+    <td>表明数据在socket关闭之后,不能被发送 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAETOOMANYREFS</code></td>
+    <td>表明有太多的引用 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAETIMEDOUT</code></td>
+    <td>表明连接超时 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAECONNREFUSED</code></td>
+    <td>表明连接被拒绝 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAELOOP</code></td>
+    <td>表明名字不能被翻译 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENAMETOOLONG</code></td>
+    <td>表明名字太长 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEHOSTDOWN</code></td>
+    <td>表明网络主机关闭 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEHOSTUNREACH</code></td>
+    <td>表明没有到网络主机的路由 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENOTEMPTY</code></td>
+    <td>表明目录非空 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEPROCLIM</code></td>
+    <td>表明有太多的进程 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEUSERS</code></td>
+    <td>表明已经超过用户指标 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEDQUOT</code></td>
+    <td>表明已经超过磁盘指标 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAESTALE</code></td>
+    <td>表明一个稳定的文件句柄引用 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEREMOTE</code></td>
+    <td>表明项目是远程的 .</td>
+  </tr>
+  <tr>
+    <td><code>WSASYSNOTREADY</code></td>
+    <td>表明网络子系统尚未准备好 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAVERNOTSUPPORTED</code></td>
+    <td>表明 winsock.dll 版本在范围之外.</td>
+  </tr>
+  <tr>
+    <td><code>WSANOTINITIALISED</code></td>
+    <td>表明成功的 WSAStartup(Windows异步socket)还没有被执行 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEDISCON</code></td>
+    <td>表明一个优雅的关机正在进行 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAENOMORE</code></td>
+    <td>表明没有更多的结果 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAECANCELLED</code></td>
+    <td>表明一个操作已经被取消 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEINVALIDPROCTABLE</code></td>
+    <td>表明过程调用表是无效的 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEINVALIDPROVIDER</code></td>
+    <td>表明无效的服务提供者 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEPROVIDERFAILEDINIT</code></td>
+    <td>表明服务提供者初始化失败 .</td>
+  </tr>
+  <tr>
+    <td><code>WSASYSCALLFAILURE</code></td>
+    <td>表明系统调用失败 .</td>
+  </tr>
+  <tr>
+    <td><code>WSASERVICE_NOT_FOUND</code></td>
+    <td>表明服务没有被找到 .</td>
+  </tr>
+  <tr>
+    <td><code>WSATYPE_NOT_FOUND</code></td>
+    <td>表明类类型没有被找到 .</td>
+  </tr>
+  <tr>
+    <td><code>WSA_E_NO_MORE</code></td>
+    <td>表明没有更多的结果 .</td>
+  </tr>
+  <tr>
+    <td><code>WSA_E_CANCELLED</code></td>
+    <td>表明调用被取消 .</td>
+  </tr>
+  <tr>
+    <td><code>WSAEREFUSED</code></td>
+    <td>表明数据库请求被拒绝 .</td>
+  </tr>
+</tbody></table>
+
+
+<h3>libuv 常量<span><a class="mark" href="#os_libuv_constants" id="os_libuv_constants">#</a></span></h3>
+<table>
+  <tbody><tr>
+    <th>常量</th>
+    <th>描述</th>
+  </tr>
+  <tr>
+    <td><code>UV_UDP_REUSEADDR</code></td>
+    <td></td>
+  </tr>
+</tbody></table>
+
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>V8 | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-v8">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="v8" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#v8_v8">V8</a></span><ul>
+<li><span class="stability_undefined"><a href="#v8_v8_cacheddataversiontag">v8.cachedDataVersionTag()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_v8_getheapspacestatistics">v8.getHeapSpaceStatistics()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_v8_getheapstatistics">v8.getHeapStatistics()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_v8_setflagsfromstring_string">v8.setFlagsFromString(string)</a></span></li>
+<li><span class="stability_1"><a href="#v8_serialization_api">Serialization API</a></span><ul>
+<li><span class="stability_undefined"><a href="#v8_v8_serialize_value">v8.serialize(value)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_v8_deserialize_buffer">v8.deserialize(buffer)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_class_v8_serializer">class: v8.Serializer</a></span><ul>
+<li><span class="stability_undefined"><a href="#v8_new_serializer">new Serializer()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writeheader">serializer.writeHeader()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writevalue_value">serializer.writeValue(value)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_releasebuffer">serializer.releaseBuffer()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_transferarraybuffer_id_arraybuffer">serializer.transferArrayBuffer(id, arrayBuffer)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writeuint32_value">serializer.writeUint32(value)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writeuint64_hi_lo">serializer.writeUint64(hi, lo)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writedouble_value">serializer.writeDouble(value)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writerawbytes_buffer">serializer.writeRawBytes(buffer)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_writehostobject_object">serializer._writeHostObject(object)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_getdatacloneerror_message">serializer._getDataCloneError(message)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_getsharedarraybufferid_sharedarraybuffer">serializer._getSharedArrayBufferId(sharedArrayBuffer)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_serializer_settreatarraybufferviewsashostobjects_flag">serializer._setTreatArrayBufferViewsAsHostObjects(flag)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#v8_class_v8_deserializer">class: v8.Deserializer</a></span><ul>
+<li><span class="stability_undefined"><a href="#v8_new_deserializer_buffer">new Deserializer(buffer)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readheader">deserializer.readHeader()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readvalue">deserializer.readValue()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_transferarraybuffer_id_arraybuffer">deserializer.transferArrayBuffer(id, arrayBuffer)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_getwireformatversion">deserializer.getWireFormatVersion()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readuint32">deserializer.readUint32()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readuint64">deserializer.readUint64()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readdouble">deserializer.readDouble()</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readrawbytes_length">deserializer.readRawBytes(length)</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_deserializer_readhostobject">deserializer._readHostObject()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#v8_class_v8_defaultserializer">class: v8.DefaultSerializer</a></span></li>
+<li><span class="stability_undefined"><a href="#v8_class_v8_defaultdeserializer">class: v8.DefaultDeserializer</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>V8<span><a class="mark" href="#v8_v8" id="v8_v8">#</a></span></h1>
+<!--introduced_in=v4.0.0-->
+<p><code>v8</code> 模块暴露了特定于[V8][]版本内置到 Node.js 二进制文件中的API. 通过以下方式使用：</p>
+<pre><code class="lang-js">const v8 = require(&apos;v8&apos;);
+</code></pre>
+<p><em>注意</em>: APIs 和实现可能在任何时间变动。</p>
+<h2>v8.cachedDataVersionTag()<span><a class="mark" href="#v8_v8_cacheddataversiontag" id="v8_v8_cacheddataversiontag">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><p>返回一个表示从V8版本，命令行标志和已检测到的CPU功能派生的“version tag”的整数。这对于判断[<code>vm.Script</code>][] <code>cachedData</code>是否兼容当前v8实例非常有用。</p>
+<h2>v8.getHeapSpaceStatistics()<span><a class="mark" href="#v8_v8_getheapspacestatistics" id="v8_v8_getheapspacestatistics">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.5.0</td>
+<td><p>Support values exceeding the 32-bit unsigned integer range.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p><span>新增于: v6.0.0</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>返回关于v8堆空间的统计,即组成v8堆的片段。通过V8 [<code>GetHeapSpaceStatistics</code>][] 函数提供统计信息，无论堆空间的顺序，或是堆空间的可用性都可以被保证，并且可能是多个V8版本。</p>
+<p>返回一个数组包含如下属性：</p>
+<ul>
+<li><code>space_name</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>space_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>space_used_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>space_available_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>physical_space_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+<p>例如:</p>
+<pre><code class="lang-json">[
+  {
+    &quot;space_name&quot;: &quot;new_space&quot;,
+    &quot;space_size&quot;: 2063872,
+    &quot;space_used_size&quot;: 951112,
+    &quot;space_available_size&quot;: 80824,
+    &quot;physical_space_size&quot;: 2063872
+  },
+  {
+    &quot;space_name&quot;: &quot;old_space&quot;,
+    &quot;space_size&quot;: 3090560,
+    &quot;space_used_size&quot;: 2493792,
+    &quot;space_available_size&quot;: 0,
+    &quot;physical_space_size&quot;: 3090560
+  },
+  {
+    &quot;space_name&quot;: &quot;code_space&quot;,
+    &quot;space_size&quot;: 1260160,
+    &quot;space_used_size&quot;: 644256,
+    &quot;space_available_size&quot;: 960,
+    &quot;physical_space_size&quot;: 1260160
+  },
+  {
+    &quot;space_name&quot;: &quot;map_space&quot;,
+    &quot;space_size&quot;: 1094160,
+    &quot;space_used_size&quot;: 201608,
+    &quot;space_available_size&quot;: 0,
+    &quot;physical_space_size&quot;: 1094160
+  },
+  {
+    &quot;space_name&quot;: &quot;large_object_space&quot;,
+    &quot;space_size&quot;: 0,
+    &quot;space_used_size&quot;: 0,
+    &quot;space_available_size&quot;: 1490980608,
+    &quot;physical_space_size&quot;: 0
+  }
+]
+</code></pre>
+<h2>v8.getHeapStatistics()<span><a class="mark" href="#v8_v8_getheapstatistics" id="v8_v8_getheapstatistics">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v7.5.0</td>
+<td><p>新增对超过32位的非符号整型的支持</p>
+</td></tr>
+<tr><td>v7.2.0</td>
+<td><p>新增 <code>malloced_memory</code>, <code>peak_malloced_memory</code>, 和 <code>does_zap_garbage</code>.</p>
+</td></tr>
+<tr><td>v1.0.0</td>
+<td><p><span>新增于: v1.0.0</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>返回拥有以下参数的对象：</p>
+<ul>
+<li><code>total_heap_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>total_heap_size_executable</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>total_physical_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>total_available_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>used_heap_size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>heap_size_limit</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>malloced_memory</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>peak_malloced_memory</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>does_zap_garbage</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+<p><code>does_zap_garbage</code>是个0/1式布尔值，它凸显是否设置了<code>--zap_code_space</code>选项。若为真，那么V8引擎会用一个位模式来覆盖堆中的垃圾。如此，RSS(常驻内存集)会变得越来越大，因为V8会一直征用所有的堆页，从而让他们更难被操作系统交换掉。</p>
+<p>For example:</p>
+<!-- eslint-skip -->
+<pre><code class="lang-js">{
+  total_heap_size: 7326976,
+  total_heap_size_executable: 4194304,
+  total_physical_size: 7326976,
+  total_available_size: 1152656,
+  used_heap_size: 3476208,
+  heap_size_limit: 1535115264,
+  malloced_memory: 16384,
+  peak_malloced_memory: 1127496,
+  does_zap_garbage: 0
+}
+</code></pre>
+<h2>v8.setFlagsFromString(string)<span><a class="mark" href="#v8_v8_setflagsfromstring_string" id="v8_v8_setflagsfromstring_string">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v1.0.0</span>
+</div><p><code>v8.setFlagsFromString()</code>可以被用来在脚本中设置V8引擎的命令行标识。此方法应该谨慎使用。在虚拟机已经运行后修改其设置可能会造成不可预测的结果，包括崩溃和数据丢失，或者一点作用也没有。</p>
+<p>针对一个特定版本的Node.js，可供其使用的V8选项可以通过运行<code>node --v8-options</code>来获取。一个非官方的，由社区维护的选项清单及其效果可参见[这里][here]。</p>
+<p>用法:</p>
+<pre><code class="lang-js">// Print GC events to stdout for one minute.
+const v8 = require(&apos;v8&apos;);
+v8.setFlagsFromString(&apos;--trace_gc&apos;);
+setTimeout(function() { v8.setFlagsFromString(&apos;--notrace_gc&apos;); }, 60e3);
+</code></pre>
+<h2>Serialization API<span><a class="mark" href="#v8_serialization_api" id="v8_serialization_api">#</a></span></h2>
+<div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">稳定性: 1</a> - 实验性质</div><p>序列化API提供了一系列用于序列化JavaScript值的方法，它们兼容于[HTML structured clone algorithm][]。
+格式是向下兼容的（可以安心存储于硬盘中）。</p>
+<p><em>注意</em>: 此API正在开发中，任何变化（包括不兼容的API或者传输格式）可能会随时发生直到此警告被移除。</p>
+<h3>v8.serialize(value)<span><a class="mark" href="#v8_v8_serialize_value" id="v8_v8_serialize_value">#</a></span></h3>
+<!--
+added: v8.0.0
+-->
+<ul>
+<li>Returns: 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+<p>使用[<code>DefaultSerializer</code>][]来序列化<code>value</code>到一个缓冲区中。</p>
+<h3>v8.deserialize(buffer)<span><a class="mark" href="#v8_v8_deserialize_buffer" id="v8_v8_deserialize_buffer">#</a></span></h3>
+<!--
+added: v8.0.0
+-->
+<ul>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> 由[<code>serialize()</code>][]返回的一个缓冲区。</li>
+</ul>
+<p>用默认配置来执行[<code>DefaultDeserializer</code>][]从而从一个缓冲区中读取一个JS值</p>
+<h3>class: v8.Serializer<span><a class="mark" href="#v8_class_v8_serializer" id="v8_class_v8_serializer">#</a></span></h3>
+<!--
+added: v8.0.0
+-->
+<h4>new Serializer()<span><a class="mark" href="#v8_new_serializer" id="v8_new_serializer">#</a></span></h4>
+<p>创建一个新的<code>Serializer</code>对象。</p>
+<h4>serializer.writeHeader()<span><a class="mark" href="#v8_serializer_writeheader" id="v8_serializer_writeheader">#</a></span></h4>
+<p>写出一个包含序列化格式版本的头文件</p>
+<h4>serializer.writeValue(value)<span><a class="mark" href="#v8_serializer_writevalue_value" id="v8_serializer_writevalue_value">#</a></span></h4>
+<p>序列化一个JavaScript值并将结果加入内部的缓冲区。</p>
+<p>如果<code>value</code>不能被序列化则抛出错误。</p>
+<h4>serializer.releaseBuffer()<span><a class="mark" href="#v8_serializer_releasebuffer" id="v8_serializer_releasebuffer">#</a></span></h4>
+<p>返回存储里的内部缓冲区。若缓冲区已经被释放则不应该使用此序列化机制。如果之前的一次写入操作失败，那么执行此方法会造成不可预知的行为。</p>
+<h4>serializer.transferArrayBuffer(id, arrayBuffer)<span><a class="mark" href="#v8_serializer_transferarraybuffer_id_arraybuffer" id="v8_serializer_transferarraybuffer_id_arraybuffer">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>id</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 一个32位的无符号整型。</li>
+<li><code>arrayBuffer</code> 
+            <a href="javascript:;" class="type">&lt;ArrayBuffer&gt;</a> 一个<code>ArrayBuffer</code>实例。</li>
+</ul>
+</div><p>标记一个<code>ArrayBuffer</code>, 表明它的内容正在被带外传输中。同时将<code>ArrayBuffer</code>包裹于一个反序列化的上下文内，之后将结果传入[<code>deserializer.transferArrayBuffer()</code>][]中。</p>
+<h4>serializer.writeUint32(value)<span><a class="mark" href="#v8_serializer_writeuint32_value" id="v8_serializer_writeuint32_value">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>value</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</div><p>写出一个原始32位无符号整型。
+此方法在一个自定义的[<code>serializer._writeHostObject()</code>][]中使用.</p>
+<h4>serializer.writeUint64(hi, lo)<span><a class="mark" href="#v8_serializer_writeuint64_hi_lo" id="v8_serializer_writeuint64_hi_lo">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>hi</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>lo</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</div><p>写出一个原始64位无符号整型，会被拆分成高32位和低32位两部分。
+此方法用于一个自定义的[<code>serializer._writeHostObject()</code>][].</p>
+<h4>serializer.writeDouble(value)<span><a class="mark" href="#v8_serializer_writedouble_value" id="v8_serializer_writedouble_value">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>value</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>写出一个JS的<code>number</code>值。
+从方法用于一个自定义的[<code>serializer._writeHostObject()</code>][].</p>
+<h4>serializer.writeRawBytes(buffer)<span><a class="mark" href="#v8_serializer_writerawbytes_buffer" id="v8_serializer_writerawbytes_buffer">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a></li>
+</ul>
+</div><p>将原始字节写入序列化机制的内部缓冲区中。反序列化机制会有对应的方法来获得缓冲区的长度。 
+此方法用于一个自定义的[<code>serializer._writeHostObject()</code>][]中。</p>
+<h4>serializer._writeHostObject(object)<span><a class="mark" href="#v8_serializer_writehostobject_object" id="v8_serializer_writehostobject_object">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>object</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a></li>
+</ul>
+</div><p>此方法用来写出某种宿主对象，进一步说，是由绑定的原生C++代码所生成的一个对象。 如果无法序列化<code>object</code>，那么一个恰当的异常会被抛出。</p>
+<p>此方法在<code>Serializer</code>对象本身是不存在的，但可在其子类中提供。</p>
+<h4>serializer._getDataCloneError(message)<span><a class="mark" href="#v8_serializer_getdatacloneerror_message" id="v8_serializer_getdatacloneerror_message">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>message</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+</div><p>当一个对象无法被克隆时，会使用此方法来生成待抛出的错误对象。</p>
+<p>此方法默认为[<code>Error</code>][]的构造函数，可以在子类中被覆盖。</p>
+<h4>serializer._getSharedArrayBufferId(sharedArrayBuffer)<span><a class="mark" href="#v8_serializer_getsharedarraybufferid_sharedarraybuffer" id="v8_serializer_getsharedarraybufferid_sharedarraybuffer">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>sharedArrayBuffer</code> 
+            <a href="javascript:;" class="type">&lt;SharedArrayBuffer&gt;</a></li>
+</ul>
+</div><p>当序列化机制将要序列化一个<code>ShareArrayBuffer</code>对象时会调用此方法。它必须为这对象返回一个32位无符号整型的ID，但若这个对象已被序列化过，则返回上一次序列化时所分配的ID。这个ID会在对象被反序列化时传入[<code>deserializer.transferArrayBuffer()</code>][]中。</p>
+<p>如果对象不能被序列化，则抛出异常。</p>
+<p><code>Serializer</code>类本身不包含此方法，但可以在其子类中设置它。</p>
+<h4>serializer._setTreatArrayBufferViewsAsHostObjects(flag)<span><a class="mark" href="#v8_serializer_settreatarraybufferviewsashostobjects_flag" id="v8_serializer_settreatarraybufferviewsashostobjects_flag">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</div><p>表明是否视<code>TypedArray</code>，<code>DataView</code>对象为宿主对象，也就是说，是否能将他们传入[<code>serializer._writeHostObject()</code>][]中。</p>
+<p>默认以上对象非宿主对象。</p>
+<h3>class: v8.Deserializer<span><a class="mark" href="#v8_class_v8_deserializer" id="v8_class_v8_deserializer">#</a></span></h3>
+<!--
+added: v8.0.0
+-->
+<h4>new Deserializer(buffer)<span><a class="mark" href="#v8_new_deserializer_buffer" id="v8_new_deserializer_buffer">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> 由[<code>serializer.releaseBuffer()</code>][]返回的缓冲区</li>
+</ul>
+</div><p>生成一个新的<code>Deserializer</code>对象。</p>
+<h4>deserializer.readHeader()<span><a class="mark" href="#v8_deserializer_readheader" id="v8_deserializer_readheader">#</a></span></h4>
+<p>读取并验证一个头文件（包含格式信息）。
+验证在某些情况下有可能不会通过，比如传输格式不合格或者不被支持。若发生上述情况，那么一个<code>Error</code>会被抛出。</p>
+<h4>deserializer.readValue()<span><a class="mark" href="#v8_deserializer_readvalue" id="v8_deserializer_readvalue">#</a></span></h4>
+<p>从缓冲区中反序列化一个JavaScript值，并返回它。</p>
+<h4>deserializer.transferArrayBuffer(id, arrayBuffer)<span><a class="mark" href="#v8_deserializer_transferarraybuffer_id_arraybuffer" id="v8_deserializer_transferarraybuffer_id_arraybuffer">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>id</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> 一个 32 位无符号整型</li>
+<li><code>arrayBuffer</code> 
+            <a href="javascript:;" class="type">&lt;ArrayBuffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;SharedArrayBuffer&gt;</a> <code>ArrayBuffer</code>实例</li>
+</ul>
+</div><p>标记一个<code>ArrayBuffer</code>, 表明它的内容正在被带外传输中。同时将<code>ArrayBuffer</code>包裹于一个序列化的上下文内，之后将结果传入[<code>serializer.transferArrayBuffer()</code>][]中（当<code>arrayBuffer</code>是<code>ShareArrayBuffer</code>实例时，返回[<code>serializer._getSharedArrayBufferId()</code>][]产生的<code>id</code>）</p>
+<h4>deserializer.getWireFormatVersion()<span><a class="mark" href="#v8_deserializer_getwireformatversion" id="v8_deserializer_getwireformatversion">#</a></span></h4>
+<div class="signature"><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</div><p>读取底层的传输格式的版本。很可能有助于遗留代码来读取旧的传输格式版本。不可在<code>.readHeader()</code>之前调用此方法。</p>
+<h4>deserializer.readUint32()<span><a class="mark" href="#v8_deserializer_readuint32" id="v8_deserializer_readuint32">#</a></span></h4>
+<div class="signature"><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+</ul>
+</div><p>读取并返回一个原始32位无符号整型。
+用于一个自定义的[<code>deserializer._readHostObject()</code>][]。</p>
+<h4>deserializer.readUint64()<span><a class="mark" href="#v8_deserializer_readuint64" id="v8_deserializer_readuint64">#</a></span></h4>
+<div class="signature"><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;Array&gt;</a></li>
+</ul>
+</div><p>读取一个原始64位无符号整型，将其拆分成一个包含两个32位无符号整型的<code>[hi, lo]</code>数组，并返回此数组。
+用于一个自定义的[<code>deserializer._readHostObject()</code>][]。</p>
+<h4>deserializer.readDouble()<span><a class="mark" href="#v8_deserializer_readdouble" id="v8_deserializer_readdouble">#</a></span></h4>
+<div class="signature"><ul>
+<li>Returns: 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+</div><p>读取一个JS<code>number</code>值。
+用于一个自定义的[<code>deserializer._readHostObject()</code>][]。</p>
+<h4>deserializer.readRawBytes(length)<span><a class="mark" href="#v8_deserializer_readrawbytes_length" id="v8_deserializer_readrawbytes_length">#</a></span></h4>
+<div class="signature"><ul>
+<li>Returns: 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a></li>
+</ul>
+</div><p>从反序列化机制的内部缓冲区中读取原始字节。<code>length</code>必须和传入[<code>serializer.writeRawBytes()</code>][]中的缓冲区的长度相符。
+用于一个自定义的[<code>serializer.writeRawBytes()</code>][]。</p>
+<h4>deserializer._readHostObject()<span><a class="mark" href="#v8_deserializer_readhostobject" id="v8_deserializer_readhostobject">#</a></span></h4>
+<p>此方法用来写出某种宿主对象，进一步说，是由绑定的原生C++代码所生成的一个对象。 如果无法序列化数据，那么一个恰当的异常会被抛出。</p>
+<p>此方法在<code>Deserializer</code>对象本身上是不存在的，但可有其子类提供。</p>
+<h3>class: v8.DefaultSerializer<span><a class="mark" href="#v8_class_v8_defaultserializer" id="v8_class_v8_defaultserializer">#</a></span></h3>
+<!--
+added: v8.0.0
+-->
+<p>[<code>Serializer</code>][]的子类，用来将<code>TypedArray</code>(尤其是[<code>Buffer</code>][])和<code>Dataview</code>序列化成一个宿主对象，并且对于它们底层的<code>ArrayBuffer</code>，只有被它们实际指向的部分会被存储起来。</p>
+<h3>class: v8.DefaultDeserializer<span><a class="mark" href="#v8_class_v8_defaultdeserializer" id="v8_class_v8_defaultdeserializer">#</a></span></h3>
+<!--
+added: v8.0.0
+-->
+<p>[<code>Deserializer</code>][]的一个子类，根据[<code>DefaultSerializer</code>][]的格式而定。
+[<code>Buffer</code>]: buffer.html
+[<code>DefaultDeserializer</code>]: #v8_class_v8_defaultdeserializer
+[<code>DefaultSerializer</code>]: #v8_class_v8_defaultserializer
+[<code>Deserializer</code>]: #v8_class_v8_deserializer
+[<code>Error</code>]: errors.html#errors_class_error
+[<code>Serializer</code>]: #v8_class_v8_serializer
+[<code>deserializer._readHostObject()</code>]: #v8_deserializer_readhostobject
+[<code>deserializer.transferArrayBuffer()</code>]: #v8_deserializer_transferarraybuffer_id_arraybuffer
+[<code>serialize()</code>]: #v8_v8_serialize_value
+[<code>serializer._getSharedArrayBufferId()</code>]: #v8_serializer_getsharedarraybufferid_sharedarraybuffer
+[<code>serializer._writeHostObject()</code>]: #v8_serializer_writehostobject_object
+[<code>serializer.releaseBuffer()</code>]: #v8_serializer_releasebuffer
+[<code>serializer.transferArrayBuffer()</code>]: #v8_serializer_transferarraybuffer_id_arraybuffer
+[<code>serializer.writeRawBytes()</code>]: #v8_serializer_writerawbytes_buffer
+[HTML structured clone algorithm]: <a href="javascript:;">https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm</a>
+[V8]: <a href="javascript:;">https://developers.google.com/v8/</a>
+[<code>vm.Script</code>]: vm.html#vm_new_vm_script_code_options
+[here]: <a href="javascript:;">https://github.com/thlorenz/v8-flags/blob/master/flags-0.11.md</a>
+[<code>GetHeapSpaceStatistics</code>]: <a href="javascript:;">https://v8docs.nodesource.com/node-8.0/d5/dda/classv8_1_1_isolate.html#ac673576f24fdc7a33378f8f57e1d13a4</a></p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

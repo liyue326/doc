@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>国际化支持 | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-intl">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="intl" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_undefined"><a href="#intl_internationalization_support">Internationalization Support</a></span><ul>
+<li><span class="stability_undefined"><a href="#intl_options_for_building_node_js">Options for building Node.js</a></span><ul>
+<li><span class="stability_undefined"><a href="#intl_disable_all_internationalization_features_none">Disable all internationalization features (<code>none</code>)</a></span></li>
+<li><span class="stability_undefined"><a href="#intl_build_with_a_pre_installed_icu_system_icu">Build with a pre-installed ICU (<code>system-icu</code>)</a></span></li>
+<li><span class="stability_undefined"><a href="#intl_embed_a_limited_set_of_icu_data_small_icu">Embed a limited set of ICU data (<code>small-icu</code>)</a></span><ul>
+<li><span class="stability_undefined"><a href="#intl_providing_icu_data_at_runtime">Providing ICU data at runtime</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#intl_embed_the_entire_icu_full_icu">Embed the entire ICU (<code>full-icu</code>)</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#intl_detecting_internationalization_support">Detecting internationalization support</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>Internationalization Support<span><a class="mark" href="#intl_internationalization_support" id="intl_internationalization_support">#</a></span></h1>
+<!--introduced_in=v8.2.0-->
+<p>Node.js有许多功能，使它更容易编写国际化程序.其中一些是：</p>
+<ul>
+<li><a href="javascript:;">ECMAScript语言规格</a>中的本地化敏感或感知统一编码功能：<ul>
+<li><a href="javascript:;"><code>String.prototype.normalize()</code></a></li>
+<li><a href="javascript:;"><code>String.prototype.toLowerCase()</code></a></li>
+<li><a href="javascript:;"><code>String.prototype.toUpperCase()</code></a></li>
+</ul>
+</li>
+<li><a href="javascript:;">ECMAScript国际化API规格</a> (aka ECMA-402)中的所有的功能：<ul>
+<li><a href="javascript:;"><code>Intl</code></a> 对象
+-本地化敏感的方法如<a href="javascript:;"><code>String.prototype.localeCompare()</code></a> 和 <a href="javascript:;"><code>Date.prototype.toLocaleString()</code></a></li>
+</ul>
+</li>
+<li>WHATWG URL解析器的[国际化域名 ] [ ]（IDN）的支持</li>
+<li>[ <code>require(&apos;buffer&apos;).transcode()</code> ] [ ]</li>
+<li>更准确的[REPL] [ ] 行编辑</li>
+<li><a href="util.html#util_class_util_textdecoder"><code>require(&apos;util&apos;).TextDecoder</code></a></li>
+</ul>
+<p>Node.js（及其背后的V8引擎）在原生的C / C++代码使用[ICU] [ ] 实施这些功能。
+然而，其中一些为了支持世界的所有地区，需要一个非常大的ICU数据文件。
+因为预计多数Node.js的用户将只使用ICU的功能的一小部分，Node.js默认设置了所有ICU的数据集的一个子集。
+当建设或运行Node.js时提供了几个定制和扩展ICU数据集的选项。</p>
+<h2>Options for building Node.js<span><a class="mark" href="#intl_options_for_building_node_js" id="intl_options_for_building_node_js">#</a></span></h2>
+<p>To control how ICU is used in Node.js, four <code>configure</code> options are available
+during compilation. Additional details on how to compile Node.js are documented
+in <a href="javascript:;">BUILDING.md</a>.</p>
+<ul>
+<li><code>--with-intl=none</code> / <code>--without-intl</code></li>
+<li><code>--with-intl=system-icu</code></li>
+<li><code>--with-intl=small-icu</code> (default)</li>
+<li><code>--with-intl=full-icu</code></li>
+</ul>
+<p>An overview of available Node.js and JavaScript features for each <code>configure</code>
+option:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><code>none</code></th>
+<th><code>system-icu</code></th>
+<th><code>small-icu</code></th>
+<th><code>full-icu</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="javascript:;"><code>String.prototype.normalize()</code></a></td>
+<td>none (function is no-op)</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><code>String.prototype.to*Case()</code></td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="javascript:;"><code>Intl</code></a></td>
+<td>none (object does not exist)</td>
+<td>partial/full (depends on OS)</td>
+<td>partial (English-only)</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="javascript:;"><code>String.prototype.localeCompare()</code></a></td>
+<td>partial (not locale-aware)</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><code>String.prototype.toLocale*Case()</code></td>
+<td>partial (not locale-aware)</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="javascript:;"><code>Number.prototype.toLocaleString()</code></a></td>
+<td>partial (not locale-aware)</td>
+<td>partial/full (depends on OS)</td>
+<td>partial (English-only)</td>
+<td>full</td>
+</tr>
+<tr>
+<td><code>Date.prototype.toLocale*String()</code></td>
+<td>partial (not locale-aware)</td>
+<td>partial/full (depends on OS)</td>
+<td>partial (English-only)</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="url.html#url_the_whatwg_url_api">WHATWG URL Parser</a></td>
+<td>partial (no IDN support)</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="buffer.html#buffer_buffer_transcode_source_fromenc_toenc"><code>require(&apos;buffer&apos;).transcode()</code></a></td>
+<td>none (function does not exist)</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="repl.html#repl_repl">REPL</a></td>
+<td>partial (inaccurate line editing)</td>
+<td>full</td>
+<td>full</td>
+<td>full</td>
+</tr>
+<tr>
+<td><a href="util.html#util_class_util_textdecoder"><code>require(&apos;util&apos;).TextDecoder</code></a></td>
+<td>partial (basic encodings support)</td>
+<td>partial/full (depends on OS)</td>
+<td>partial (Unicode-only)</td>
+<td>full</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note</em>: The &quot;(not locale-aware)&quot; designation denotes that the function carries
+out its operation just like the non-<code>Locale</code> version of the function, if one
+exists. For example, under <code>none</code> mode, <code>Date.prototype.toLocaleString()</code>&apos;s
+operation is identical to that of <code>Date.prototype.toString()</code>.</p>
+<h3>Disable all internationalization features (<code>none</code>)<span><a class="mark" href="#intl_disable_all_internationalization_features_none" id="intl_disable_all_internationalization_features_none">#</a></span></h3>
+<p>If this option is chosen, most internationalization features mentioned above
+will be <strong>unavailable</strong> in the resulting <code>node</code> binary.</p>
+<h3>Build with a pre-installed ICU (<code>system-icu</code>)<span><a class="mark" href="#intl_build_with_a_pre_installed_icu_system_icu" id="intl_build_with_a_pre_installed_icu_system_icu">#</a></span></h3>
+<p>Node.js can link against an ICU build already installed on the system. In fact,
+most Linux distributions already come with ICU installed, and this option would
+make it possible to reuse the same set of data used by other components in the
+OS.</p>
+<p>Functionalities that only require the ICU library itself, such as
+<a href="javascript:;"><code>String.prototype.normalize()</code></a> and the <a href="url.html#url_the_whatwg_url_api">WHATWG URL parser</a>, are fully
+supported under <code>system-icu</code>. Features that require ICU locale data in
+addition, such as <a href="javascript:;"><code>Intl.DateTimeFormat</code></a> <em>may</em> be fully or partially
+supported, depending on the completeness of the ICU data installed on the
+system.</p>
+<h3>Embed a limited set of ICU data (<code>small-icu</code>)<span><a class="mark" href="#intl_embed_a_limited_set_of_icu_data_small_icu" id="intl_embed_a_limited_set_of_icu_data_small_icu">#</a></span></h3>
+<p>This option makes the resulting binary link against the ICU library statically,
+and includes a subset of ICU data (typically only the English locale) within
+the <code>node</code> executable.</p>
+<p>Functionalities that only require the ICU library itself, such as
+<a href="javascript:;"><code>String.prototype.normalize()</code></a> and the <a href="url.html#url_the_whatwg_url_api">WHATWG URL parser</a>, are fully
+supported under <code>small-icu</code>. Features that require ICU locale data in addition,
+such as <a href="javascript:;"><code>Intl.DateTimeFormat</code></a>, generally only work with the English locale:</p>
+<pre><code class="lang-js">const january = new Date(9e8);
+const english = new Intl.DateTimeFormat(&apos;en&apos;, { month: &apos;long&apos; });
+const spanish = new Intl.DateTimeFormat(&apos;es&apos;, { month: &apos;long&apos; });
+
+console.log(english.format(january));
+// Prints &quot;January&quot;
+console.log(spanish.format(january));
+// Prints &quot;M01&quot; on small-icu
+// Should print &quot;enero&quot;
+</code></pre>
+<p>This mode provides a good balance between features and binary size, and it is
+the default behavior if no <code>--with-intl</code> flag is passed. The official binaries
+are also built in this mode.</p>
+<h4>Providing ICU data at runtime<span><a class="mark" href="#intl_providing_icu_data_at_runtime" id="intl_providing_icu_data_at_runtime">#</a></span></h4>
+<p>If the <code>small-icu</code> option is used, one can still provide additional locale data
+at runtime so that the JS methods would work for all ICU locales. Assuming the
+data file is stored at <code>/some/directory</code>, it can be made available to ICU
+through either:</p>
+<ul>
+<li><p>The <a href="cli.html#cli_node_icu_data_file"><code>NODE_ICU_DATA</code></a> environment variable:</p>
+<pre><code class="lang-shell">env NODE_ICU_DATA=/some/directory node
+</code></pre>
+</li>
+<li><p>The <a href="cli.html#cli_icu_data_dir_file"><code>--icu-data-dir</code></a> CLI parameter:</p>
+<pre><code class="lang-shell">node --icu-data-dir=/some/directory
+</code></pre>
+</li>
+</ul>
+<p>(If both are specified, the <code>--icu-data-dir</code> CLI parameter takes precedence.)</p>
+<p>ICU is able to automatically find and load a variety of data formats, but the
+data must be appropriate for the ICU version, and the file correctly named.
+The most common name for the data file is <code>icudt5X[bl].dat</code>, where <code>5X</code> denotes
+the intended ICU version, and <code>b</code> or <code>l</code> indicates the system&apos;s endianness.
+Check <a href="javascript:;">&quot;ICU Data&quot;</a> article in the ICU User Guide for other supported formats
+and more details on ICU data in general.</p>
+<p>The <a href="javascript:;">full-icu</a> npm module can greatly simplify ICU data installation by
+detecting the ICU version of the running <code>node</code> executable and downloading the
+appropriate data file. After installing the module through <code>npm i full-icu</code>,
+the data file will be available at <code>./node_modules/full-icu</code>. This path can be
+then passed either to <code>NODE_ICU_DATA</code> or <code>--icu-data-dir</code> as shown above to
+enable full <code>Intl</code> support.</p>
+<h3>Embed the entire ICU (<code>full-icu</code>)<span><a class="mark" href="#intl_embed_the_entire_icu_full_icu" id="intl_embed_the_entire_icu_full_icu">#</a></span></h3>
+<p>This option makes the resulting binary link against ICU statically and include
+a full set of ICU data. A binary created this way has no further external
+dependencies and supports all locales, but might be rather large. See
+<a href="javascript:;">BUILDING.md</a> on how to compile a binary using this mode.</p>
+<h2>Detecting internationalization support<span><a class="mark" href="#intl_detecting_internationalization_support" id="intl_detecting_internationalization_support">#</a></span></h2>
+<p>To verify that ICU is enabled at all (<code>system-icu</code>, <code>small-icu</code>, or
+<code>full-icu</code>), simply checking the existence of <code>Intl</code> should suffice:</p>
+<pre><code class="lang-js">const hasICU = typeof Intl === &apos;object&apos;;
+</code></pre>
+<p>Alternatively, checking for <code>process.versions.icu</code>, a property defined only
+when ICU is enabled, works too:</p>
+<pre><code class="lang-js">const hasICU = typeof process.versions.icu === &apos;string&apos;;
+</code></pre>
+<p>To check for support for a non-English locale (i.e. <code>full-icu</code> or
+<code>system-icu</code>), <a href="javascript:;"><code>Intl.DateTimeFormat</code></a> can be a good distinguishing factor:</p>
+<pre><code class="lang-js">const hasFullICU = (() =&gt; {
+  try {
+    const january = new Date(9e8);
+    const spanish = new Intl.DateTimeFormat(&apos;es&apos;, { month: &apos;long&apos; });
+    return spanish.format(january) === &apos;enero&apos;;
+  } catch (err) {
+    return false;
+  }
+})();
+</code></pre>
+<p>For more verbose tests for <code>Intl</code> support, the following resources may be found
+to be helpful:</p>
+<ul>
+<li><a href="javascript:;">btest402</a>: Generally used to check whether Node.js with <code>Intl</code> support is
+built correctly.</li>
+<li><a href="javascript:;">Test262</a>: ECMAScript&apos;s official conformance test suite includes a section
+dedicated to ECMA-402.</li>
+</ul>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>字符串解码 | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-string_decoder">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="string_decoder" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#string_decoder_string_decoder">string_decoder - 字符串解码器</a></span><ul>
+<li><span class="stability_undefined"><a href="#string_decoder_class_new_stringdecoder_encoding">new StringDecoder([encoding])</a></span><ul>
+<li><span class="stability_undefined"><a href="#string_decoder_stringdecoder_end_buffer">stringDecoder.end([buffer])</a></span></li>
+<li><span class="stability_undefined"><a href="#string_decoder_stringdecoder_write_buffer">stringDecoder.write(buffer)</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>string_decoder - 字符串解码器<span><a class="mark" href="#string_decoder_string_decoder" id="string_decoder_string_decoder">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><p><code>string_decoder</code> 模块提供了一个 API，用于把 <code>Buffer</code> 对象解码成字符串，但会保留编码过的多字节 UTF-8 与 UTF-16 字符。使用以下方法引入：</p>
+<pre><code class="lang-js">const { StringDecoder } = require(&apos;string_decoder&apos;);
+</code></pre>
+<p>例子，<code>StringDecoder</code> 类的基本用法：</p>
+<pre><code class="lang-js">const { StringDecoder } = require(&apos;string_decoder&apos;);
+const decoder = new StringDecoder(&apos;utf8&apos;);
+
+const cent = Buffer.from([0xC2, 0xA2]);
+console.log(decoder.write(cent));
+
+const euro = Buffer.from([0xE2, 0x82, 0xAC]);
+console.log(decoder.write(euro));
+</code></pre>
+<p>当一个 <code>Buffer</code> 实例被写入 <code>StringDecoder</code> 实例时，会使用一个内部的 buffer 来确保解码后的字符串不会包含残缺的多字节字符。
+残缺的多字节字符会被保存在这个 buffer 中，直到下次调用 <code>stringDecoder.write()</code> 或直到 <code>stringDecoder.end()</code> 被调用。</p>
+<p>例子，欧元符号（<code>€</code>）的三个 UTF-8 编码的字节被分成三次操作写入：</p>
+<pre><code class="lang-js">const { StringDecoder } = require(&apos;string_decoder&apos;);
+const decoder = new StringDecoder(&apos;utf8&apos;);
+
+decoder.write(Buffer.from([0xE2]));
+decoder.write(Buffer.from([0x82]));
+console.log(decoder.end(Buffer.from([0xAC])));
+</code></pre>
+<h2>new StringDecoder([encoding])<span><a class="mark" href="#string_decoder_class_new_stringdecoder_encoding" id="string_decoder_class_new_stringdecoder_encoding">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> <code>StringDecoder</code> 使用的字符编码。默认为 <code>&apos;utf8&apos;</code>。</li>
+</ul>
+<p>创建一个新的 <code>StringDecoder</code> 实例。</p>
+<h3>stringDecoder.end([buffer])<span><a class="mark" href="#string_decoder_stringdecoder_end_buffer" id="string_decoder_stringdecoder_end_buffer">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.9.3</span>
+</div><ul>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> 包含待解码字节的 <code>Buffer</code>。</li>
+</ul>
+<p>以字符串的形式返回内部 buffer 中剩余的字节。
+残缺的 UTF-8 与 UTF-16 字符的字节会被替换成符合字符编码的字符。</p>
+<p>如果提供了 <code>buffer</code> 参数，则在返回剩余字节之前会再执行一次 <code>stringDecoder.write()</code>。</p>
+<h3>stringDecoder.write(buffer)<span><a class="mark" href="#string_decoder_stringdecoder_write_buffer" id="string_decoder_stringdecoder_write_buffer">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Each invalid character is now replaced by a single replacement character instead of one for each individual byte.</p>
+</td></tr>
+<tr><td>v0.1.99</td>
+<td><p><span>新增于: v0.1.99</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>buffer</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> 包含待解码字节的 <code>Buffer</code>。</li>
+</ul>
+<p>返回一个解码后的字符串，并确保返回的字符串不包含 <code>Buffer</code> 末尾残缺的多字节字符，残缺的多字节字符会被保存在一个内部的 buffer 中用于下次调用 <code>stringDecoder.write()</code> 或 <code>stringDecoder.end()</code>。</p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

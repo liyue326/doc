@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>UDP / 数据报 | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-dgram">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="dgram" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#dgram_udp_datagram_sockets">dgram (数据报)</a></span><ul>
+<li><span class="stability_undefined"><a href="#dgram_class_dgram_socket">dgram.Socket 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#dgram_event_close">&apos;close&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_event_error">&apos;error&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_event_listening">&apos;listening&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_event_message">&apos;message&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_addmembership_multicastaddress_multicastinterface">socket.addMembership(multicastAddress[, multicastInterface])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_address">socket.address()</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_bind_port_address_callback">socket.bind([port][, address][, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_bind_options_callback">socket.bind(options[, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_close_callback">socket.close([callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_dropmembership_multicastaddress_multicastinterface">socket.dropMembership(multicastAddress[, multicastInterface])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_getrecvbuffersize">socket.getRecvBufferSize()</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_getsendbuffersize">socket.getSendBufferSize()</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_ref">socket.ref()</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_send_msg_offset_length_port_address_callback">socket.send(msg, [offset, length,] port [, address] [, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setbroadcast_flag">socket.setBroadcast(flag)</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setmulticastinterface_multicastinterface">socket.setMulticastInterface(multicastInterface)</a></span><ul>
+<li><span class="stability_undefined"><a href="#dgram_examples_ipv6_outgoing_multicast_interface">Examples: IPv6 Outgoing Multicast Interface</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_example_ipv4_outgoing_multicast_interface">Example: IPv4 Outgoing Multicast Interface</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_call_results">Call Results</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setmulticastloopback_flag">socket.setMulticastLoopback(flag)</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setmulticastttl_ttl">socket.setMulticastTTL(ttl)</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setrecvbuffersize_size">socket.setRecvBufferSize(size)</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setsendbuffersize_size">socket.setSendBufferSize(size)</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_setttl_ttl">socket.setTTL(ttl)</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_socket_unref">socket.unref()</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_change_to_asynchronous_socket_bind_behavior">Change to asynchronous <code>socket.bind()</code> behavior</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#dgram_dgram_module_functions"><code>dgram</code> module functions</a></span><ul>
+<li><span class="stability_undefined"><a href="#dgram_dgram_createsocket_options_callback">dgram.createSocket(options[, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#dgram_dgram_createsocket_type_callback">dgram.createSocket(type[, callback])</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>dgram (数据报)<span><a class="mark" href="#dgram_udp_datagram_sockets" id="dgram_udp_datagram_sockets">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><!-- name=dgram -->
+<p><code>dgram</code>模块提供了 UDP 数据包 socket 的实现。</p>
+<pre><code class="lang-js">const dgram = require(&apos;dgram&apos;);
+const server = dgram.createSocket(&apos;udp4&apos;);
+
+server.on(&apos;error&apos;, (err) =&gt; {
+  console.log(`服务器异常：\n${err.stack}`);
+  server.close();
+});
+
+server.on(&apos;message&apos;, (msg, rinfo) =&gt; {
+  console.log(`服务器收到：${msg} 来自 ${rinfo.address}:${rinfo.port}`);
+});
+
+server.on(&apos;listening&apos;, () =&gt; {
+  const address = server.address();
+  console.log(`服务器监听 ${address.address}:${address.port}`);
+});
+
+server.bind(41234);
+// 服务器监听 0.0.0.0:41234
+</code></pre>
+<h2>dgram.Socket 类<span><a class="mark" href="#dgram_class_dgram_socket" id="dgram_class_dgram_socket">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><p><code>dgram.Socket</code>对象是一个封装了数据包函数功能的[<code>EventEmitter</code>][]。</p>
+<p><code>dgram.Socket</code>实例是由[<code>dgram.createSocket()</code>][]创建的。创建<code>dgram.Socket</code>实例不需要使用<code>new</code>关键字。</p>
+<h3>&apos;close&apos; 事件<span><a class="mark" href="#dgram_event_close" id="dgram_event_close">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><p><code>&apos;close&apos;</code>事件将在使用[<code>close()</code>][]关闭一个 socket 之后触发。该事件一旦触发，这个 socket 上将不会触发新的<code>&apos;message&apos;</code>事件。</p>
+<h3>&apos;error&apos; 事件<span><a class="mark" href="#dgram_event_error" id="dgram_event_error">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><ul>
+<li><code>exception</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+<p>当有任何错误发生时，<code>&apos;error&apos;</code>事件将被触发。事件发生时，事件处理函数仅会接收到一个 Error 参数。</p>
+<h3>&apos;listening&apos; 事件<span><a class="mark" href="#dgram_event_listening" id="dgram_event_listening">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><p>当一个 socket 开始监听数据包信息时，<code>&apos;listening&apos;</code>事件将被触发。该事件会在创建 UDP socket 之后被立即触发。</p>
+<h3>&apos;message&apos; 事件<span><a class="mark" href="#dgram_event_message" id="dgram_event_message">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><p>当有新的数据包被 socket 接收时，<code>&apos;message&apos;</code>事件会被触发。<code>msg</code>和<code>rinfo</code>会作为参数传递到该事件的处理函数中。</p>
+<ul>
+<li><code>msg</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> - 消息</li>
+<li><code>rinfo</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> - 远程地址信息<ul>
+<li><code>address</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 发送方地址 </li>
+<li><code>family</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 地址类型 (<code>&apos;IPv4&apos;</code> or <code>&apos;IPv6&apos;</code>)</li>
+<li><code>port</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 发送者端口</li>
+<li><code>size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 消息大小</li>
+</ul>
+</li>
+</ul>
+<h3>socket.addMembership(multicastAddress[, multicastInterface])<span><a class="mark" href="#dgram_socket_addmembership_multicastaddress_multicastinterface" id="dgram_socket_addmembership_multicastaddress_multicastinterface">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.9</span>
+</div><ul>
+<li><code>multicastAddress</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>multicastInterface</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p>通知内核将<code>multicastAddress</code>和<code>multicastInterface</code>提供的多路传送集合通过<code>IP_ADD_MEMBERSHIP</code>这个 socket 选项结合起来。若<code>multicastInterface</code>参数未指定，操作系统将会选择一个接口并向其添加成员。要为所有可用的接口添加成员，可以在每个接口上调用一次<code>addMembership</code>方法。</p>
+<h3>socket.address()<span><a class="mark" href="#dgram_socket_address" id="dgram_socket_address">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><p>返回一个包含 socket 地址信息的对象。对于 UDP socket，该对象将包含<code>address</code>、<code>family</code>和<code>port</code>属性。</p>
+<h3>socket.bind([port][, address][, callback])<span><a class="mark" href="#dgram_socket_bind_port_address_callback" id="dgram_socket_bind_port_address_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><ul>
+<li><code>port</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 整数。</li>
+<li><code>address</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 没有参数。当绑定完成时会被调用。</li>
+</ul>
+<p>对于 UDP socket，该方法会令<code>dgram.Socket</code>在指定的<code>port</code>和可选的<code>address</code>上监听数据包信息。若<code>port</code>未指定或为 <code>0</code>，操作系统会尝试绑定一个随机的端口。若<code>address</code>未指定，操作系统会尝试在所有地址上监听。绑定完成时会触发一个<code>&apos;listening&apos;</code>事件，并会调用<code>callback</code>方法。</p>
+<p>注意，同时监听<code>&apos;listening&apos;</code>事件和在<code>socket.bind()</code>方法中传入<code>callback</code>参数并不会带来坏处，但也不是很有用。</p>
+<p>一个被绑定的数据包 socket 会令 Node.js 进程保持运行以接收数据包信息。</p>
+<p>若绑定失败，一个<code>&apos;error&apos;</code>事件会被触发。在极少数的情况下（例如尝试绑定一个已关闭的 socket），一个 [<code>Error</code>][] 会被抛出。</p>
+<p>一个监听 41234 端口的 UDP 服务器的例子：</p>
+<pre><code class="lang-js">const dgram = require(&apos;dgram&apos;);
+const server = dgram.createSocket(&apos;udp4&apos;);
+
+server.on(&apos;error&apos;, (err) =&gt; {
+  console.log(`服务器异常：\n${err.stack}`);
+  server.close();
+});
+
+server.on(&apos;message&apos;, (msg, rinfo) =&gt; {
+  console.log(`服务器收到：${msg} 来自 ${rinfo.address}:${rinfo.port}`);
+});
+
+server.on(&apos;listening&apos;, () =&gt; {
+  const address = server.address();
+  console.log(`服务器监听 ${address.address}:${address.port}`);
+});
+
+server.bind(41234);
+// 服务器监听 0.0.0.0:41234
+</code></pre>
+<h3>socket.bind(options[, callback])<span><a class="mark" href="#dgram_socket_bind_options_callback" id="dgram_socket_bind_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.14</span>
+</div><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 必要的。包含以下属性：<ul>
+<li><code>port</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>address</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>exclusive</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a></li>
+</ul>
+<p>对于 UDP socket，该方法会令<code>dgram.Socket</code>在指定的<code>port</code>和可选的<code>address</code>上监听数据包信息。若<code>port</code>未指定或为 <code>0</code>，操作系统会尝试绑定一个随机的端口。若<code>address</code>未指定，操作系统会尝试在所有地址上监听。绑定完成时会触发一个<code>&apos;listening&apos;</code>事件，并会调用<code>callback</code>方法。</p>
+<p>Note that specifying both a <code>&apos;listening&apos;</code> event listener and passing a
+<code>callback</code> to the <code>socket.bind()</code> method is not harmful but not very
+useful.</p>
+<p>在配合[<code>cluster</code>]模块使用<code>dgram.Socket</code>对象时，<code>options</code>对象可能包含一个附加的<code>exclusive</code>属性。当<code>exclusive</code>被设为<code>false</code>(默认值)时，集群工作单元会使用相同的 socket 句柄来共享连接处理作业。当<code>exclusive</code>被设为<code>true</code>时，该句柄将不会被共享，而尝试共享端口则会造成错误。</p>
+<p>一个绑定的数据报 socket 会使 Node.js 进程持续运行以接受数据报消息。</p>
+<p>如果绑定失败，一个 <code>&apos;error&apos;</code> 事件会产生。在极少数情况下（例如尝试绑定一个已经关闭的 socket），
+一个 [<code>Error</code>][] 可能抛出。</p>
+<p>一个不共享端口的 socket 的例子如下文所示。</p>
+<pre><code class="lang-js">socket.bind({
+  address: &apos;localhost&apos;,
+  port: 8000,
+  exclusive: true
+});
+</code></pre>
+<h3>socket.close([callback])<span><a class="mark" href="#dgram_socket_close_callback" id="dgram_socket_close_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><p>关闭该 socket 并停止监听其上的数据。如果提供了一个回调函数，它就相当于为[<code>&apos;close&apos;</code>][]事件添加了一个监听器。</p>
+<h3>socket.dropMembership(multicastAddress[, multicastInterface])<span><a class="mark" href="#dgram_socket_dropmembership_multicastaddress_multicastinterface" id="dgram_socket_dropmembership_multicastaddress_multicastinterface">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.9</span>
+</div><ul>
+<li><code>multicastAddress</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>multicastInterface</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p>引导内核通过<code>IP_DROP_MEMBERSHIP</code>这个 socket 选项删除<code>multicastAddress</code>指定的多路传送集合。当 socket 被关闭或进程被终止时，该方法会被内核自动调用，所以大多数的应用都不用自行调用该方法。</p>
+<p>若<code>multicastInterface</code>未指定，操作系统会尝试删除所有可用接口上的成员。</p>
+<h3>socket.getRecvBufferSize()<span><a class="mark" href="#dgram_socket_getrecvbuffersize" id="dgram_socket_getrecvbuffersize">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v8.7.0</span>
+</div><ul>
+<li>Returns 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> socket 接收到的字节大小。</li>
+</ul>
+<h3>socket.getSendBufferSize()<span><a class="mark" href="#dgram_socket_getsendbuffersize" id="dgram_socket_getsendbuffersize">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v8.7.0</span>
+</div><ul>
+<li>Returns 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> socket 发送的字节大小。</li>
+</ul>
+<h3>socket.ref()<span><a class="mark" href="#dgram_socket_ref" id="dgram_socket_ref">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.9.1</span>
+</div><p>默认情况下，绑定一个 socket 会在 socket 运行时阻止 Node.js 进程退出。
+<code>socket.unref()</code> 方法用于将 socket 从维持 Node.js 进程的引用列表中解除。
+<code>socket.ref()</code> 方法用于将 socket 重新添加到这个引用列表中，并恢复其默认行为。</p>
+<p>多次调用 <code>socket.ref()</code> 不会有额外的作用。</p>
+<p><code>socket.ref()</code> 方法返回一个对 socket 的引用，所以可以链式调用。</p>
+<h3>socket.send(msg, [offset, length,] port [, address] [, callback])<span><a class="mark" href="#dgram_socket_send_msg_offset_length_port_address_callback" id="dgram_socket_send_msg_offset_length_port_address_callback">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>msg</code> parameter can be an Uint8Array now.</p>
+</td></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>address</code> parameter is always optional now.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>On success, <code>callback</code> will now be called with an <code>error</code> argument of <code>null</code> rather than <code>0</code>.</p>
+</td></tr>
+<tr><td>v5.7.0</td>
+<td><p>The <code>msg</code> parameter can be an array now. Also, the <code>offset</code> and <code>length</code> parameters are optional now.</p>
+</td></tr>
+<tr><td>v0.1.99</td>
+<td><p><span>新增于: v0.1.99</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>msg</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Array&gt;</a> 要发送的消息。</li>
+<li><code>offset</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 整数。指定消息的开头在 buffer 中的偏移量。</li>
+<li><code>length</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 整数。消息的字节数。</li>
+<li><code>port</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 整数。目标端口。</li>
+<li><code>address</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 目标主机名或 IP 地址。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 当消息被发送时会被调用。</li>
+</ul>
+<p>在 socket 上发送一个数据包。目标<code>port</code>和<code>address</code>须被指定。</p>
+<p><code>msg</code>参数包含了要发送的消息。根据消息的类型可以有不同的做法。如果<code>msg</code>是一个<code>Buffer</code> 或 <code>Uint8Array</code>，则<code>offset</code>和<code>length</code>指定了消息在<code>Buffer</code>中对应的偏移量和字节数。如果<code>msg</code>是一个<code>String</code>，那么它会被自动地按照<code>utf8</code>编码转换为<code>Buffer</code>。对于包含了多字节字符的消息，<code>offset</code>和<code>length</code>会根据对应的[byte length][]进行计算，而不是根据字符的位置。如果<code>msg</code>是一个数组，那么<code>offset</code>和<code>length</code>必须都不能被指定。</p>
+<p><code>address</code>参数是一个字符串。若<code>address</code>的值是一个主机名，则 DNS 会被用来解析主机的地址。若<code>address</code>未提供或是非真值，则<code>&apos;127.0.0.1&apos;</code>（用于 <code>udp4</code> socket）或<code>&apos;::1&apos;</code>（用于 <code>udp6</code> socket）会被使用。</p>
+<p>若在之前 socket 未通过调用<code>bind</code>方法进行绑定，socket 将会被一个随机的端口号赋值并绑定到“所有接口”的地址上（对于<code>udp4</code> socket 是<code>&apos;0.0.0.0&apos;</code>，对于<code>udp6</code> socket 是<code>&apos;::0&apos;</code>）。</p>
+<p>可以指定一个可选的<code>callback</code>方法来汇报 DNS 错误或判断可以安全地重用<code>buf</code>对象的时机。注意，在 Node.js 事件循环中，DNS 查询会对发送造成至少 1 tick 的延迟。</p>
+<p>确定数据包被发送的唯一方式就是指定<code>callback</code>。若在<code>callback</code>被指定的情况下有错误发生，该错误会作为<code>callback</code>的第一个参数。若<code>callback</code>未被指定，该错误会以<code>&apos;error&apos;</code>事件的方式投射到<code>socket</code>对象上。</p>
+<p>偏移量和长度是可选的，但如其中一个被指定则另一个也必须被指定。另外，他们只在第一个参数是<code>Buffer</code> 或 <code>Uint8Array</code> 的情况下才能被使用。</p>
+<p>一个发送 UDP 包到<code>localhost</code>上的某个随机端口的例子：</p>
+<pre><code class="lang-js">const dgram = require(&apos;dgram&apos;);
+const message = Buffer.from(&apos;Some bytes&apos;);
+const client = dgram.createSocket(&apos;udp4&apos;);
+client.send(message, 41234, &apos;localhost&apos;, (err) =&gt; {
+  client.close();
+});
+</code></pre>
+<p>一个发送包含多个 buffer 的 UDP 包到 <code>127.0.0.1</code> 上的某个随机端口的例子：</p>
+<pre><code class="lang-js">const dgram = require(&apos;dgram&apos;);
+const buf1 = Buffer.from(&apos;Some &apos;);
+const buf2 = Buffer.from(&apos;bytes&apos;);
+const client = dgram.createSocket(&apos;udp4&apos;);
+client.send([buf1, buf2], 41234, (err) =&gt; {
+  client.close();
+});
+</code></pre>
+<p>发送多个 buffer 的速度取决于应用和操作系统。
+逐案运行基准来确定最佳策略是很重要的。但是一般来说，发送多个 buffer 速度更快。</p>
+<p><strong>关于 UDP 包大小的注意事项</strong></p>
+<p><code>IPv4/v6</code>数据包的最大尺寸取决于<code>MTU</code>(<em>Maximum Transmission Unit</em>, 最大传输单元)与<code>Payload Length</code>字段大小。</p>
+<ul>
+<li><p><code>Payload Length</code>字段有<code>16 位</code>宽，指一个超过 64K 的_包含_ IP 头部和数据的负载 (65,507 字节 = 65,535 − 8 字节 UDP 头 − 20 字节 IP 头部)；通常对于环回地址来说是这样，但这个长度的数据包对于大多数的主机和网络来说不切实际。</p>
+</li>
+<li><p><code>MTU</code>指的是数据链路层为数据包提供的最大大小。对于任意链路，<code>IPv4</code>所托管的<code>MTU</code>最小为<code>68</code>个字节，推荐为<code>576</code>（典型地，作为拨号上网应用的推荐值），无论它们是完整地还是分块地抵达。</p>
+<p>对于<code>IPv6</code>，<code>MTU</code>的最小值是<code>1280</code>个字节，然而，受托管的最小的碎片重组缓冲大小为<code>1500</code>个字节。现今大多数的数据链路层技术（如以太网），都有<code>1500</code>的<code>MTU</code>最小值，因而<code>68</code>个字节显得非常小。</p>
+</li>
+</ul>
+<p>要提前知道数据包可能经过的每个链路的 MTU 是不可能的。发送大于接受者<code>MTU</code>大小的数据包将不会起作用，因为数据包会被静默地丢失，而不会通知发送者该包未抵达目的地。</p>
+<h3>socket.setBroadcast(flag)<span><a class="mark" href="#dgram_socket_setbroadcast_flag" id="dgram_socket_setbroadcast_flag">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.9</span>
+</div><ul>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+</ul>
+<p>设置或清除 <code>SO_BROADCAST</code> socket 选项。当设置为 <code>true</code>, UDP包可能会被发送到一个本地接口的广播地址</p>
+<h3>socket.setMulticastInterface(multicastInterface)<span><a class="mark" href="#dgram_socket_setmulticastinterface_multicastinterface" id="dgram_socket_setmulticastinterface_multicastinterface">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v8.6.0</span>
+</div><ul>
+<li><code>multicastInterface</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><em>Note: All references to scope in this section are referring to
+[IPv6 Zone Indices][], which are defined by [RFC 4007][]. In string form, an IP
+with a scope index is written as <code>&apos;IP%scope&apos;</code> where scope is an interface name or
+interface number.</em></p>
+<p>Sets the default outgoing multicast interface of the socket to a chosen
+interface or back to system interface selection. The <code>multicastInterface</code> must
+be a valid string representation of an IP from the socket&apos;s family.</p>
+<p>For IPv4 sockets, this should be the IP configured for the desired physical
+interface. All packets sent to multicast on the socket will be sent on the
+interface determined by the most recent successful use of this call.</p>
+<p>For IPv6 sockets, <code>multicastInterface</code> should include a scope to indicate the
+interface as in the examples that follow. In IPv6, individual <code>send</code> calls can
+also use explicit scope in addresses, so only packets sent to a multicast
+address without specifying an explicit scope are affected by the most recent
+successful use of this call.</p>
+<h4>Examples: IPv6 Outgoing Multicast Interface<span><a class="mark" href="#dgram_examples_ipv6_outgoing_multicast_interface" id="dgram_examples_ipv6_outgoing_multicast_interface">#</a></span></h4>
+<p>On most systems, where scope format uses the interface name:</p>
+<pre><code class="lang-js">const socket = dgram.createSocket(&apos;udp6&apos;);
+
+socket.bind(1234, () =&gt; {
+  socket.setMulticastInterface(&apos;::%eth1&apos;);
+});
+</code></pre>
+<p>On Windows, where scope format uses an interface number:</p>
+<pre><code class="lang-js">const socket = dgram.createSocket(&apos;udp6&apos;);
+
+socket.bind(1234, () =&gt; {
+  socket.setMulticastInterface(&apos;::%2&apos;);
+});
+</code></pre>
+<h4>Example: IPv4 Outgoing Multicast Interface<span><a class="mark" href="#dgram_example_ipv4_outgoing_multicast_interface" id="dgram_example_ipv4_outgoing_multicast_interface">#</a></span></h4>
+<p>All systems use an IP of the host on the desired physical interface:</p>
+<pre><code class="lang-js">const socket = dgram.createSocket(&apos;udp4&apos;);
+
+socket.bind(1234, () =&gt; {
+  socket.setMulticastInterface(&apos;10.0.0.2&apos;);
+});
+</code></pre>
+<h4>Call Results<span><a class="mark" href="#dgram_call_results" id="dgram_call_results">#</a></span></h4>
+<p>A call on a socket that is not ready to send or no longer open may throw a <em>Not
+running</em> [<code>Error</code>][].</p>
+<p>If <code>multicastInterface</code> can not be parsed into an IP then an <em>EINVAL</em>
+[<code>System Error</code>][] is thrown.</p>
+<p>On IPv4, if <code>multicastInterface</code> is a valid address but does not match any
+interface, or if the address does not match the family then
+a [<code>System Error</code>][] such as <code>EADDRNOTAVAIL</code> or <code>EPROTONOSUP</code> is thrown.</p>
+<p>On IPv6, most errors with specifying or omitting scope will result in the socket
+continuing to use (or returning to) the system&apos;s default interface selection.</p>
+<p>A socket&apos;s address family&apos;s ANY address (IPv4 <code>&apos;0.0.0.0&apos;</code> or IPv6 <code>&apos;::&apos;</code>) can be
+used to return control of the sockets default outgoing interface to the system
+for future multicast packets.</p>
+<h3>socket.setMulticastLoopback(flag)<span><a class="mark" href="#dgram_socket_setmulticastloopback_flag" id="dgram_socket_setmulticastloopback_flag">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.8</span>
+</div><ul>
+<li><code>flag</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+</ul>
+<p>设置或清除 <code>IP_MULTICAST_LOOP</code> socket 选项。当设置为 <code>true</code>, 多播数据包也将在本地接口接收。</p>
+<h3>socket.setMulticastTTL(ttl)<span><a class="mark" href="#dgram_socket_setmulticastttl_ttl" id="dgram_socket_setmulticastttl_ttl">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.8</span>
+</div><ul>
+<li><code>ttl</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> Integer</li>
+</ul>
+<p>设置<code>IP_MULTICAST_TTL</code>套接字选项。
+一般来说，TTL表示&quot;生存时间&quot;。这里特指一个IP数据包传输时允许的最大跳步数，尤其是对多播传输。
+当IP数据包每向前经过一个路由或网关时，TTL值减1，若经过某个路由时，TTL值被减至0，便不再继续向前传输。</p>
+<p>传给 <code>socket.setMulticastTTL()</code> 的参数是一个范围为0-255的跳步数。大多数系统的默认值是 <code>1</code> ，但是可以变化。</p>
+<h3>socket.setRecvBufferSize(size)<span><a class="mark" href="#dgram_socket_setrecvbuffersize_size" id="dgram_socket_setrecvbuffersize_size">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v8.7.0</span>
+</div><ul>
+<li><code>size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> Integer</li>
+</ul>
+<p>设置 <code>SO_RCVBUF</code> 套接字选项。设置最大的套接字接收缓冲字节。</p>
+<h3>socket.setSendBufferSize(size)<span><a class="mark" href="#dgram_socket_setsendbuffersize_size" id="dgram_socket_setsendbuffersize_size">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v8.7.0</span>
+</div><ul>
+<li><code>size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> Integer</li>
+</ul>
+<p>设置 <code>SO_SNDBUF</code> 套接字选项。设置最大的套接字发送缓冲字节。</p>
+<h3>socket.setTTL(ttl)<span><a class="mark" href="#dgram_socket_setttl_ttl" id="dgram_socket_setttl_ttl">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.101</span>
+</div><ul>
+<li><code>ttl</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> Integer</li>
+</ul>
+<p>设置 <code>IP_TTL</code> 套接字选项。
+一般来说，TTL表示&quot;生存时间&quot;，这里特指一个IP数据包传输时允许的最大跳步数。
+当IP数据包每向前经过一个路由或网关时，TTL值减1，若经过某个路由时，TTL值被减至0，便不再继续向前传输。
+比较有代表性的是，为了进行网络情况嗅探或者多播而修改TTL值。</p>
+<p>传给 <code>socket.setTTL()</code> 的参数是一个范围为0-255的跳步数。大多数系统的默认值是 <code>1</code> ，但是可以变化。</p>
+<h3>socket.unref()<span><a class="mark" href="#dgram_socket_unref" id="dgram_socket_unref">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.9.1</span>
+</div><p>默认情况下，只要socket是打开的，绑定一个socket将导致它阻塞Node.js进程退出。使用<code>socket.unref()</code>方法可以从保持Node.js进程活动的引用计数中排除socket，从而允许进程退出，尽管这个socket仍然在侦听。</p>
+<p>多次调用<code>socket.unref()</code>方法将不会有任何新增的作用。</p>
+<p><code>socket.unref()</code>方法返回当前socket的引用，因此可以链式调用。</p>
+<h3>Change to asynchronous <code>socket.bind()</code> behavior<span><a class="mark" href="#dgram_change_to_asynchronous_socket_bind_behavior" id="dgram_change_to_asynchronous_socket_bind_behavior">#</a></span></h3>
+<p>从Node.js v0.10开始，[<code>dgram.Socket＃bind（）</code>][]更改为异步执行模型。旧代码采用同步行为，如下例所示：</p>
+<pre><code class="lang-js">const s = dgram.createSocket(&apos;udp4&apos;);
+s.bind(1234);
+s.addMembership(&apos;224.0.0.114&apos;);
+</code></pre>
+<p>必须改为传递一个回调函数到[<code>dgram.Socket＃bind（）</code>][]：</p>
+<pre><code class="lang-js">const s = dgram.createSocket(&apos;udp4&apos;);
+s.bind(1234, () =&gt; {
+  s.addMembership(&apos;224.0.0.114&apos;);
+});
+</code></pre>
+<h2><code>dgram</code> module functions<span><a class="mark" href="#dgram_dgram_module_functions" id="dgram_dgram_module_functions">#</a></span></h2>
+<h3>dgram.createSocket(options[, callback])<span><a class="mark" href="#dgram_dgram_createsocket_options_callback" id="dgram_dgram_createsocket_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.7.0</td>
+<td><p>The <code>recvBufferSize</code> and <code>sendBufferSize</code> options are supported now.</p>
+</td></tr>
+<tr><td>v8.6.0</td>
+<td><p>The <code>lookup</code> option is supported.</p>
+</td></tr>
+<tr><td>v0.11.13</td>
+<td><p><span>新增于: v0.11.13</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 允许的选项是:<ul>
+<li><code>type</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 套接字族. 必须是 <code>&apos;udp4&apos;</code> 或 <code>&apos;udp6&apos;</code>.
+必需填.</li>
+<li><code>reuseAddr</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 若设置为 <code>true</code> [<code>socket.bind()</code>][] ，则会
+重用地址，即时另一个进程已经在其上面绑定了一个套接字。
+默认是 <code>false</code>.</li>
+<li><code>recvBufferSize</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> - 设置 <code>SO_RCVBUF</code> 套接字值。</li>
+<li><code>sendBufferSize</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> - 设置 <code>SO_SNDBUF</code> 套接字值。</li>
+<li><code>lookup</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 惯常的查询函数. 默认是 [<code>dns.lookup()</code>][]。</li>
+</ul>
+</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 为 <code>&apos;message&apos;</code> 事件绑定一个监听器。可选。</li>
+<li>返回: 
+            <a href="#dgram_class_dgram_socket" class="type">&lt;dgram.Socket&gt;</a></li>
+</ul>
+<p>创建一个 <code>dgram.Socket</code> 对象. 一旦创建了套接字，调用
+[<code>socket.bind()</code>][] 会指示套接字开始监听数据报消息。如果 <code>address</code> 和 <code>port</code> 没传给  [<code>socket.bind()</code>][]，
+那么这个方法会把这个套接字绑定到 &quot;全部接口&quot; 地址的一个随机端口(这适用于 <code>udp4</code> 和 <code>udp6</code> 套接字)。
+绑定的地址和端口可以通过 [<code>socket.address().address</code>][] 和[<code>socket.address().port</code>][] 来获取。</p>
+<h3>dgram.createSocket(type[, callback])<span><a class="mark" href="#dgram_dgram_createsocket_type_callback" id="dgram_dgram_createsocket_type_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.99</span>
+</div><ul>
+<li><code>type</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> - &apos;udp4&apos; 或 &apos;udp6&apos;.</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> - 为 <code>&apos;message&apos;</code> 事件添加一个监听器。</li>
+<li>返回: 
+            <a href="#dgram_class_dgram_socket" class="type">&lt;dgram.Socket&gt;</a></li>
+</ul>
+<p>创建一个特定 <code>type</code> 的<code>dgram.Socket</code> 对象。<code>type</code>参数是<code>udp4</code> 或 <code>udp6</code>。
+可选传一个回调函数，作为 <code>&apos;message&apos;</code> 事件的监听器。</p>
+<p>一旦套接字被创建。调用[<code>socket.bind()</code>][] 会指示套接字开始监听数据报消息。如果 <code>address</code> 和 <code>port</code> 没传给  [<code>socket.bind()</code>][]，
+那么这个方法会把这个套接字绑定到 &quot;全部接口&quot; 地址的一个随机端口(这适用于 <code>udp4</code> 和 <code>udp6</code> 套接字)。
+绑定的地址和端口可以通过 [<code>socket.address().address</code>][] 和[<code>socket.address().port</code>][] 来获取。
+[<code>&apos;close&apos;</code>]: #dgram_event_close
+[<code>Error</code>]: errors.html#errors_class_error
+[<code>EventEmitter</code>]: events.html
+[<code>close()</code>]: #dgram_socket_close_callback
+[<code>cluster</code>]: cluster.html
+[<code>dgram.Socket#bind()</code>]: #dgram_socket_bind_options_callback
+[<code>dgram.createSocket()</code>]: #dgram_dgram_createsocket_options_callback
+[<code>dns.lookup()</code>]: dns.html#dns_dns_lookup_hostname_options_callback
+[<code>socket.address().address</code>]: #dgram_socket_address
+[<code>socket.address().port</code>]: #dgram_socket_address
+[<code>socket.bind()</code>]: #dgram_socket_bind_port_address_callback
+[<code>System Error</code>]: errors.html#errors_class_systemerror
+[byte length]: buffer.html#buffer_class_method_buffer_bytelength_string_encoding
+[IPv6 Zone Indices]: <a href="javascript:;">https://en.wikipedia.org/wiki/IPv6_address#Scoped_literal_IPv6_addresses</a>
+[RFC 4007]: <a href="javascript:;">https://tools.ietf.org/html/rfc4007</a></p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

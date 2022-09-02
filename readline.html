@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>逐行读取 | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-readline">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="readline" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#readline_readline">readline (逐行读取)</a></span><ul>
+<li><span class="stability_undefined"><a href="#readline_class_interface">Interface 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#readline_event_close">&apos;close&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_event_line">&apos;line&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_event_pause">&apos;pause&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_event_resume">&apos;resume&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_event_sigcont">&apos;SIGCONT&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_event_sigint">&apos;SIGINT&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_event_sigtstp">&apos;SIGTSTP&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_close">rl.close()</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_pause">rl.pause()</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_prompt_preservecursor">rl.prompt([preserveCursor])</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_question_query_callback">rl.question(query, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_resume">rl.resume()</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_setprompt_prompt">rl.setPrompt(prompt)</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_rl_write_data_key">rl.write(data[, key])</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#readline_readline_clearline_stream_dir">readline.clearLine(stream, dir)</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_readline_clearscreendown_stream">readline.clearScreenDown(stream)</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_readline_createinterface_options">readline.createInterface(options)</a></span><ul>
+<li><span class="stability_undefined"><a href="#readline_use_of_the_completer_function"><code>completer</code> 函数的使用</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#readline_readline_cursorto_stream_x_y">readline.cursorTo(stream, x, y)</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_readline_emitkeypressevents_stream_interface">readline.emitKeypressEvents(stream[, interface])</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_readline_movecursor_stream_dx_dy">readline.moveCursor(stream, dx, dy)</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_example_tiny_cli">例子：简单的命令行界面</a></span></li>
+<li><span class="stability_undefined"><a href="#readline_example_read_file_stream_line_by_line">例子：逐行地读取文件流</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>readline (逐行读取)<span><a class="mark" href="#readline_readline" id="readline_readline">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><p><code>require(&apos;readline&apos;)</code> 模块提供了一个接口，用于从<a href="stream.html#stream_readable_streams">可读流</a>（如 <a href="process.html#process_process_stdin"><code>process.stdin</code></a>）读取数据，每次读取一行。
+它可以通过以下方式使用：</p>
+<pre><code class="lang-js">const readline = require(&apos;readline&apos;);
+</code></pre>
+<p>例子，<code>readline</code> 模块的基本用法：</p>
+<pre><code class="lang-js">const readline = require(&apos;readline&apos;);
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question(&apos;你认为 Node.js 中文网怎么样？&apos;, (answer) =&gt; {
+  // 对答案进行处理
+  console.log(`多谢你的反馈：${answer}`);
+
+  rl.close();
+});
+</code></pre>
+<p>注意：当调用该代码时，Node.js 程序不会终止，直到 <code>readline.Interface</code> 被关闭，因为接口在等待 <code>input</code> 流中要被接收的数据。</p>
+<h2>Interface 类<span><a class="mark" href="#readline_class_interface" id="readline_class_interface">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.104</span>
+</div><p><code>readline.Interface</code> 类的实例是使用 <code>readline.createInterface()</code> 方法构造的。
+每个实例都关联一个 <code>input</code> <a href="stream.html#stream_readable_streams">可读流</a>和一个 <code>output</code> <a href="stream.html#stream_writable_streams">可写流</a>。
+<code>output</code> 流用于为到达的用户输入打印提示，且从 <code>input</code> 流读取。</p>
+<h3>&apos;close&apos; 事件<span><a class="mark" href="#readline_event_close" id="readline_event_close">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.98</span>
+</div><p>当以下之一发生时，触发 <code>&apos;close&apos;</code> 事件：</p>
+<ul>
+<li><code>rl.close()</code> 方法被调用，且 <code>readline.Interface</code> 实例已撤回对 <code>input</code> 流和 <code>output</code> 流的控制；</li>
+<li><code>input</code> 流接收到 <code>&apos;end&apos;</code> 事件；</li>
+<li><code>input</code> 流接收到表示结束传输的 <code>&lt;ctrl&gt;-D</code>；</li>
+<li><code>input</code> 流接收到表示 <code>SIGINT</code> 的 <code>&lt;ctrl&gt;-C</code>，且 <code>readline.Interface</code> 实例上没有注册 <code>SIGINT</code> 事件监听器。</li>
+</ul>
+<p>监听器函数被调用时不传入任何参数。</p>
+<p>当 <code>&apos;close&apos;</code> 事件被触发时，<code>readline.Interface</code> 实例会被结束。</p>
+<h3>&apos;line&apos; 事件<span><a class="mark" href="#readline_event_line" id="readline_event_line">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.98</span>
+</div><p>每当 <code>input</code> 流接收到接收行结束符（<code>\n</code>、<code>\r</code> 或 <code>\r\n</code>）时触发 <code>&apos;line&apos;</code> 事件。
+通常发生在用户按下 <code>&lt;Enter&gt;</code> 键或 <code>&lt;Return&gt;</code> 键。</p>
+<p>监听器函数被调用时会带上一个包含接收的那一行输入的字符串。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.on(&apos;line&apos;, (input) =&gt; {
+  console.log(`接收到：${input}`);
+});
+</code></pre>
+<h3>&apos;pause&apos; 事件<span><a class="mark" href="#readline_event_pause" id="readline_event_pause">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.7.5</span>
+</div><p>当以下之一发生时触发 <code>&apos;pause&apos;</code> 事件：</p>
+<ul>
+<li><code>input</code> 流被暂停。</li>
+<li><code>input</code> 流不是暂停的，且接收到 <code>SIGCONT</code> 事件。（详见 <a href="#readline_event_sigtstp"><code>SIGTSTP</code></a> 事件和 <a href="#readline_event_sigcont"><code>SIGCONT</code></a> 事件）</li>
+</ul>
+<p>监听器函数被调用时不传入任何参数。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.on(&apos;pause&apos;, () =&gt; {
+  console.log(&apos;Readline 被暂停。&apos;);
+});
+</code></pre>
+<h3>&apos;resume&apos; 事件<span><a class="mark" href="#readline_event_resume" id="readline_event_resume">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.7.5</span>
+</div><p>每当 <code>input</code> 流被恢复时触发 <code>&apos;resume&apos;</code> 事件。</p>
+<p>监听器函数被调用时不传入任何参数。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.on(&apos;resume&apos;, () =&gt; {
+  console.log(&apos;Readline 被恢复。&apos;);
+});
+</code></pre>
+<h3>&apos;SIGCONT&apos; 事件<span><a class="mark" href="#readline_event_sigcont" id="readline_event_sigcont">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.7.5</span>
+</div><p>当一个 Node.js 进程使用 <code>&lt;ctrl&gt;-Z</code>（也就是 <code>SIGTSTP</code>）移入后台之后再使用 <a href="javascript:;">fg(1p)</a> 移回前台时，触发 <code>&apos;SIGCONT&apos;</code> 事件。</p>
+<p>如果 <code>input</code> 流在 <code>SIGTSTP</code> 请求之前被暂停，则事件不会被触发。</p>
+<p>监听器函数被调用时不传入任何参数。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.on(&apos;SIGCONT&apos;, () =&gt; {
+  // `prompt` 会自动恢复流
+  rl.prompt();
+});
+</code></pre>
+<p>注意：Windows 系统不支持 <code>&apos;SIGCONT&apos;</code> 事件。</p>
+<h3>&apos;SIGINT&apos; 事件<span><a class="mark" href="#readline_event_sigint" id="readline_event_sigint">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.0</span>
+</div><p>每当 <code>input</code> 流接收到一个 <code>&lt;ctrl&gt;-C</code> 输入（通常被称为 <code>SIGINT</code>）时，触发 <code>&apos;SIGINT&apos;</code> 事件。
+当 <code>input</code> 流接收到一个 <code>SIGINT</code> 时，如果没有注册 <code>&apos;SIGINT&apos;</code> 事件监听器，则 <code>&apos;pause&apos;</code> 事件会被触发。</p>
+<p>监听器函数被调用时不传入任何参数。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.on(&apos;SIGINT&apos;, () =&gt; {
+  rl.question(&apos;确定要退出吗？ &apos;, (answer) =&gt; {
+    if (answer.match(/^y(es)?$/i)) rl.pause();
+  });
+});
+</code></pre>
+<h3>&apos;SIGTSTP&apos; 事件<span><a class="mark" href="#readline_event_sigtstp" id="readline_event_sigtstp">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.7.5</span>
+</div><p>每当 <code>input</code> 流接收到一个 <code>&lt;ctrl&gt;-Z</code> 输入（通常被称为 <code>SIGTSTP</code>）时，触发 <code>&apos;SIGTSTP&apos;</code> 事件。
+当 <code>input</code> 流接收到一个 <code>SIGTSTP</code> 时，如果没有注册 <code>&apos;SIGTSTP&apos;</code> 事件监听器，则 Node.js 进程会被发送到后台。</p>
+<p>当程序使用 <a href="javascript:;">fg(1p)</a> 恢复时，<code>&apos;pause&apos;</code> 和 <code>SIGCONT</code> 事件会被触发。
+这可被用来恢复 <code>input</code> 流。</p>
+<p>如果 <code>input</code> 流在进程被发送到后台之前被暂停，则 <code>&apos;pause&apos;</code> 和 <code>SIGCONT</code> 事件不会被触发。</p>
+<p>监听器函数被调用时不传入任何参数。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.on(&apos;SIGTSTP&apos;, () =&gt; {
+  // 这会重写 SIGTSTP，且防止程序进入后台。
+  console.log(&apos;捕获 SIGTSTP。&apos;);
+});
+</code></pre>
+<p>注意：Windows 系统不支持 <code>&apos;SIGTSTP&apos;</code> 事件。</p>
+<h3>rl.close()<span><a class="mark" href="#readline_rl_close" id="readline_rl_close">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.98</span>
+</div><p><code>rl.close()</code> 方法会关闭 <code>readline.Interface</code> 实例，且撤回对 <code>input</code> 和 <code>output</code> 流的控制。
+但被调用时，<code>&apos;close&apos;</code> 事件会被触发。</p>
+<h3>rl.pause()<span><a class="mark" href="#readline_rl_pause" id="readline_rl_pause">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.4</span>
+</div><p><code>rl.pause()</code> 方法会暂停 <code>input</code> 流，且稍后需要时可被恢复。</p>
+<p>调用 <code>rl.pause()</code> 不会立刻暂停其他事件（包括 <code>&apos;line&apos;</code>）被 <code>readline.Interface</code> 实例触发。</p>
+<h3>rl.prompt([preserveCursor])<span><a class="mark" href="#readline_rl_prompt_preservecursor" id="readline_rl_prompt_preservecursor">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.98</span>
+</div><ul>
+<li><code>preserveCursor</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果为 <code>true</code>，则阻止光标落点被设为 <code>0</code>。</li>
+</ul>
+<p><code>rl.prompt()</code> 方法会在 <code>output</code> 流中新的一行写入 <code>readline.Interface</code> 实例配置后的 <code>prompt</code>，用于为用户提供一个可供输入的新的位置。</p>
+<p>当被调用时，如果 <code>input</code> 流已被暂停，则 <code>rl.prompt()</code> 会恢复 <code>input</code> 流。</p>
+<p>如果 <code>readline.Interface</code> 被创建时 <code>output</code> 被设为 <code>null</code> 或 <code>undefined</code>，则提示不会被写入。</p>
+<h3>rl.question(query, callback)<span><a class="mark" href="#readline_rl_question_query_callback" id="readline_rl_question_query_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.3</span>
+</div><ul>
+<li><code>query</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 一个在提示符之前、要写入 <code>output</code> 的叙述或询问。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 一个回调函数，它会被调用并带上用户响应 <code>query</code> 的输入。</li>
+</ul>
+<p><code>rl.question()</code> 方法通过写入到 <code>output</code> 来展示 <code>query</code>，并等待用户提供到 <code>input</code> 的输入，然后调用 <code>callback</code> 函数并传入提供的输入作为第一个参数。</p>
+<p>当被调用时，如果 <code>input</code> 流已被暂停，则 <code>rl.question()</code> 会恢复 <code>input</code> 流。</p>
+<p>如果 <code>readline.Interface</code> 被创建时 <code>output</code> 被设为 <code>null</code> 或 <code>undefined</code>，则 <code>query</code> 不会被写入。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.question(&apos;你最喜欢的食物是什么？ &apos;, (answer) =&gt; {
+  console.log(`你最喜欢的食物是 ${answer}`);
+});
+</code></pre>
+<p>注意：传入的 <code>rl.question()</code> 的 <code>callback</code> 函数不遵循接受一个 <code>Error</code> 对象或 <code>null</code> 作为第一个参数的标准模式。
+<code>callback</code> 被调用时只带上提供的答案作为唯一的参数。</p>
+<h3>rl.resume()<span><a class="mark" href="#readline_rl_resume" id="readline_rl_resume">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.3.4</span>
+</div><p>如果 <code>input</code> 流已被暂停，则 <code>rl.resume()</code> 方法会恢复 <code>input</code> 流。</p>
+<h3>rl.setPrompt(prompt)<span><a class="mark" href="#readline_rl_setprompt_prompt" id="readline_rl_setprompt_prompt">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.98</span>
+</div><ul>
+<li><code>prompt</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+</ul>
+<p><code>rl.setPrompt()</code> 方法用于设置每当 <code>rl.prompt()</code> 被调用时要被写入到 <code>output</code> 的提示。</p>
+<h3>rl.write(data[, key])<span><a class="mark" href="#readline_rl_write_data_key" id="readline_rl_write_data_key">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.1.98</span>
+</div><ul>
+<li><code>data</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a></li>
+<li><code>key</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>ctrl</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果为 <code>true</code> 则表示 <code>&lt;ctrl&gt;</code> 键。</li>
+<li><code>meta</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果为 <code>true</code> 则表示 <code>&lt;Meta&gt;</code> 键。</li>
+<li><code>shift</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果为 <code>true</code> 则表示 <code>&lt;Shift&gt;</code> 键。</li>
+<li><code>name</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 一个按键的名称。</li>
+</ul>
+</li>
+</ul>
+<p><code>rl.write()</code> 方法会把 <code>data</code> 或一个由 <code>key</code> 指定的按键序列写入到 <code>output</code>。
+只有当 <code>output</code> 是一个 <a href="tty.html">TTY</a> 文本终端时，<code>key</code> 参数才被支持。</p>
+<p>如果指定了 <code>key</code>，则 <code>data</code> 会被忽略。</p>
+<p>当被调用时，如果 <code>input</code> 流已被暂停，则 <code>rl.write()</code> 会恢复 <code>input</code> 流。</p>
+<p>如果 <code>readline.Interface</code> 被创建时 <code>output</code> 被设为 <code>null</code> 或 <code>undefined</code>，则 <code>data</code> 和 <code>key</code> 不会被写入。</p>
+<p>例子：</p>
+<pre><code class="lang-js">rl.write(&apos;删除这个！&apos;);
+// 模拟 Ctrl+u 删除写入的前一行。
+rl.write(null, { ctrl: true, name: &apos;u&apos; });
+</code></pre>
+<p>注意：<code>rl.write()</code> 方法会写入数据到 <code>readline</code> 接口的 <code>input</code>，犹如它是用户提供的。</p>
+<h2>readline.clearLine(stream, dir)<span><a class="mark" href="#readline_readline_clearline_stream_dir" id="readline_readline_clearline_stream_dir">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.7.7</span>
+</div><ul>
+<li><code>stream</code> <span class="type">&lt;Writable&gt;</span></li>
+<li><code>dir</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a><ul>
+<li><code>-1</code> - 光标左边</li>
+<li><code>1</code> - 光标右边</li>
+<li><code>0</code> - 整行</li>
+</ul>
+</li>
+</ul>
+<p><code>readline.clearLine()</code> 方法会以 <code>dir</code> 指定的方向清除给定的 <a href="tty.html">TTY</a> 流的当前行。</p>
+<h2>readline.clearScreenDown(stream)<span><a class="mark" href="#readline_readline_clearscreendown_stream" id="readline_readline_clearscreendown_stream">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.7.7</span>
+</div><ul>
+<li><code>stream</code> <span class="type">&lt;Writable&gt;</span></li>
+</ul>
+<p><code>readline.clearScreenDown()</code> 方法会从光标的当前位置向下清除给定的 <a href="tty.html">TTY</a> 流。</p>
+<h2>readline.createInterface(options)<span><a class="mark" href="#readline_readline_createinterface_options" id="readline_readline_createinterface_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.3.0, 6.11.4</td>
+<td><p>Remove max limit of <code>crlfDelay</code> option.</p>
+</td></tr>
+<tr><td>v6.6.0</td>
+<td><p>The <code>crlfDelay</code> option is supported now.</p>
+</td></tr>
+<tr><td>v6.3.0</td>
+<td><p>The <code>prompt</code> option is supported now.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The <code>historySize</code> option can be <code>0</code> now.</p>
+</td></tr>
+<tr><td>v0.1.98</td>
+<td><p><span>新增于: v0.1.98</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>input</code> <span class="type">&lt;Readable&gt;</span> 要监听的<a href="stream.html#stream_readable_streams">可读流</a>。该选项是必需的。</li>
+<li><code>output</code> <span class="type">&lt;Writable&gt;</span> 要写入逐行读取数据的<a href="stream.html#stream_writable_streams">可写流</a>。</li>
+<li><code>completer</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 一个可选的函数，用于 Tab 自动补全。</li>
+<li><code>terminal</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果 <code>input</code> 和 <code>output</code> 应被当作一个 TTY，且要写入 ANSI/VT100 转换的代码，则设为 <code>true</code>。
+默认为实例化时在 <code>output</code> 流上检查 <code>isTTY</code>。</li>
+<li><code>historySize</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 保留的历史行数的最大数量。
+设为 <code>0</code> 可禁用历史记录。
+该选项只有当 <code>terminal</code> 被用户或内部 <code>output</code> 设为 <code>true</code> 时才有意义，否则历史缓存机制不会被初始化。
+默认为 <code>30</code>。</li>
+<li><code>prompt</code> - 要使用的提示字符串。默认为 <code>&apos;&gt; &apos;</code>。</li>
+<li><code>crlfDelay</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 如果 <code>\r</code> 与 <code>\n</code> 之间的延迟超过 <code>crlfDelay</code> 毫秒，则 <code>\r</code> 和 <code>\n</code> 都会被当作换行分隔符。
+<code>crlfDelay</code> will be coerced to a number no less than <code>100</code>. It can be set to
+<code>Infinity</code>, in which case <code>\r</code> followed by <code>\n</code> will always be considered a
+single newline (which may be reasonable for <a href="#readline_example_read_file_stream_line_by_line">reading files</a>
+with <code>\r\n</code> line delimiter).
+默认为 <code>100</code> 毫秒。</li>
+<li><code>removeHistoryDuplicates</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> If <code>true</code>, when a new input line added
+to the history list duplicates an older one, this removes the older line
+from the list. 
+默认为 <code>false</code>。</li>
+</ul>
+</li>
+</ul>
+<p><code>readline.createInterface()</code> 方法会创建一个新的 <code>readline.Interface</code> 实例。</p>
+<p>例子：</p>
+<pre><code class="lang-js">const readline = require(&apos;readline&apos;);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+</code></pre>
+<p>一旦 <code>readline.Interface</code> 实例被创建，最常见的用法是监听 <code>&apos;line&apos;</code> 事件：</p>
+<pre><code class="lang-js">rl.on(&apos;line&apos;, (line) =&gt; {
+  console.log(`接收到：${line}`);
+});
+</code></pre>
+<p>如果该实例的 <code>terminal</code> 为 <code>true</code>，则若它定义了一个 <code>output.columns</code> 属性则 <code>output</code> 流会获得最佳兼容性，且如果或当列发生变化时，<code>output</code> 上触发一个 <code>&apos;resize&apos;</code> 事件（当它为一个 TTY 时，<a href="process.html#process_process_stdout"><code>process.stdout</code></a> 会自动处理这个）。</p>
+<h3><code>completer</code> 函数的使用<span><a class="mark" href="#readline_use_of_the_completer_function" id="readline_use_of_the_completer_function">#</a></span></h3>
+<p><code>completer</code> 函数会获取用户输入的当前行作为参数，并返回一个包含以下两个条目的数组：</p>
+<ul>
+<li>一个包含匹配补全输入的数组。</li>
+<li>用于匹配的子字符串。</li>
+</ul>
+<p>例如：<code>[[substr1, substr2, ...], originalsubstring]</code>。</p>
+<pre><code class="lang-js">function completer(line) {
+  const completions = &apos;.help .error .exit .quit .q&apos;.split(&apos; &apos;);
+  const hits = completions.filter((c) =&gt; c.startsWith(line));
+  // 如果没匹配到则展示全部补全
+  return [hits.length ? hits : completions, line];
+}
+</code></pre>
+<p>如果 <code>completer</code> 函数接受两个参数，则可被异步地调用：</p>
+<pre><code class="lang-js">function completer(linePartial, callback) {
+  callback(null, [[&apos;123&apos;], linePartial]);
+}
+</code></pre>
+<h2>readline.cursorTo(stream, x, y)<span><a class="mark" href="#readline_readline_cursorto_stream_x_y" id="readline_readline_cursorto_stream_x_y">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.7.7</span>
+</div><ul>
+<li><code>stream</code> <span class="type">&lt;Writable&gt;</span></li>
+<li><code>x</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>y</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+<p><code>readline.cursorTo()</code> 方法会移动光标到给定的 <a href="tty.html">TTY</a> <code>stream</code> 中指定的位置。</p>
+<h2>readline.emitKeypressEvents(stream[, interface])<span><a class="mark" href="#readline_readline_emitkeypressevents_stream_interface" id="readline_readline_emitkeypressevents_stream_interface">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.7.7</span>
+</div><ul>
+<li><code>stream</code> <span class="type">&lt;Readable&gt;</span></li>
+<li><code>interface</code> <span class="type">&lt;readline.Interface&gt;</span></li>
+</ul>
+<p><code>readline.emitKeypressEvents()</code> 方法使给定的<a href="stream.html#stream_readable_streams">可读流</a> <code>stream</code> 相应于接收到的输入触发 <code>&apos;keypress&apos;</code> 事件。</p>
+<p>可选的 <code>interface</code> 指定了一个 <code>readline.Interface</code> 实例，用于当自动补全被禁用时检测到复制粘贴输入。</p>
+<p>如果 <code>stream</code> 是一个 <a href="tty.html">TTY</a>，则它必须为原始模式。</p>
+<p><em>Note</em>: This is automatically called by any readline instance on its <code>input</code>
+if the <code>input</code> is a terminal. Closing the <code>readline</code> instance does not stop
+the <code>input</code> from emitting <code>&apos;keypress&apos;</code> events.</p>
+<pre><code class="lang-js">readline.emitKeypressEvents(process.stdin);
+if (process.stdin.isTTY)
+  process.stdin.setRawMode(true);
+</code></pre>
+<h2>readline.moveCursor(stream, dx, dy)<span><a class="mark" href="#readline_readline_movecursor_stream_dx_dy" id="readline_readline_movecursor_stream_dx_dy">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.7.7</span>
+</div><ul>
+<li><code>stream</code> <span class="type">&lt;Writable&gt;</span></li>
+<li><code>dx</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+<li><code>dy</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+<p><code>readline.moveCursor()</code> 方法会移动光标到给定的 <a href="tty.html">TTY</a> <code>stream</code> 中相对当前的位置。</p>
+<h2>例子：简单的命令行界面<span><a class="mark" href="#readline_example_tiny_cli" id="readline_example_tiny_cli">#</a></span></h2>
+<p>例子，使用 <code>readline.Interface</code> 类实现一个简单的命令行界面：</p>
+<pre><code class="lang-js">const readline = require(&apos;readline&apos;);
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: &apos;请输入&gt; &apos;
+});
+
+rl.prompt();
+
+rl.on(&apos;line&apos;, (line) =&gt; {
+  switch (line.trim()) {
+    case &apos;hello&apos;:
+      console.log(&apos;world!&apos;);
+      break;
+    default:
+      console.log(`你输入的是：&apos;${line.trim()}&apos;`);
+      break;
+  }
+  rl.prompt();
+}).on(&apos;close&apos;, () =&gt; {
+  console.log(&apos;再见!&apos;);
+  process.exit(0);
+});
+</code></pre>
+<h2>例子：逐行地读取文件流<span><a class="mark" href="#readline_example_read_file_stream_line_by_line" id="readline_example_read_file_stream_line_by_line">#</a></span></h2>
+<p>例子，从一个文件系统<a href="stream.html#stream_readable_streams">可读流</a>中每次一行地消耗输入：</p>
+<pre><code class="lang-js">const readline = require(&apos;readline&apos;);
+const fs = require(&apos;fs&apos;);
+
+const rl = readline.createInterface({
+  input: fs.createReadStream(&apos;sample.txt&apos;),
+  crlfDelay: Infinity
+});
+
+rl.on(&apos;line&apos;, (line) =&gt; {
+  console.log(`文件的单行内容：${line}`);
+});
+</code></pre>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

@@ -1,0 +1,1735 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>流（Stream） | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-stream">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="stream" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#stream_stream">stream (流)</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_organization_of_this_document">本文档的组织</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_types_of_streams">流的类型</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_object_mode">对象模式</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_buffering">缓冲</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_api_for_stream_consumers">流消费者的 API</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_writable_streams">可写流</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_class_stream_writable">stream.Writable 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_event_close">&apos;close&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_drain">&apos;drain&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_error">&apos;error&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_finish">&apos;finish&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_pipe">&apos;pipe&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_unpipe">&apos;unpipe&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_cork">writable.cork()</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_end_chunk_encoding_callback">writable.end([chunk][, encoding][, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_setdefaultencoding_encoding">writable.setDefaultEncoding(encoding)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_uncork">writable.uncork()</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_writablehighwatermark">writable.writableHighWaterMark</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_write_chunk_encoding_callback">writable.write(chunk[, encoding][, callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_destroy_error">writable.destroy([error])</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_readable_streams">可读流</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_two_modes">两种模式</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_three_states">三种状态</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_choose_one">选择一种</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_class_stream_readable">stream.Readable 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_event_close_1">&apos;close&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_data">&apos;data&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_end">&apos;end&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_error_1">&apos;error&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_event_readable">&apos;readable&apos; 事件</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_ispaused">readable.isPaused()</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_pause">readable.pause()</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_pipe_destination_options">readable.pipe(destination[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_readablehighwatermark">readable.readableHighWaterMark</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_read_size">readable.read([size])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_resume">readable.resume()</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_setencoding_encoding">readable.setEncoding(encoding)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_unpipe_destination">readable.unpipe([destination])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_unshift_chunk">readable.unshift(chunk)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_wrap_stream">readable.wrap(stream)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_destroy_error">readable.destroy([error])</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_duplex_and_transform_streams">Duplex 流与 Transform 流</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_class_stream_duplex">stream.Duplex 类</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_class_stream_transform">stream.Transform 类</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_transform_destroy_error">transform.destroy([error])</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_api_for_stream_implementers">API for Stream Implementers</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_simplified_construction">Simplified Construction</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_implementing_a_writable_stream">Implementing a Writable Stream</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_constructor_new_stream_writable_options">Constructor: new stream.Writable([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_write_chunk_encoding_callback_1">writable._write(chunk, encoding, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_writev_chunks_callback">writable._writev(chunks, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_destroy_err_callback">writable._destroy(err, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_writable_final_callback">writable._final(callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_errors_while_writing">Errors While Writing</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_an_example_writable_stream">一个可写流的例子</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_decoding_buffers_in_a_writable_stream">Decoding buffers in a Writable Stream</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_implementing_a_readable_stream">Implementing a Readable Stream</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_new_stream_readable_options">new stream.Readable([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_read_size_1">readable._read(size)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_destroy_err_callback">readable._destroy(err, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_push_chunk_encoding">readable.push(chunk[, encoding])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_errors_while_reading">Errors While Reading</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_an_example_counting_stream">一个数流的例子</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_implementing_a_duplex_stream">Implementing a Duplex Stream</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_new_stream_duplex_options">new stream.Duplex(options)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_an_example_duplex_stream">An Example Duplex Stream</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_object_mode_duplex_streams">Object Mode Duplex Streams</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_implementing_a_transform_stream">Implementing a Transform Stream</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_new_stream_transform_options">new stream.Transform([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_events_finish_and_end">Events: &apos;finish&apos; and &apos;end&apos;</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_transform_flush_callback">transform._flush(callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_transform_transform_chunk_encoding_callback">transform._transform(chunk, encoding, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_class_stream_passthrough">Class: stream.PassThrough</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#stream_additional_notes">Additional Notes</a></span><ul>
+<li><span class="stability_undefined"><a href="#stream_compatibility_with_older_node_js_versions">Compatibility with Older Node.js Versions</a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_read_0"><code>readable.read(0)</code></a></span></li>
+<li><span class="stability_undefined"><a href="#stream_readable_push"><code>readable.push(&apos;&apos;)</code></a></span></li>
+<li><span class="stability_undefined"><a href="#stream_highwatermark_discrepancy_after_calling_readable_setencoding"><code>highWaterMark</code> discrepancy after calling <code>readable.setEncoding()</code></a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>stream (流)<span><a class="mark" href="#stream_stream" id="stream_stream">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><p>流（stream）在 Node.js 中是处理流数据的抽象接口（abstract interface）。
+<code>stream</code> 模块提供了基础的 API 。使用这些 API 可以很容易地来构建实现流接口的对象。</p>
+<p>Node.js 提供了多种流对象。 例如，
+<a href="http.html#http_class_http_incomingmessage">HTTP 请求</a> 和 <a href="process.html#process_process_stdout"><code>process.stdout</code></a>
+就都是流的实例。</p>
+<p>流可以是可读的、可写的，或是可读写的。所有的流都是
+<a href="events.html#events_class_eventemitter"><code>EventEmitter</code></a> 的实例。</p>
+<p><code>stream</code> 模块可以通过以下方式引入：</p>
+<pre><code class="lang-js">const stream = require(&apos;stream&apos;);
+</code></pre>
+<p>尽管所有的 Node.js 用户都应该理解流的工作方式，这点很重要，
+但是 <code>stream</code> 模块本身只对于那些需要创建新的流的实例的开发者最有用处。 对于主要是 <em>消费</em> 流的开发者来说，他们很少（如果有的话）需要直接使用
+ <code>stream</code> 模块。</p>
+<h2>本文档的组织<span><a class="mark" href="#stream_organization_of_this_document" id="stream_organization_of_this_document">#</a></span></h2>
+<p>本文档主要分为两节，第三节是一些额外的注意事项。第一节阐述了在应用中和 <em>使用</em> 流相关的 API 。 第二节阐述了和 <em>实现</em> 新的流类型相关的 API 。</p>
+<h2>流的类型<span><a class="mark" href="#stream_types_of_streams" id="stream_types_of_streams">#</a></span></h2>
+<p>Node.js 中有四种基本的流类型：</p>
+<ul>
+<li><a href="#stream_class_stream_readable">Readable</a> - 可读的流 (例如
+<a href="fs.html#fs_fs_createreadstream_path_options"><code>fs.createReadStream()</code></a>).</li>
+<li><a href="#stream_class_stream_writable">Writable</a> - 可写的流 (例如
+<a href="fs.html#fs_fs_createwritestream_path_options"><code>fs.createWriteStream()</code></a>).</li>
+<li><a href="#stream_class_stream_duplex">Duplex</a> - 可读写的流 (例如
+<a href="net.html#net_class_net_socket"><code>net.Socket</code></a>).</li>
+<li><a href="#stream_class_stream_transform">Transform</a> - 在读写过程中可以修改和变换数据的 Duplex 流  (例如 <a href="zlib.html#zlib_zlib_createdeflate_options"><code>zlib.createDeflate()</code></a>).</li>
+</ul>
+<h3>对象模式<span><a class="mark" href="#stream_object_mode" id="stream_object_mode">#</a></span></h3>
+<p>所有使用 Node.js API 创建的流对象都只能操作 strings 和 <code>Buffer</code>（或 <code>Uint8Array</code>）
+对象。但是，通过一些第三方流的实现，你依然能够处理其它类型的 JavaScript 值 (除了 <code>null</code>，它在流处理中有特殊意义)。 这些流被认为是工作在 “对象模式”（object mode）。</p>
+<p>在创建流的实例时，可以通过 <code>objectMode</code> 选项使流的实例切换到对象模式。试图将已经存在的流切换到对象模式是不安全的。</p>
+<h3>缓冲<span><a class="mark" href="#stream_buffering" id="stream_buffering">#</a></span></h3>
+<!--type=misc-->
+<p><a href="#stream_class_stream_writable">Writable</a> 和 <a href="#stream_class_stream_readable">Readable</a> 流都会将数据存储到内部的缓冲器（buffer）中。这些缓冲器可以
+通过相应的 <code>writable._writableState.getBuffer()</code> 或
+<code>readable._readableState.buffer</code> 来获取。</p>
+<p>缓冲器的大小取决于传递给流构造函数的 <code>highWaterMark</code> 选项。
+对于普通的流， <code>highWaterMark</code> 选项指定了<a href="#stream_highwatermark_discrepancy_after_calling_readable_setencoding">总共的字节数</a>。对于工作在对象模式的流，
+<code>highWaterMark</code> 指定了对象的总数。</p>
+<p>当可读流的实现调用 
+<a href="#stream_readable_push_chunk_encoding"><code>stream.push(chunk)</code></a> 方法时，数据被放到缓冲器中。如果流的消费者
+没有调用 <a href="#stream_readable_read_size"><code>stream.read()</code></a> 方法， 这些数据会始终存在于内部队列中，直到被消费。</p>
+<p>当内部可读缓冲器的大小达到 <code>highWaterMark</code> 指定的阈值时，流会暂停从底层资源读取数据，直到当前
+缓冲器的数据被消费 (也就是说，
+流会在内部停止调用 <code>readable._read()</code> 来填充可读缓冲器)。</p>
+<p>可写流通过反复调用
+<a href="#stream_writable_write_chunk_encoding_callback"><code>writable.write(chunk)</code></a> 方法将数据放到缓冲器。
+当内部可写缓冲器的总大小小于
+<code>highWaterMark</code> 指定的阈值时， 调用 <code>writable.write()</code> 将返回<code>true</code>。 
+一旦内部缓冲器的大小达到或超过 <code>highWaterMark</code> ，调用 <code>writable.write()</code> 将返回 <code>false</code> 。</p>
+<p><code>stream</code> API 的关键目标， 尤其对于 <a href="#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a> 方法，
+就是限制缓冲器数据大小，以达到可接受的程度。这样，对于读写速度不匹配的源头和目标，就不会超出可用的内存大小。</p>
+<p><a href="#stream_class_stream_duplex">Duplex</a> 和 <a href="#stream_class_stream_transform">Transform</a> 都是可读写的。
+在内部，它们都维护了 <em>两个</em> 相互独立的缓冲器用于读和写。
+在维持了合理高效的数据流的同时，也使得对于读和写可以独立进行而互不影响。
+例如， <a href="net.html#net_class_net_socket"><code>net.Socket</code></a> 就是 <a href="#stream_class_stream_duplex">Duplex</a> 的实例，它的可读端可以消费从套接字（socket）中接收的数据， 
+可写端则可以将数据写入到套接字。
+由于数据写入到套接字中的速度可能比从套接字接收数据的速度快或者慢，
+在读写两端使用独立缓冲器，并进行独立操作就显得很重要了。</p>
+<h2>流消费者的 API<span><a class="mark" href="#stream_api_for_stream_consumers" id="stream_api_for_stream_consumers">#</a></span></h2>
+<!--type=misc-->
+<p>几乎所有的 Node.js 应用，不管多么简单，都在某种程度上使用了流。
+下面是在 Node.js 应用中使用流实现的一个简单的 HTTP 服务器：</p>
+<pre><code class="lang-js">const http = require(&apos;http&apos;);
+
+const server = http.createServer((req, res) =&gt; {
+  // req 是 http.IncomingMessage 的实例，这是一个 Readable Stream
+  // res 是 http.ServerResponse 的实例，这是一个 Writable Stream
+
+  let body = &apos;&apos;;
+  // 接收数据为 utf8 字符串，
+  // 如果没有设置字符编码，将接收到 Buffer 对象。
+  req.setEncoding(&apos;utf8&apos;);
+
+  // 如果监听了 &apos;data&apos; 事件，Readable streams 触发 &apos;data&apos; 事件 
+  req.on(&apos;data&apos;, (chunk) =&gt; {
+    body += chunk;
+  });
+
+  // end 事件表明整个 body 都接收完毕了 
+  req.on(&apos;end&apos;, () =&gt; {
+    try {
+      const data = JSON.parse(body);
+      // 发送一些信息给用户
+      res.write(typeof data);
+      res.end();
+    } catch (er) {
+      // json 数据解析失败 
+      res.statusCode = 400;
+      return res.end(`error: ${er.message}`);
+    }
+  });
+});
+
+server.listen(1337);
+
+// $ curl localhost:1337 -d &quot;{}&quot;
+// object
+// $ curl localhost:1337 -d &quot;\&quot;foo\&quot;&quot;
+// string
+// $ curl localhost:1337 -d &quot;not json&quot;
+// error: Unexpected token o in JSON at position 1
+</code></pre>
+<p><a href="#stream_class_stream_writable">Writable</a> 流 (比如例子中的 <code>res</code>) 暴露了一些方法，比如
+<code>write()</code> 和 <code>end()</code> 。这些方法可以将数据写入到流中。</p>
+<p>当流中的数据可以读取时，<a href="#stream_class_stream_readable">Readable</a> 流使用 <a href="events.html#events_class_eventemitter"><code>EventEmitter</code></a> API 来通知应用。
+这些数据可以使用多种方法从流中读取。</p>
+<p><a href="#stream_class_stream_writable">Writable</a> 和 <a href="#stream_class_stream_readable">Readable</a> 流都使用了 <a href="events.html#events_class_eventemitter"><code>EventEmitter</code></a> API ，通过多种方式，
+与流的当前状态进行交互。</p>
+<p><a href="#stream_class_stream_duplex">Duplex</a> 和 <a href="#stream_class_stream_transform">Transform</a> 都是同时满足 <a href="#stream_class_stream_writable">Writable</a> 和 <a href="#stream_class_stream_readable">Readable</a> 。</p>
+<p>对于只是简单写入数据到流和从流中消费数据的应用来说，
+不要求直接实现流接口，通常也不需要调用 <code>require(&apos;stream&apos;)</code>。</p>
+<p>需要实现两种类型流的开发者可以参考 <a href="#stream_api_for_stream_implementers">API for Stream Implementers</a>。</p>
+<h3>可写流<span><a class="mark" href="#stream_writable_streams" id="stream_writable_streams">#</a></span></h3>
+<p>可写流是对数据写入&apos;目的地&apos;的一种抽象。</p>
+<p><a href="#stream_class_stream_writable">Writable</a> 的例子包括了：</p>
+<ul>
+<li><a href="http.html#http_class_http_clientrequest">HTTP requests, on the client</a></li>
+<li><a href="http.html#http_class_http_serverresponse">HTTP responses, on the server</a></li>
+<li><a href="fs.html#fs_class_fs_writestream">fs write streams</a></li>
+<li><a href="zlib.html">zlib streams</a></li>
+<li><a href="crypto.html">crypto streams</a></li>
+<li><a href="net.html#net_class_net_socket">TCP sockets</a></li>
+<li><a href="child_process.html#child_process_subprocess_stdin">child process stdin</a></li>
+<li><a href="process.html#process_process_stdout"><code>process.stdout</code></a>, <a href="process.html#process_process_stderr"><code>process.stderr</code></a></li>
+</ul>
+<p><em>注意</em>: 上面的某些例子事实上是 <a href="#stream_class_stream_duplex">Duplex</a> 流，只是实现了 <a href="#stream_class_stream_writable">Writable</a> 接口。</p>
+<p>所有 <a href="#stream_class_stream_writable">Writable</a> 流都实现了
+<code>stream.Writable</code> 类定义的接口。</p>
+<p>尽管特定的 <a href="#stream_class_stream_writable">Writable</a> 流的实现可能略有差别，
+所有的 Writable streams 都可以按一种基本模式进行使用，如下面例子所示：</p>
+<pre><code class="lang-js">const myStream = getWritableStreamSomehow();
+myStream.write(&apos;some data&apos;);
+myStream.write(&apos;some more data&apos;);
+myStream.end(&apos;done writing data&apos;);
+</code></pre>
+<h4>stream.Writable 类<span><a class="mark" href="#stream_class_stream_writable" id="stream_class_stream_writable">#</a></span></h4>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><!--type=class-->
+<h5>&apos;close&apos; 事件<span><a class="mark" href="#stream_event_close" id="stream_event_close">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p><code>&apos;close&apos;</code> 事件将在流或其底层资源（比如一个文件）关闭后触发。<code>&apos;close&apos;</code> 事件触发后，该流将不会再触发任何事件。</p>
+<p>不是所有可写流都会触发 <code>&apos;close&apos;</code> 事件。</p>
+<h5>&apos;drain&apos; 事件<span><a class="mark" href="#stream_event_drain" id="stream_event_drain">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p>如果调用 <a href="#stream_writable_write_chunk_encoding_callback"><code>stream.write(chunk)</code></a> 方法返回 <code>false</code>，<code>&apos;drain&apos;</code> 事件会在适合恢复写入数据到流的时候触发。</p>
+<pre><code class="lang-js">// 向可写流中写入数据一百万次。
+// 需要注意背压 （back-pressure）。
+function writeOneMillionTimes(writer, data, encoding, callback) {
+  let i = 1000000;
+  write();
+  function write() {
+    let ok = true;
+    do {
+      i--;
+      if (i === 0) {
+        // 最后 一次
+        writer.write(data, encoding, callback);
+      } else {
+        // 检查是否可以继续写入。 
+        // 这里不要传递 callback， 因为写入还没有结束！ 
+        ok = writer.write(data, encoding);
+      }
+    } while (i &gt; 0 &amp;&amp; ok);
+    if (i &gt; 0) {
+      // 不得不提前停下！
+      // 当 &apos;drain&apos; 事件触发后继续写入  
+      writer.once(&apos;drain&apos;, write);
+    }
+  }
+}
+</code></pre>
+<h5>&apos;error&apos; 事件<span><a class="mark" href="#stream_event_error" id="stream_event_error">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li>
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+<p><code>&apos;error&apos;</code> 事件在写入数据出错或者使用管道出错时触发。事件发生时，回调函数仅会接收到一个 <code>Error</code> 参数。</p>
+<p><em>注意</em>: <code>&apos;error&apos;</code> 事件发生时，流并不会关闭。</p>
+<h5>&apos;finish&apos; 事件<span><a class="mark" href="#stream_event_finish" id="stream_event_finish">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p>在调用了 <a href="#stream_writable_end_chunk_encoding_callback"><code>stream.end()</code></a> 方法，且缓冲区数据都已经传给底层系统（underlying system）之后， <code>&apos;finish&apos;</code> 事件将被触发。</p>
+<pre><code class="lang-js">const writer = getWritableStreamSomehow();
+for (let i = 0; i &lt; 100; i++) {
+  writer.write(`hello, #${i}!\n`);
+}
+writer.end(&apos;This is the end\n&apos;);
+writer.on(&apos;finish&apos;, () =&gt; {
+  console.error(&apos;All writes are now complete.&apos;);
+});
+</code></pre>
+<h5>&apos;pipe&apos; 事件<span><a class="mark" href="#stream_event_pipe" id="stream_event_pipe">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>src</code> 
+            <a href="#stream_class_stream_readable" class="type">&lt;stream.Readable&gt;</a> 输出到目标可写流（writable）的源流（source stream）</li>
+</ul>
+<p>在可读流（readable stream）上调用 <a href="#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a> 方法，并在目标流向 (destinations) 中添加当前可写流 ( writable ) 时，将会在可写流上触发 <code>&apos;pipe&apos;</code> 事件。</p>
+<pre><code class="lang-js">const writer = getWritableStreamSomehow();
+const reader = getReadableStreamSomehow();
+writer.on(&apos;pipe&apos;, (src) =&gt; {
+  console.error(&apos;something is piping into the writer&apos;);
+  assert.equal(src, reader);
+});
+reader.pipe(writer);
+</code></pre>
+<h5>&apos;unpipe&apos; 事件<span><a class="mark" href="#stream_event_unpipe" id="stream_event_unpipe">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>src</code> 
+            <a href="#stream_class_stream_readable" class="type">&lt;stream.Readable&gt;</a> <a href="#stream_readable_unpipe_destination">unpiped</a> 当前可写流的源流</li>
+</ul>
+<p>在 <a href="#stream_class_stream_readable">Readable</a> 上调用 <a href="#stream_readable_unpipe_destination"><code>stream.unpipe()</code></a> 方法，从目标流向中移除当前 <a href="#stream_class_stream_writable">Writable</a> 时，将会触发 <code>&apos;unpipe&apos;</code> 事件。</p>
+<pre><code class="lang-js">const writer = getWritableStreamSomehow();
+const reader = getReadableStreamSomehow();
+writer.on(&apos;unpipe&apos;, (src) =&gt; {
+  console.error(&apos;Something has stopped piping into the writer.&apos;);
+  assert.equal(src, reader);
+});
+reader.pipe(writer);
+reader.unpipe(writer);
+</code></pre>
+<h5>writable.cork()<span><a class="mark" href="#stream_writable_cork" id="stream_writable_cork">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.11.2</span>
+</div><p>调用 <code>writable.cork()</code> 方法将强制所有写入数据都存放到内存中的缓冲区里。
+直到调用 <a href="#stream_writable_uncork"><code>stream.uncork()</code></a> 或
+<a href="#stream_writable_end_chunk_encoding_callback"><code>stream.end()</code></a> 方法时，缓冲区里的数据才会被输出。</p>
+<p>在向流中写入大量小块数据（small chunks of data）时，内部缓冲区（internal
+buffer）可能失效，从而导致性能下降。<code>writable.cork()</code> 方法主要就是用来避免这种情况。 对于这种情况，
+实现了 <code>writable._writev()</code> 方法的流可以对写入的数据进行缓冲，从而提高写入效率。</p>
+<p>也可查看 <a href="#stream_writable_uncork"><code>writable.uncork()</code></a>。</p>
+<h5>writable.end([chunk][, encoding][, callback])<span><a class="mark" href="#stream_writable_end_chunk_encoding_callback" id="stream_writable_end_chunk_encoding_callback">#</a></span></h5>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>chunk</code> argument can now be a <code>Uint8Array</code> instance.</p>
+</td></tr>
+<tr><td>v0.9.4</td>
+<td><p><span>新增于: v0.9.4</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>chunk</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> | <span class="type">&lt;any&gt;</span> 可选的，需要写入的数据。对于非对象模式下的流， <code>chunk</code> 必须是字符串、或 <code>Buffer</code>、或 <code>Uint8Array</code>。对于对象模式下的流， <code>chunk</code> 可以是任意的 JavaScript 值，除了 <code>null</code>。</li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 如果 <code>chunk</code> 是字符串，这里指定字符编码。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 可选的，流结束时的回调函数。</li>
+</ul>
+<p>调用 <code>writable.end()</code> 方法表明接下来没有数据要被写入 <a href="#stream_class_stream_writable">Writable</a>。通过传入可选的 <code>chunk</code> 和 <code>encoding</code> 参数，可以在关闭流之前再写入一段数据。如果传入了可选的 <code>callback</code> 函数，它将作为 <a href="#stream_event_finish"><code>&apos;finish&apos;</code></a> 事件的回调函数。</p>
+<p>在调用了 <a href="#stream_writable_end_chunk_encoding_callback"><code>stream.end()</code></a> 方法之后，再调用 <a href="#stream_writable_write_chunk_encoding_callback"><code>stream.write()</code></a> 方法将会导致错误。</p>
+<pre><code class="lang-js">// 写入 &apos;hello, &apos; ，并用 &apos;world!&apos; 来结束写入
+const file = fs.createWriteStream(&apos;example.txt&apos;);
+file.write(&apos;hello, &apos;);
+file.end(&apos;world!&apos;);
+// 后面不允许再写入数据！
+</code></pre>
+<h5>writable.setDefaultEncoding(encoding)<span><a class="mark" href="#stream_writable_setdefaultencoding_encoding" id="stream_writable_setdefaultencoding_encoding">#</a></span></h5>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v6.1.0</td>
+<td><p>This method now returns a reference to <code>writable</code>.</p>
+</td></tr>
+<tr><td>v0.11.15</td>
+<td><p><span>新增于: v0.11.15</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 新的默认编码</li>
+<li>返回： <code>this</code></li>
+</ul>
+<p><code>writable.setDefaultEncoding()</code> 用于为 <a href="#stream_class_stream_writable">Writable</a> 设置 <code>encoding</code>。</p>
+<h5>writable.uncork()<span><a class="mark" href="#stream_writable_uncork" id="stream_writable_uncork">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.11.2</span>
+</div><p><code>writable.uncork()</code> 将输出在 <a href="#stream_writable_cork"><code>stream.cork()</code></a> 方法被调用之后缓冲在内存中的所有数据。</p>
+<p>如果使用 <a href="#stream_writable_cork"><code>writable.cork()</code></a> 和 <code>writable.uncork()</code> 来管理写入缓存，建议使用 <code>process.nextTick()</code> 来延迟调用 <code>writable.uncork()</code> 方法。通过这种方式，可以对单个 Node.js 事件循环中调用的所有 <code>writable.write()</code> 方法进行批处理。</p>
+<pre><code class="lang-js">stream.cork();
+stream.write(&apos;some &apos;);
+stream.write(&apos;data &apos;);
+process.nextTick(() =&gt; stream.uncork());
+</code></pre>
+<p>如果一个流多次调用了 <a href="#stream_writable_cork"><code>writable.cork()</code></a> 方法，那么也必须调用同样次数的 <code>writable.uncork()</code> 方法以输出缓冲区数据。</p>
+<pre><code class="lang-js">stream.cork();
+stream.write(&apos;some &apos;);
+stream.cork();
+stream.write(&apos;data &apos;);
+process.nextTick(() =&gt; {
+  stream.uncork();
+  // 之前的数据只有在 uncork() 被二次调用后才会输出
+  stream.uncork();
+});
+</code></pre>
+<p>也可查看 <a href="#stream_writable_cork"><code>writable.cork()</code></a>。</p>
+<h5>writable.writableHighWaterMark<span><a class="mark" href="#stream_writable_writablehighwatermark" id="stream_writable_writablehighwatermark">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v8.10.0</span>
+</div><p>返回构造该可写流时传入的 <code>highWaterMark</code> 参数值。</p>
+<h5>writable.write(chunk[, encoding][, callback])<span><a class="mark" href="#stream_writable_write_chunk_encoding_callback" id="stream_writable_write_chunk_encoding_callback">#</a></span></h5>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>chunk</code> argument can now be a <code>Uint8Array</code> instance.</p>
+</td></tr>
+<tr><td>v6.0.0</td>
+<td><p>Passing <code>null</code> as the <code>chunk</code> parameter will always be considered invalid now, even in object mode.</p>
+</td></tr>
+<tr><td>v0.9.4</td>
+<td><p><span>新增于: v0.9.4</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>chunk</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> | <span class="type">&lt;any&gt;</span> 要写入的数据。可选的。
+对于非对象模式下的流， <code>chunk</code> 必须是字符串， <code>Buffer</code> 或者
+<code>Uint8Array</code>。对于对象模式下的流，<code>chunk</code> 可以是除 <code>null</code> 外的任意 JavaScript 值。</li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 如果 <code>chunk</code> 是字符串，这里指定字符编码</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 缓冲数据输出时的回调函数</li>
+<li>返回： 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果流需要等待 <code>&apos;drain&apos;</code> 事件触发才能继续写入数据，这里将返回 <code>false</code> ； 否则返回 <code>true</code>。</li>
+</ul>
+<p><code>writable.write()</code> 方法向流中写入数据，并在数据处理完成后调用 <code>callback</code> 。如果有错误发生， <code>callback</code> <em>不一定</em> 以这个错误作为第一个参数并被调用。要确保可靠地检测到写入错误，应该监听
+<code>&apos;error&apos;</code> 事件。</p>
+<p>在确认了 <code>chunk</code> 后，如果内部缓冲区的大小小于创建流时设定的 <code>highWaterMark</code> 阈值，函数将返回 <code>true</code> 。
+如果返回值为 <code>false</code> ，应该停止向流中写入数据，直到 <a href="#stream_event_drain"><code>&apos;drain&apos;</code></a> 事件被触发。</p>
+<p>当一个流不处在 drain 的状态， 对 <code>write()</code> 的调用会缓存数据块， 并且返回 false。
+一旦所有当前所有缓存的数据块都排空了（被操作系统接受来进行输出）， 那么 <code>&apos;drain&apos;</code> 事件就会被触发。
+我们建议， 一旦 write() 返回 false， 在 <code>&apos;drain&apos;</code> 事件触发前， 不能写入任何数据块。 
+然而，当流不处在 <code>&apos;drain&apos;</code> 状态时， 调用 <code>write()</code> 是被允许的， Node.js 会缓存所有已经写入的数据块， 
+直到达到最大内存占用， 这时它会无条件中止。 甚至在它中止之前， 高内存占用将会导致差的垃圾回收器的性能和高的系统相对敏感性
+（即使内存不再需要，也通常不会被释放回系统）。 如果远程的另一端没有读取数据， TCP sockets 可能永远也不会 drain ， 
+所以写入到一个不会drain的socket可能会导致远程可利用的漏洞。 </p>
+<p>对于一个 <a href="#stream_class_stream_transform">Transform</a>, 写入数据到一个不会drain的流尤其成问题， 因为 <code>Transform</code> 流默认被暂停， 直到它们被pipe或者被添加了
+ <code>&apos;data&apos;</code> 或 <code>&apos;readable&apos;</code> 事件处理函数。 </p>
+<p>如果将要被写入的数据可以根据需要生成或者取得，我们建议将逻辑封装为一个 <a href="#stream_class_stream_readable">Readable</a> 流并且使用 
+<a href="#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a>。 但是如果调用 <code>write()</code> 优先, 那么可以使用 <a href="#stream_event_drain"><code>&apos;drain&apos;</code></a> 事件来防止回压并且避免内存问题:</p>
+<pre><code class="lang-js">function write(data, cb) {
+  if (!stream.write(data)) {
+    stream.once(&apos;drain&apos;, cb);
+  } else {
+    process.nextTick(cb);
+  }
+}
+
+// 在回调函数被执行后再进行其他的写入
+write(&apos;hello&apos;, () =&gt; {
+  console.log(&apos;write completed, do more writes now&apos;);
+});
+</code></pre>
+<p>对象模式的写入流将忽略 <code>encoding</code> 参数。</p>
+<h5>writable.destroy([error])<span><a class="mark" href="#stream_writable_destroy_error" id="stream_writable_destroy_error">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><ul>
+<li>返回: <code>this</code></li>
+</ul>
+<p>摧毁这个流，并发出传过来的错误。当这个函数被调用后，这个写入流就结束了。
+使用者不应该重写这个函数，而是重写 <a href="#stream_writable_destroy_err_callback"><code>writable._destroy</code></a>。</p>
+<h3>可读流<span><a class="mark" href="#stream_readable_streams" id="stream_readable_streams">#</a></span></h3>
+<p>可读流（Readable streams）是对提供数据的 <em>源头</em> （source）的抽象。</p>
+<p>可读流的例子包括：</p>
+<ul>
+<li><a href="http.html#http_class_http_incomingmessage">HTTP responses, on the client</a></li>
+<li><a href="http.html#http_class_http_incomingmessage">HTTP requests, on the server</a></li>
+<li><a href="fs.html#fs_class_fs_readstream">fs read streams</a></li>
+<li><a href="zlib.html">zlib streams</a></li>
+<li><a href="crypto.html">crypto streams</a></li>
+<li><a href="net.html#net_class_net_socket">TCP sockets</a></li>
+<li><a href="child_process.html#child_process_subprocess_stdout">child process stdout and stderr</a></li>
+<li><a href="process.html#process_process_stdin"><code>process.stdin</code></a></li>
+</ul>
+<p>所有的 <a href="#stream_class_stream_readable">Readable</a> 都实现了
+<code>stream.Readable</code> 类定义的接口。</p>
+<h4>两种模式<span><a class="mark" href="#stream_two_modes" id="stream_two_modes">#</a></span></h4>
+<p>可读流事实上工作在下面两种模式之一：flowing 和 paused 。</p>
+<p>在 flowing 模式下， 可读流自动从系统底层读取数据，并通过 <a href="events.html#events_class_eventemitter"><code>EventEmitter</code></a> 接口的事件尽快将数据提供给应用。</p>
+<p>在 paused 模式下，必须显式调用 <a href="#stream_readable_read_size"><code>stream.read()</code></a> 方法来从流中读取数据片段。</p>
+<p>所有初始工作模式为 paused 的 <a href="#stream_class_stream_readable">Readable</a> 流，可以通过下面三种途径切换到 flowing
+模式：</p>
+<ul>
+<li>监听 <a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件。</li>
+<li>调用 <a href="#stream_readable_resume"><code>stream.resume()</code></a> 方法。</li>
+<li>调用 <a href="#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a> 方法将数据发送到 <a href="#stream_class_stream_writable">Writable</a>。</li>
+</ul>
+<p>可读流可以通过下面途径切换到 paused 模式：</p>
+<ul>
+<li>如果不存在管道目标（pipe destination），可以通过调用
+<a href="#stream_readable_pause"><code>stream.pause()</code></a> 方法实现。</li>
+<li>如果存在管道目标，可以通过取消 <a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件监听，并调用 <a href="#stream_readable_unpipe_destination"><code>stream.unpipe()</code></a> 方法移除所有管道目标来实现。</li>
+</ul>
+<p>这里需要记住的重要概念就是，可读流需要先为其提供消费或忽略数据的机制，才能开始提供数据。如果消费机制被禁用或取消，可读流将 <em>尝试</em>
+停止生成数据。</p>
+<p><em>注意</em>: 为了向后兼容，取消 <a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件监听并 <strong>不会</strong> 自动将流暂停。同时，如果存在管道目标（pipe destination），且目标状态变为可以接收数据（drain and ask for
+more data），调用了 <a href="#stream_readable_pause"><code>stream.pause()</code></a> 方法也并不保证流会一直 <em>保持</em> 暂停状态。</p>
+<p><em>注意</em>: 如果 <a href="#stream_class_stream_readable">Readable</a> 切换到 flowing 模式，且没有消费者处理流中的数据，这些数据将会丢失。
+比如， 调用了 <code>readable.resume()</code> 方法却没有监听 <code>&apos;data&apos;</code> 事件，或是取消了 <code>&apos;data&apos;</code> 事件监听，就有可能出现这种情况。</p>
+<h4>三种状态<span><a class="mark" href="#stream_three_states" id="stream_three_states">#</a></span></h4>
+<p>可读流的“两种操作模式”是一种简单抽象。它抽象了在可读流实现（Readable stream implementation）内部发生的复杂的状态管理过程。</p>
+<p>在任意时刻，任意可读流应确切处于下面三种状态之一：</p>
+<ul>
+<li><code>readable._readableState.flowing = null</code></li>
+<li><code>readable._readableState.flowing = false</code></li>
+<li><code>readable._readableState.flowing = true</code></li>
+</ul>
+<p>若 <code>readable._readableState.flowing</code> 为 <code>null</code>，由于不存在数据消费者，可读流将不会产生数据。
+在这个状态下，监听 <code>&apos;data&apos;</code> 事件，调用 <code>readable.pipe()</code>
+方法，或者调用 <code>readable.resume()</code> 方法，
+<code>readable._readableState.flowing</code> 的值将会变为 <code>true</code> 。这时，随着数据生成，可读流开始频繁触发事件。</p>
+<p>调用 <code>readable.pause()</code> 方法， <code>readable.unpipe()</code> 方法， 或者接收 “背压”（back pressure），
+将导致 <code>readable._readableState.flowing</code> 值变为 <code>false</code>。
+这将暂停事件流，但 <em>不会</em> 暂停数据生成。
+在这种情况下，为 <code>&apos;data&apos;</code> 事件设置监听函数不会导致
+ <code>readable._readableState.flowing</code> 变为 <code>true</code>。</p>
+<pre><code class="lang-js">const { PassThrough, Writable } = require(&apos;stream&apos;);
+const pass = new PassThrough();
+const writable = new Writable();
+
+pass.pipe(writable);
+pass.unpipe(writable);
+// flowing 现在为 false
+
+pass.on(&apos;data&apos;, (chunk) =&gt; { console.log(chunk.toString()); });
+pass.write(&apos;ok&apos;); // 不会触发 &apos;data&apos; 事件
+pass.resume(); // 只有被调用了才会触发 &apos;data&apos; 事件
+</code></pre>
+<p>当 <code>readable._readableState.flowing</code> 值为 <code>false</code> 时， 数据可能堆积到流的内部缓存中。</p>
+<h4>选择一种<span><a class="mark" href="#stream_choose_one" id="stream_choose_one">#</a></span></h4>
+<p>可读流 API 的演化贯穿了多个 Node.js 版本，提供了多种方法来消费流数据。通常开发者应该选择其中 <em>一种</em> 来消费数据，而 <em>不应该</em> 在单个流使用多种方法来消费数据。</p>
+<p>对于大多数用户，建议使用 <code>readable.pipe()</code> 方法来消费流数据，因为它是最简单的一种实现。开发者如果要精细地控制数据传递和产生的过程，可以使用 <a href="events.html#events_class_eventemitter"><code>EventEmitter</code></a> 和 <code>readable.pause()</code>/<code>readable.resume()</code> 提供的 API 。</p>
+<h4>stream.Readable 类<span><a class="mark" href="#stream_class_stream_readable" id="stream_class_stream_readable">#</a></span></h4>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><!--type=class-->
+<h5>&apos;close&apos; 事件<span><a class="mark" href="#stream_event_close_1" id="stream_event_close_1">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p><code>&apos;close&apos;</code> 事件将在流或其底层资源（比如一个文件）关闭后触发。<code>&apos;close&apos;</code> 事件触发后，该流将不会再触发任何事件。</p>
+<p>不是所有 <a href="#stream_class_stream_readable">Readable</a> 都会触发 <code>&apos;close&apos;</code> 事件。</p>
+<h5>&apos;data&apos; 事件<span><a class="mark" href="#stream_event_data" id="stream_event_data">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>chunk</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | <span class="type">&lt;any&gt;</span> 数据片段。对于非对象模式的可读流，这是一个字符串或者 <code>Buffer</code>。
+对于对象模式的可读流，这可以是除 <code>null</code> 以外的任意类型 JavaScript 值。</li>
+</ul>
+<p><code>&apos;data&apos;</code> 事件会在流将数据传递给消费者时触发。当流转换到 flowing 模式时会触发该事件。调用 <code>readable.pipe()</code>， <code>readable.resume()</code> 方法，或为 <code>&apos;data&apos;</code> 事件添加回调可以将流转换到 flowing 模式。 <code>&apos;data&apos;</code> 事件也会在调用 <code>readable.read()</code> 方法并有数据返回时触发。</p>
+<p>在没有明确暂停的流上添加 <code>&apos;data&apos;</code> 事件监听会将流转换为 flowing 模式。 数据会在可用时尽快传递给下个流程。</p>
+<p>如果调用 <code>readable.setEncoding()</code> 方法明确为流指定了默认编码，回调函数将接收到一个字符串，否则接收到的数据将是一个
+<code>Buffer</code> 实例。</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+readable.on(&apos;data&apos;, (chunk) =&gt; {
+  console.log(`Received ${chunk.length} bytes of data.`);
+});
+</code></pre>
+<h5>&apos;end&apos; 事件<span><a class="mark" href="#stream_event_end" id="stream_event_end">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p><code>&apos;end&apos;</code> 事件将在流中再没有数据可供消费时触发。</p>
+<p><em>注意</em>： <code>&apos;end&apos;</code> 事件只有在数据被完全消费后 <strong>才会触发</strong> 。 可以在数据被完全消费后，通过将流转换到 
+flowing 模式， 或反复调用 <a href="#stream_readable_read_size"><code>stream.read()</code></a> 方法来实现这一点。</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+readable.on(&apos;data&apos;, (chunk) =&gt; {
+  console.log(`Received ${chunk.length} bytes of data.`);
+});
+readable.on(&apos;end&apos;, () =&gt; {
+  console.log(&apos;There will be no more data.&apos;);
+});
+</code></pre>
+<h5>&apos;error&apos; 事件<span><a class="mark" href="#stream_event_error_1" id="stream_event_error_1">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li>
+            <a href="javascript:;" class="type">&lt;Error&gt;</a></li>
+</ul>
+<p><code>&apos;error&apos;</code> 事件可以在任何时候在可读流实现（Readable implementation）上触发。
+通常，这会在底层系统内部出错从而不能产生数据，或当流的实现试图传递错误数据时发生。</p>
+<p>回调函数将接收到一个 <code>Error</code> 对象。</p>
+<h5>&apos;readable&apos; 事件<span><a class="mark" href="#stream_event_readable" id="stream_event_readable">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p><code>&apos;readable&apos;</code> 事件将在流中有数据可供读取时触发。在某些情况下，为 <code>&apos;readable&apos;</code> 事件添加回调将会导致一些数据被读取到内部缓存中。</p>
+<pre><code class="lang-javascript">const readable = getReadableStreamSomehow();
+readable.on(&apos;readable&apos;, () =&gt; {
+  // 有一些数据可读了
+});
+</code></pre>
+<p>当到达流数据尾部时， <code>&apos;readable&apos;</code> 事件也会触发。触发顺序在 <code>&apos;end&apos;</code> 事件之前。</p>
+<p>事实上， <code>&apos;readable&apos;</code> 事件表明流有了新的动态：要么是有了新的数据，要么是到了流的尾部。 对于前者， <a href="#stream_readable_read_size"><code>stream.read()</code></a> 将返回可用的数据。而对于后者， <a href="#stream_readable_read_size"><code>stream.read()</code></a> 将返回
+<code>null</code>。 例如，下面的例子中的 <code>foo.txt</code> 是一个空文件：</p>
+<pre><code class="lang-js">const fs = require(&apos;fs&apos;);
+const rr = fs.createReadStream(&apos;foo.txt&apos;);
+rr.on(&apos;readable&apos;, () =&gt; {
+  console.log(`readable: ${rr.read()}`);
+});
+rr.on(&apos;end&apos;, () =&gt; {
+  console.log(&apos;end&apos;);
+});
+</code></pre>
+<p>上面脚本的输出如下：</p>
+<pre><code class="lang-txt">$ node test.js
+readable: null
+end
+</code></pre>
+<p><em>注意</em>： 通常情况下，<code>readable.pipe()</code> 方法和 <code>&apos;data&apos;</code> 事件机制比 <code>&apos;readable&apos;</code> 事件更容易理解。然而处理 <code>&apos;readable&apos;</code>事件可能造成吞吐量升高。</p>
+<h5>readable.isPaused()<span><a class="mark" href="#stream_readable_ispaused" id="stream_readable_ispaused">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.11.14</span>
+</div><ul>
+<li>返回： 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a></li>
+</ul>
+<p><code>readable.isPaused()</code> 方法返回可读流的当前操作状态。 该方法主要是在
+<code>readable.pipe()</code> 方法的底层机制中用到。大多数情况下，没有必要直接使用该方法。</p>
+<pre><code class="lang-js">const readable = new stream.Readable();
+
+readable.isPaused(); // === false
+readable.pause();
+readable.isPaused(); // === true
+readable.resume();
+readable.isPaused(); // === false
+</code></pre>
+<h5>readable.pause()<span><a class="mark" href="#stream_readable_pause" id="stream_readable_pause">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li>返回： <code>this</code></li>
+</ul>
+<p><code>readable.pause()</code> 方法将会使 flowing 模式的流停止触发 <a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件， 进而切出 flowing 模式。任何可用的数据都将保存在内部缓存中。</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+readable.on(&apos;data&apos;, (chunk) =&gt; {
+  console.log(`Received ${chunk.length} bytes of data.`);
+  readable.pause();
+  console.log(&apos;There will be no additional data for 1 second.&apos;);
+  setTimeout(() =&gt; {
+    console.log(&apos;Now data will start flowing again.&apos;);
+    readable.resume();
+  }, 1000);
+});
+</code></pre>
+<h5>readable.pipe(destination[, options])<span><a class="mark" href="#stream_readable_pipe_destination_options" id="stream_readable_pipe_destination_options">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>destination</code> 
+            <a href="#stream_class_stream_writable" class="type">&lt;stream.Writable&gt;</a> 数据写入目标</li>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> Pipe 选项<ul>
+<li><code>end</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 在 reader 结束时结束 writer 。默认为 <code>true</code>。</li>
+</ul>
+</li>
+</ul>
+<p><code>readable.pipe()</code> 绑定一个 <a href="#stream_class_stream_writable">Writable</a> 到 <code>readable</code> 上，
+将可写流自动切换到 flowing 模式并将所有数据传给绑定的 <a href="#stream_class_stream_writable">Writable</a>。数据流将被自动管理。这样，即使是可读流较快，目标可写流也不会超负荷（overwhelmed）。</p>
+<p>下面例子将 <code>readable</code> 中的所有数据通过管道传递给名为 <code>file.txt</code> 的文件：</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+const writable = fs.createWriteStream(&apos;file.txt&apos;);
+// readable 中的所有数据都传给了 &apos;file.txt&apos;
+readable.pipe(writable);
+</code></pre>
+<p>可以在单个可读流上绑定多个可写流。</p>
+<p><code>readable.pipe()</code> 方法返回 <em>目标流</em> 的引用，这样就可以对流进行链式地管道操作：</p>
+<pre><code class="lang-js">const r = fs.createReadStream(&apos;file.txt&apos;);
+const z = zlib.createGzip();
+const w = fs.createWriteStream(&apos;file.txt.gz&apos;);
+r.pipe(z).pipe(w);
+</code></pre>
+<p>默认情况下，当源可读流（the source Readable stream）触发 <a href="#stream_event_end"><code>&apos;end&apos;</code></a> 事件时，目标流也会调用 <a href="#stream_writable_end_chunk_encoding_callback"><code>stream.end()</code></a> 方法从而结束写入。要禁用这一默认行为， <code>end</code>
+选项应该指定为 <code>false</code>， 这将使目标流保持打开，
+如下面例子所示：</p>
+<pre><code class="lang-js">reader.pipe(writer, { end: false });
+reader.on(&apos;end&apos;, () =&gt; {
+  writer.end(&apos;Goodbye\n&apos;);
+});
+</code></pre>
+<p>这里有一点要警惕，如果可读流在处理时发生错误，目标可写流 <em>不会</em> 自动关闭。
+如果发生错误，需要 <em>手动</em> 关闭所有流以避免内存泄漏。</p>
+<p><em>注意</em>：不管对 <a href="process.html#process_process_stderr"><code>process.stderr</code></a> 和 <a href="process.html#process_process_stdout"><code>process.stdout</code></a> 指定什么选项，它们都是直到 Node.js 进程退出才关闭。</p>
+<h5>readable.readableHighWaterMark<span><a class="mark" href="#stream_readable_readablehighwatermark" id="stream_readable_readablehighwatermark">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v8.10.0</span>
+</div><p>返回构造该可读流时传入的 <code>&apos;highWaterMark&apos;</code> 属性。</p>
+<h5>readable.read([size])<span><a class="mark" href="#stream_readable_read_size" id="stream_readable_read_size">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 可选参数，确定读取数据的大小.</li>
+<li>返回 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a></li>
+</ul>
+<p><code>readable.read()</code>方法从内部缓冲区中抽出并返回一些数据。 如果没有可读的数据，返回null。<code>readable.read()</code>方法默认数据将作为“Buffer”对象返回
+，除非已经使用<code>readable.setEncoding()</code>方法设置编码或流运行在对象模式。</p>
+<p>可选的<code>size</code>参数指定要读取的特定数量的字节。如果<code>size</code>字节不可读，将返回<code>null</code><em>除非</em>流已经结束，在这种情况下所有保留在内部缓冲区的数据将被返回。</p>
+<p>如果没有指定<code>size</code>参数，则内部缓冲区包含的所有数据将返回。</p>
+<p><code>readable.read()</code>方法只应该在暂停模式下的可读流上运行。在流模式下，<code>readable.read()</code>自动调用直到内部缓冲区的数据完全耗尽。</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+readable.on(&apos;readable&apos;, () =&gt; {
+  let chunk;
+  while (null !== (chunk = readable.read())) {
+    console.log(`Received ${chunk.length} bytes of data.`);
+  }
+});
+</code></pre>
+<p>一般来说，建议开发人员避免使用<code>&apos;readable&apos;</code>事件和<code>readable.read()</code>方法，使用<code>readable.pipe()</code>或<code>&apos;data&apos;</code>事件代替。</p>
+<p>无论<code>size</code>参数的值是什么，对象模式中的可读流将始终返回调用<a href="#stream_readable_read_size"><code>readable.read(size)</code></a>的单个项目。</p>
+<p><em>注意</em>：如果<code>readable.read()</code>方法返回一个数据块，那么一个<code>&apos;data&apos;</code>事件也将被发送。</p>
+<p><em>注意</em>：在已经被发出的<a href="#stream_event_end"><code>&apos;end&apos;</code></a>事件后调用<a href="#stream_readable_read_size"><code>stream.read([size])</code></a>事件将返回<code>null</code>。不会抛出运行时错误。</p>
+<h5>readable.resume()<span><a class="mark" href="#stream_readable_resume" id="stream_readable_resume">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li>返回： <code>this</code></li>
+</ul>
+<p><code>readable.resume()</code> 方法会重新触发 <a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件, 将暂停模式切换到流动模式。</p>
+<p><code>readable.resume()</code> 方法可以用来充分使用流中的数据，而不用实际处理任何数据，如以下示例所示：</p>
+<pre><code class="lang-js">getReadableStreamSomehow()
+  .resume()
+  .on(&apos;end&apos;, () =&gt; {
+    console.log(&apos;Reached the end, but did not read anything.&apos;);
+  });
+</code></pre>
+<h5>readable.setEncoding(encoding)<span><a class="mark" href="#stream_readable_setencoding_encoding" id="stream_readable_setencoding_encoding">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 要使用的编码</li>
+<li>Returns: <code>this</code></li>
+</ul>
+<p><code>readble.setEncoding()</code> 方法会为从可读流读入的数据设置字符编码</p>
+<p>默认返回<code>Buffer</code>对象。设置编码会使得该流数据返回指定编码的字符串而不是<code>Buffer</code>对象。例如，调用<code>readable.setEncoding(&apos;utf-8&apos;)</code>会使得输出数据作为UTF-8数据解析，并作为字符串返回。调用<code>readable.setEncoding(&apos;hex&apos;)</code>使得数据被编码成16进制字符串格式。</p>
+<p>可读流会妥善处理多字节字符，如果仅仅直接从流中取出<code>Buffer</code>对象，很可能会导致错误解码。</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+readable.setEncoding(&apos;utf8&apos;);
+readable.on(&apos;data&apos;, (chunk) =&gt; {
+  assert.equal(typeof chunk, &apos;string&apos;);
+  console.log(&apos;got %d characters of string data&apos;, chunk.length);
+});
+</code></pre>
+<h5>readable.unpipe([destination])<span><a class="mark" href="#stream_readable_unpipe_destination" id="stream_readable_unpipe_destination">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>destination</code> 
+            <a href="#stream_class_stream_writable" class="type">&lt;stream.Writable&gt;</a> 可选的，指定需要分离的目标流</li>
+</ul>
+<p><code>readable.unpipe()</code> 方法将之前通过<a href="#stream_readable_pipe_destination_options"><code>stream.pipe()</code></a>方法绑定的流分离</p>
+<p>如果 <code>destination</code> 没有传入, 则所有绑定的流都会被分离.</p>
+<p>如果传入 <code>destination</code>, 但它没有被<code>pipe()</code>绑定过，则该方法不作为.</p>
+<pre><code class="lang-js">const readable = getReadableStreamSomehow();
+const writable = fs.createWriteStream(&apos;file.txt&apos;);
+// All the data from readable goes into &apos;file.txt&apos;,
+// but only for the first second
+readable.pipe(writable);
+setTimeout(() =&gt; {
+  console.log(&apos;Stop writing to file.txt&apos;);
+  readable.unpipe(writable);
+  console.log(&apos;Manually close the file stream&apos;);
+  writable.end();
+}, 1000);
+</code></pre>
+<h5>readable.unshift(chunk)<span><a class="mark" href="#stream_readable_unshift_chunk" id="stream_readable_unshift_chunk">#</a></span></h5>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>chunk</code> argument can now be a <code>Uint8Array</code> instance.</p>
+</td></tr>
+<tr><td>v0.9.11</td>
+<td><p><span>新增于: v0.9.11</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>chunk</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | <span class="type">&lt;any&gt;</span> 数据块移动到可读队列底部。对于不以对象模式运行的流，<code>chunk</code> 必须是字符串， <code>Buffer</code> 或者 <code>Uint8Array</code>。对于对象流， <code>chunk</code> 任何非<code>null</code>的值。</li>
+</ul>
+<p><code>readable.unshift()</code> 方法会把一块数据压回到<code>Buffer</code>内部。
+这在如下特定情形下有用：
+代码正在消费一个数据流，已经&quot;乐观地&quot;拉取了数据。
+又需要&quot;反悔-消费&quot;一些数据，以便这些数据可以传给其他人用。</p>
+<p><em>注意</em>: <a href="#stream_event_end"><code>&apos;end&apos;</code></a> 事件已经触发或者运行时错误抛出后，<code>stream.unshift(chunk)</code> 方法不能被调用。</p>
+<p>使用 <code>stream.unshift()</code> 的开发者一般需要换一下思路，考虑用一个<a href="#stream_class_stream_transform">Transform</a> 流替代. 
+更多信息请查看<a href="#stream_api_for_stream_implementers">API for Stream Implementers</a>部分。</p>
+<pre><code class="lang-js">// Pull off a header delimited by \n\n
+// use unshift() if we get too much
+// Call the callback with (error, header, stream)
+const { StringDecoder } = require(&apos;string_decoder&apos;);
+function parseHeader(stream, callback) {
+  stream.on(&apos;error&apos;, callback);
+  stream.on(&apos;readable&apos;, onReadable);
+  const decoder = new StringDecoder(&apos;utf8&apos;);
+  let header = &apos;&apos;;
+  function onReadable() {
+    let chunk;
+    while (null !== (chunk = stream.read())) {
+      const str = decoder.write(chunk);
+      if (str.match(/\n\n/)) {
+        // found the header boundary
+        const split = str.split(/\n\n/);
+        header += split.shift();
+        const remaining = split.join(&apos;\n\n&apos;);
+        const buf = Buffer.from(remaining, &apos;utf8&apos;);
+        stream.removeListener(&apos;error&apos;, callback);
+        // remove the readable listener before unshifting
+        stream.removeListener(&apos;readable&apos;, onReadable);
+        if (buf.length)
+          stream.unshift(buf);
+        // now the body of the message can be read from the stream.
+        callback(null, header, stream);
+      } else {
+        // still reading the header.
+        header += str;
+      }
+    }
+  }
+}
+</code></pre>
+<p><em>注意</em>： 不像 <a href="#stream_readable_push_chunk_encoding"><code>stream.push(chunk)</code></a>，<code>stream.unshift(chunk)</code>在重置流的内部读取状态时是不会结束读取过程。 如果在读取过程中调用 <code>readable.unshift()</code> 则会导致异常 (例如：即来自自定义流上的 <a href="#stream_readable_read_size_1"><code>stream._read()</code></a>内部方法上的实现)。 应该在调用 <code>readable.unshift()</code>方法之后适当调用 <a href="#stream_readable_push_chunk_encoding"><code>stream.push(&apos;&apos;)</code></a> 来重置读取状态，执行读取的过程中最好避免调用 <code>readable.unshift()</code>方法。</p>
+<h5>readable.wrap(stream)<span><a class="mark" href="#stream_readable_wrap_stream" id="stream_readable_wrap_stream">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><ul>
+<li><code>stream</code> 
+            <a href="#stream_stream" class="type">&lt;Stream&gt;</a> 一个老版本的readable stream</li>
+</ul>
+<p>Node.js在v0.10版本之前的流没有实现当前定义的所有流模块的API.(查看更多兼容性信息 <a href="#stream_compatibility_with_older_node_js_versions">Compatibility</a>
+)</p>
+<p>当使用老版本的Node.js库来触发<a href="#stream_event_data"><code>&apos;data&apos;</code></a>事件和<a href="#stream_readable_pause"><code>stream.pause()</code></a>方法仅是建议性的，
+<code>readable.wrap()</code>方法能创建一个把老版本的流作为数据源的<a href="#stream_class_stream_readable">Readable</a> stream。</p>
+<p>几乎没有必要使用<code>readable.wrap()</code>，但是这个方法已经为老版本的Node.js应用和一些库提供了方便。</p>
+<p>例子：</p>
+<pre><code class="lang-js">const { OldReader } = require(&apos;./old-api-module.js&apos;);
+const { Readable } = require(&apos;stream&apos;);
+const oreader = new OldReader();
+const myReader = new Readable().wrap(oreader);
+
+myReader.on(&apos;readable&apos;, () =&gt; {
+  myReader.read(); // etc.
+});
+</code></pre>
+<h5>readable.destroy([error])<span><a class="mark" href="#stream_readable_destroy_error" id="stream_readable_destroy_error">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><p>销毁流，并且触发<code>error</code>事件。然后，可读流将释放所有的内部资源。</p>
+<p>开发者不应该覆盖这个方法，应该覆盖<a href="#stream_readable_destroy_err_callback"><code>readable._destroy</code></a>方法。</p>
+<h3>Duplex 流与 Transform 流<span><a class="mark" href="#stream_duplex_and_transform_streams" id="stream_duplex_and_transform_streams">#</a></span></h3>
+<h4>stream.Duplex 类<span><a class="mark" href="#stream_class_stream_duplex" id="stream_class_stream_duplex">#</a></span></h4>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v6.8.0</td>
+<td><p>Instances of <code>Duplex</code> now return <code>true</code> when checking <code>instanceof stream.Writable</code>.</p>
+</td></tr>
+<tr><td>v0.9.4</td>
+<td><p><span>新增于: v0.9.4</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><!--type=class-->
+<p>Duplex 流是同时实现了 <a href="#stream_class_stream_readable">Readable</a> 和
+<a href="#stream_class_stream_writable">Writable</a> 接口的流。</p>
+<p>Duplex 流的实例包括了：</p>
+<ul>
+<li><a href="net.html#net_class_net_socket">TCP sockets</a></li>
+<li><a href="zlib.html">zlib streams</a></li>
+<li><a href="crypto.html">crypto streams</a></li>
+</ul>
+<h4>stream.Transform 类<span><a class="mark" href="#stream_class_stream_transform" id="stream_class_stream_transform">#</a></span></h4>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><!--type=class-->
+<p>变换流（Transform streams） 是一种 <a href="#stream_class_stream_duplex">Duplex</a> 流。它的输出与输入是通过某种方式关联的。和所有 <a href="#stream_class_stream_duplex">Duplex</a> 流一样，变换流同时实现了 <a href="#stream_class_stream_readable">Readable</a> 和 <a href="#stream_class_stream_writable">Writable</a> 接口。</p>
+<p>变换流的实例包括：</p>
+<ul>
+<li><a href="zlib.html">zlib streams</a></li>
+<li><a href="crypto.html">crypto streams</a></li>
+</ul>
+<h5>transform.destroy([error])<span><a class="mark" href="#stream_transform_destroy_error" id="stream_transform_destroy_error">#</a></span></h5>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><p>销毁这个流，发射<code>&apos;error&apos;</code>事件。
+调用这个之后，变换流会释放全部内部资源
+实现者不应该重载此方法，而应该实现<a href="#stream_readable_destroy_err_callback"><code>readable._destroy</code></a>。
+<code>Transform</code>的默认<code>_destroy</code>实现也发射<code>&apos;close&apos;</code>事件。</p>
+<h2>API for Stream Implementers<span><a class="mark" href="#stream_api_for_stream_implementers" id="stream_api_for_stream_implementers">#</a></span></h2>
+<!--type=misc-->
+<p><code>stream</code>模块API的设计是为了让JavaScript的原型继承模式可以简单的实现流。</p>
+<p>首先，一个流开发者可能声明了一个JavaScript类并且继承四个基本流类中的一个（<code>stream.Writeable</code>，<code>stream.Readable</code>，<code>stream.Duplex</code>，或者<code>stream.Transform</code>），确保他们调用合适的父类构造函数:</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+
+class MyWritable extends Writable {
+  constructor(options) {
+    super(options);
+    // ...
+  }
+}
+</code></pre>
+<p>新的流类必须实现一个或多个特定的方法，根据所创建的流类型，如下图所示:</p>
+<table>
+<thead>
+<tr>
+<th>用例</th>
+<th>类</th>
+<th>实现的方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>只读流</td>
+<td><a href="#stream_class_stream_readable">Readable</a></td>
+<td><a href="#stream_readable_read_size_1">_read</a></td>
+</tr>
+<tr>
+<td>只写流</td>
+<td><a href="#stream_class_stream_writable">writable</a></td>
+<td><a href="#stream_writable_write_chunk_encoding_callback_1">_write</a> ，<a href="#stream_writable_writev_chunks_callback">_writev</a>，<a href="#stream_writable_final_callback">_final</a></td>
+</tr>
+<tr>
+<td>可读可写流</td>
+<td><a href="#stream_class_stream_duplex">Duplex</a></td>
+<td><a href="#stream_readable_read_size_1">_read</a> ，<a href="#stream_writable_write_chunk_encoding_callback_1">_write</a> ，<a href="#stream_writable_writev_chunks_callback">_writev</a>，<a href="#stream_writable_final_callback">_final</a></td>
+</tr>
+<tr>
+<td>操作写数据，然后读结果</td>
+<td><a href="#stream_class_stream_transform">Transform</a></td>
+<td><a href="#stream_transform_transform_chunk_encoding_callback">_transform</a>，<a href="#stream_transform_flush_callback">_flush</a>，<a href="#stream_writable_final_callback">_final</a></td>
+</tr>
+</tbody>
+</table>
+<p>注意：实现流的代码里面不应该出现调用“public”方法的地方因为这些方法是给使用者使用的（<a href="#stream_api_for_stream_consumers">流使用者</a>部分的API所述）。这样做可能会导致使用流的应用程序代码产生不利的副作用。</p>
+<h3>Simplified Construction<span><a class="mark" href="#stream_simplified_construction" id="stream_simplified_construction">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v1.2.0</span>
+</div><p>对于许多简单的案例，它是有可能在不依赖继承的情况下创建流。这可以直接创建流实例，通过流基础类<code>stream.Writable</code>，<code>stream.Readable</code>，<code>stream.Duplex</code>，或者<code>stream.Transform</code>传入对象完成，对象包含合适的方法作为构造函数选项。</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+
+const myWritable = new Writable({
+  write(chunk, encoding, callback) {
+    // ...
+  }
+});
+</code></pre>
+<h3>Implementing a Writable Stream<span><a class="mark" href="#stream_implementing_a_writable_stream" id="stream_implementing_a_writable_stream">#</a></span></h3>
+<p>这个<code>stream.Writable</code>类被用于实现可写流。</p>
+<p>自定义可写流必须调用<code>new stream.Writable([options])</code>构造函数并且实现<code>writable._write()</code>方法。<code>writable._writev()</code>方法也是可以实现的。</p>
+<h4>Constructor: new stream.Writable([options])<span><a class="mark" href="#stream_constructor_new_stream_writable_options" id="stream_constructor_new_stream_writable_options">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>highWaterMark</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 缓冲大小当开始调用<a href="#stream_writable_write_chunk_encoding_callback"><code>stream.write()</code></a> 返回 <code>false</code>。默认<code>16384</code> (16kb), 对于 <code>objectMode</code> 流为默认为<code>16</code>。</li>
+<li><code>decodeStrings</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 是否解码字符串在调用 <a href="#stream_writable_write_chunk_encoding_callback_1"><code>stream._write()</code></a> 传递到缓冲区之前。默认为 <code>true</code></li>
+<li><code>objectMode</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> <a href="#stream_writable_write_chunk_encoding_callback"><code>stream.write(anyObj)</code></a> 是否是一个有效的操作. 一旦设置,可以写字符串以外的值，例如<code>Buffer</code> 或者 <code>Uint8Array</code> 只要流支持。默认为<code>false</code>。</li>
+<li><code>write</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 实现<a href="#stream_writable_write_chunk_encoding_callback_1"><code>stream._write()</code></a> 方法。</li>
+<li><code>writev</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 实现<a href="#stream_writable_writev_chunks_callback"><code>stream._writev()</code></a> 方法。</li>
+<li><code>destroy</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 实现<a href="#stream_writable_destroy_err_callback"><code>stream._destroy()</code></a> 方法。</li>
+<li><code>final</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 实现<a href="#stream_writable_final_callback"><code>stream._final()</code></a> 方法。</li>
+</ul>
+</li>
+</ul>
+</div><p>例如：</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+
+class MyWritable extends Writable {
+  constructor(options) {
+    // Calls the stream.Writable() constructor
+    super(options);
+    // ...
+  }
+}
+</code></pre>
+<p>或者，使用ES6之前的语法来创建构造函数：</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+const util = require(&apos;util&apos;);
+
+function MyWritable(options) {
+  if (!(this instanceof MyWritable))
+    return new MyWritable(options);
+  Writable.call(this, options);
+}
+util.inherits(MyWritable, Writable);
+</code></pre>
+<p>或者，使用简化的构造函数方法:</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+
+const myWritable = new Writable({
+  write(chunk, encoding, callback) {
+    // ...
+  },
+  writev(chunks, callback) {
+    // ...
+  }
+});
+</code></pre>
+<h4>writable._write(chunk, encoding, callback)<span><a class="mark" href="#stream_writable_write_chunk_encoding_callback_1" id="stream_writable_write_chunk_encoding_callback_1">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>chunk</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | <span class="type">&lt;any&gt;</span> 要写的块。会<strong>一直</strong>作为缓冲区，除非<code>decodeStrings</code>选项设置为<code>false</code>或者流以对象模式运行。</li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 如果块是字符串，那么<code>encoding</code>就是该字符串的字符编码。 如果块是<code>Buffer</code>，或者是流在对象模式下运行，<code>encoding</code>可能被忽略。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 调用此函数（<code>err</code>参数可选）当块处理完成时。</li>
+</ul>
+</div><p>所有可写流实现必须提供一个 <a href="#stream_writable_write_chunk_encoding_callback_1"><code>writable._write()</code></a> 方法将数据发送到底层资源。</p>
+<p><em>注意</em>：<a href="#stream_class_stream_transform">Transform</a> 流提供自己实现的<a href="#stream_writable_write_chunk_encoding_callback_1"><code>writable._write()</code></a>。</p>
+<p><em>注意</em>：此函数不得直接由应用程序代码调用。 它应该由子类实现，并由内部的Writable类方法调用。</p>
+<p>必须调用<code>callback</code>方法来表示写完成成功或失败，出现错误。<code>callback</code>第一个参数必须是<code>Error</code>对象如果调用失败，成功时为<code>null</code>。</p>
+<p>所有<code>writable._write()</code>被调用并且<code>callback</code>被调用将导致要缓冲的写入数据。 一旦调用<code>callback</code>，流将会执行<a href="#stream_event_drain"><code>&apos;drain&apos;</code></a>事件。 如果想让流实现一次能够处理多个数据块，<code>writable._writev()</code>方法应该被实现。</p>
+<p>如果在构造函数选项中设置<code>decodeStrings</code>属性，那么<code>chunk</code>可能是一个字符串而不是一个缓冲区，<code>encodeing</code>将会表示字符串的字符编码。 这是为了支持对某些字符串具有优化处理的实现数据编码。 如果<code>decodeStrings</code>属性显式设置为<code>false</code>，<code>encoding</code>参数可以安全地忽略，<code>chunk</code>将保持不变传递给<code>.write()</code>的对象。</p>
+<p><code>writable._write()</code>方法前缀为下划线，因为它是在定义它的类的内部，不应该直接调用用户程序。</p>
+<h4>writable._writev(chunks, callback)<span><a class="mark" href="#stream_writable_writev_chunks_callback" id="stream_writable_writev_chunks_callback">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>chunks</code> 
+            <a href="javascript:;" class="type">&lt;Array&gt;</a> 要写的块 每个块都有以下格式：<code>{chunk：...，encoding：...}</code>。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 一个回调函数（可选地带有一个错误参数）在提供的块的处理完成时被调用。</li>
+</ul>
+</div><p><em>注</em>：此函数不得直接通过应用程序代码调用。 它应由子类实现，并由内部Writable进行调用类方法。</p>
+<p><code>writable._writev()</code>方法能够一次处理多个数据块的流除了<code>writable._write()</code>之外。如果实现，该方法将缓存的所有数据块写入队列。</p>
+<p><code>writable._writev()</code>方法前缀为下划线，因为它是定义它的类的内部，不应该由用户程序直接调用。</p>
+<h4>writable._destroy(err, callback)<span><a class="mark" href="#stream_writable_destroy_err_callback" id="stream_writable_destroy_err_callback">#</a></span></h4>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a> 错误。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 回调函数，<code>err</code>参数可选。</li>
+</ul>
+<p>通过 <a href="#stream_writable_destroy_error"><code>writable.destroy()</code></a> 方法调用<code>_destroy()</code>。它可以被子类覆盖，但<strong>不能</strong>直接调用。</p>
+<h4>writable._final(callback)<span><a class="mark" href="#stream_writable_final_callback" id="stream_writable_final_callback">#</a></span></h4>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><ul>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 在完成写入所有剩余数据时调用该函数（<code>err</code>参数可选）。</li>
+</ul>
+<p><code>_final()</code>方法<strong>不能</strong>直接调用。 应该由子类负责实现，如果是，将仅可以由内部的Writable类方法进行调用。</p>
+<p>这个可选的函数将在流关闭之前被调用, 直到<code>callback</code>回调函数执行完成才触发<code>finish</code>事件。这对于关闭资源或在流结束之前写入缓冲数据很有用。</p>
+<h4>Errors While Writing<span><a class="mark" href="#stream_errors_while_writing" id="stream_errors_while_writing">#</a></span></h4>
+<p>建议在处理<code>writable._write()</code>和<code>writable._writev()</code>方法期间发生的错误时传给回调函数的第一个参数来处理。这将导致Writable触发<code>error</code>事件。从<code>writable._write()</code>中抛出一个错误可能会导致意外和不一致的行为，具体取决于如何使用流。使用回调可确保对错误进行一致且可预测的处理。</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+
+const myWritable = new Writable({
+  write(chunk, encoding, callback) {
+    if (chunk.toString().indexOf(&apos;a&apos;) &gt;= 0) {
+      callback(new Error(&apos;chunk is invalid&apos;));
+    } else {
+      callback();
+    }
+  }
+});
+</code></pre>
+<h4>一个可写流的例子<span><a class="mark" href="#stream_an_example_writable_stream" id="stream_an_example_writable_stream">#</a></span></h4>
+<p>下面说明了一个相当简单（有点无意义）的可写流实现。虽然这个具体的可写流实例没有任何真正的特殊用途，但该示例说明了一个自定义流实例所需要的元素：</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+
+class MyWritable extends Writable {
+  constructor(options) {
+    super(options);
+    // ...
+  }
+
+  _write(chunk, encoding, callback) {
+    if (chunk.toString().indexOf(&apos;a&apos;) &gt;= 0) {
+      callback(new Error(&apos;chunk is invalid&apos;));
+    } else {
+      callback();
+    }
+  }
+}
+</code></pre>
+<h4>Decoding buffers in a Writable Stream<span><a class="mark" href="#stream_decoding_buffers_in_a_writable_stream" id="stream_decoding_buffers_in_a_writable_stream">#</a></span></h4>
+<p>解码buffers是一个常见任务，比如用变换流处理字符串输入。
+当用多字节字符编码方式(比如UTF-8)时，这是一个微不足道的过程。
+下面的例子展示了如何用<code>StringDecoder</code> 和 <a href="#stream_class_stream_writable">Writable</a>解码多字节字符串。</p>
+<pre><code class="lang-js">const { Writable } = require(&apos;stream&apos;);
+const { StringDecoder } = require(&apos;string_decoder&apos;);
+
+class StringWritable extends Writable {
+  constructor(options) {
+    super(options);
+    const state = this._writableState;
+    this._decoder = new StringDecoder(state.defaultEncoding);
+    this.data = &apos;&apos;;
+  }
+  _write(chunk, encoding, callback) {
+    if (encoding === &apos;buffer&apos;) {
+      chunk = this._decoder.write(chunk);
+    }
+    this.data += chunk;
+    callback();
+  }
+  _final(callback) {
+    this.data += this._decoder.end();
+    callback();
+  }
+}
+
+const euro = [[0xE2, 0x82], [0xAC]].map(Buffer.from);
+const w = new StringWritable();
+
+w.write(&apos;currency: &apos;);
+w.write(euro[0]);
+w.end(euro[1]);
+
+console.log(w.data); // currency: €
+</code></pre>
+<h3>Implementing a Readable Stream<span><a class="mark" href="#stream_implementing_a_readable_stream" id="stream_implementing_a_readable_stream">#</a></span></h3>
+<p><code>stream.Readable</code> 类扩展并实现了<a href="#stream_class_stream_readable">Readable</a>。 </p>
+<p>用户实现的自定义可读流 <em>必须</em> 调用<code>new stream.Readable([options])</code>
+构造函数并且实现<code>readable._read()</code>方法。</p>
+<h4>new stream.Readable([options])<span><a class="mark" href="#stream_new_stream_readable_options" id="stream_new_stream_readable_options">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a><ul>
+<li><code>highWaterMark</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 从底层资源读取数据并存储在内部缓冲区中的最大字节数。默认<code>16384</code> (16kb), 或者 <code>16</code>对应<code>objectMode</code>流模式。</li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 指定解析的字符编码格式. 默认 为<code>null</code></li>
+<li><code>objectMode</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 一个对象的流。 这意味着 <a href="#stream_readable_read_size"><code>stream.read(n)</code></a> 返回的是一个单一的对象而不是n个字节的缓冲区。默认 <code>false</code></li>
+<li><code>read</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 对 <a href="#stream_readable_read_size_1"><code>stream._read()</code></a>方法的实现。</li>
+<li><code>destroy</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 对 <a href="#stream_readable_destroy_err_callback"><code>stream._destroy()</code></a> 方法的实现。</li>
+</ul>
+</li>
+</ul>
+</div><p>例如：</p>
+<pre><code class="lang-js">const { Readable } = require(&apos;stream&apos;);
+
+class MyReadable extends Readable {
+  constructor(options) {
+    // Calls the stream.Readable(options) constructor
+    super(options);
+    // ...
+  }
+}
+</code></pre>
+<p>或者使用ES6语法:</p>
+<pre><code class="lang-js">const { Readable } = require(&apos;stream&apos;);
+const util = require(&apos;util&apos;);
+
+function MyReadable(options) {
+  if (!(this instanceof MyReadable))
+    return new MyReadable(options);
+  Readable.call(this, options);
+}
+util.inherits(MyReadable, Readable);
+</code></pre>
+<p>或者使用简化的构造方法：</p>
+<pre><code class="lang-js">const { Readable } = require(&apos;stream&apos;);
+
+const myReadable = new Readable({
+  read(size) {
+    // ...
+  }
+});
+</code></pre>
+<h4>readable._read(size)<span><a class="mark" href="#stream_readable_read_size_1" id="stream_readable_read_size_1">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>size</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 异步读取的字节数。</li>
+</ul>
+</div><p><em>注意</em>: 这个函数不能直接被应用程序代码调用。 它应由子类实现，并仅能由Readable对象内部方法调用。</p>
+<p>所有实现可读流的实例必须实现<code>readable._read()</code> 方法去获得底层的数据资源。</p>
+<p>当 <code>readable._read()</code> 被调用，如果读取的数据是可用的，应该在最开始的实现的时候使用<a href="#stream_readable_push_chunk_encoding"><code>this.push(dataChunk)</code></a>方法将该数据推入读取队列。<code>_read()</code> 应该一直读取资源直到推送数据方法<code>readable.push()</code>返回<code>false</code>的时候停止。想再次调用<code>_read()</code>方法，需要再次往可读流里面push数据。</p>
+<p><em>注意</em>：一旦<code>readable._read()</code>方法被调用，只有在 <a href="#stream_readable_push_chunk_encoding"><code>readable.push()</code></a>方法被调用之后，才能再次被调用。</p>
+<p><code>size</code> 可选参数。<code>_read()</code>方法是一个实现读取数据的单操作，设置<code>size</code>参数来确定要读取数据的大小。 其他的实现可能会忽略这个参数，只要数据可用就提供数据。 不需要等到<a href="#stream_readable_push_chunk_encoding"><code>stream.push(chunk)</code></a>方法推入一定<code>size</code>的数据后才能调用。</p>
+<p><code>readable._read()</code>方法的前缀是一个下划线，因为它是在定义它的类的内部，不应该被直接调用用户程序。</p>
+<h4>readable._destroy(err, callback)<span><a class="mark" href="#stream_readable_destroy_err_callback" id="stream_readable_destroy_err_callback">#</a></span></h4>
+<div class="api_metadata">
+<span>新增于: v8.0.0</span>
+</div><ul>
+<li><code>err</code> 
+            <a href="javascript:;" class="type">&lt;Error&gt;</a> 错误。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 回调函数，第一个参数为<code>err</code>参数。</li>
+</ul>
+<p><code>_destroy()</code>需通过<a href="#stream_readable_destroy_error"><code>readable.destroy()</code></a>方法调用。它可以被子类覆盖，但不能直接调用。</p>
+<h4>readable.push(chunk[, encoding])<span><a class="mark" href="#stream_readable_push_chunk_encoding" id="stream_readable_push_chunk_encoding">#</a></span></h4>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>chunk</code> argument can now be a <code>Uint8Array</code> instance.</p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>chunk</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Uint8Array&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;null&gt;</a> | <span class="type">&lt;any&gt;</span> 压入读队列的数据块。
+对于没有处在object mode的流来说，<code>chunk</code>必须是一个字符串，<code>Buffer</code> 或<code>Uint8Array</code>；
+对object mode 的流来说，<code>chunk</code>可以使任何JavaScript值。</li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 字符串数据块的编码方式.  必须是可用的Buffer编码方式，例如<code>&apos;utf8&apos;</code> 或 <code>&apos;ascii&apos;</code>。</li>
+<li>返回 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 如果多余的数据块可能会继续压入，那么返回<code>true</code>; 否则返回 <code>false</code>.</li>
+</ul>
+<p>当<code>chunk</code>是一个<code>Buffer</code>, <code>Uint8Array</code>或者<code>string</code>时，
+这个数据块(<code>chunk</code>)会被添加到内部队列供使用者消费。
+在没有数据可写入后，给<code>chunk</code>传了<code>null</code>发出流结束(EOF)的信号。</p>
+<p>当可读流处在传输模式下，<code>&apos;data&apos;</code>事件触发时，可以通过
+调用<a href="#stream_readable_read_size"><code>readable.read()</code></a> 方法读出来数据，这数据是用<code>readable.push()</code>添加的。</p>
+<p><code>readable.push()</code>方法被设计得尽可能的灵活。
+比如，当封装一个有&apos;暂停/恢复&apos;机制和带数据回调的底层source的时候，
+那么这个底层的source可以被常规的可读流实例封装。就像下面的例子一样。</p>
+<pre><code class="lang-js">// source 是一个有readStop()和 readStart()方法的对象。
+// 有数据就调`ondata`成员函数；
+// 数据结束就调`onend`成员函数。
+
+class SourceWrapper extends Readable {
+  constructor(options) {
+    super(options);
+
+    this._source = getLowlevelSourceObject();
+
+    // Every time there&apos;s data, push it into the internal buffer.
+    this._source.ondata = (chunk) =&gt; {
+      // if push() returns false, then stop reading from source
+      if (!this.push(chunk))
+        this._source.readStop();
+    };
+
+    // When the source ends, push the EOF-signaling `null` chunk
+    this._source.onend = () =&gt; {
+      this.push(null);
+    };
+  }
+  // _read will be called when the stream wants to pull more data in
+  // the advisory size argument is ignored in this case.
+  _read(size) {
+    this._source.readStart();
+  }
+}
+</code></pre>
+<p><em>注意</em>: <code>readable.push()</code>方法是为了让可读流实现者调用的，
+而且只来自<code>readable._read()</code>方法内部。</p>
+<h4>Errors While Reading<span><a class="mark" href="#stream_errors_while_reading" id="stream_errors_while_reading">#</a></span></h4>
+<p>建议在调用
+<code>readable._read()</code> 方法时发生的错误应该执行触发 <code>&apos;error&apos;</code> 事件，而不是抛出异常错误。从<code>readable._read()</code>中抛出错误可能会导致意外的和不一致的行为，具体取决于流是以流还是暂停模式运行。 使用“错误”事件可确保一致且可预测的错误处理。</p>
+<!-- eslint-disable no-useless-return -->
+<pre><code class="lang-js">const { Readable } = require(&apos;stream&apos;);
+
+const myReadable = new Readable({
+  read(size) {
+    if (checkSomeErrorCondition()) {
+      process.nextTick(() =&gt; this.emit(&apos;error&apos;, err));
+      return;
+    }
+    // do some work
+  }
+});
+</code></pre>
+<h4>一个数流的例子<span><a class="mark" href="#stream_an_example_counting_stream" id="stream_an_example_counting_stream">#</a></span></h4>
+<!--type=example-->
+<p>以下是可读流的一个基本例子，触发数字1到1,000,000升序，然后结束</p>
+<pre><code class="lang-js">const { Readable } = require(&apos;stream&apos;);
+
+class Counter extends Readable {
+  constructor(opt) {
+    super(opt);
+    this._max = 1000000;
+    this._index = 1;
+  }
+
+  _read() {
+    const i = this._index++;
+    if (i &gt; this._max)
+      this.push(null);
+    else {
+      const str = &apos;&apos; + i;
+      const buf = Buffer.from(str, &apos;ascii&apos;);
+      this.push(buf);
+    }
+  }
+}
+</code></pre>
+<h3>Implementing a Duplex Stream<span><a class="mark" href="#stream_implementing_a_duplex_stream" id="stream_implementing_a_duplex_stream">#</a></span></h3>
+<p>双工流(可读可写流)是<a href="#stream_readable_streams">可读流</a>和<a href="javascript:;">可写流</a>的实现，例如TCP套接字连接。</p>
+<p>因为JavaScript不支持多重继承，所以<code>stream.Duplex</code>类被扩展以实现<a href="#stream_class_stream_duplex">双工流</a>（而不是扩展<code>stream.Readable</code>和<code>stream.Writable</code>类）。</p>
+<p><em>注意。</em><code>stream.Duplex</code>类原型继承来自<code>stream.Readable</code>和寄生的<code>stream.Writable</code>，但是<code>instanceof</code>将会在这两个基础类上正确工作，由于<code>stream.Writable</code>覆盖了<a href="javascript:;"> Symbol.hasInstance</a>方法。</p>
+<p>自定义双工流<em>必须</em>通过<code>new stream.Duplex([options])</code>构造函数并实现<code>readable._read()</code>和<code>writable._write()</code>方法。</p>
+<h4>new stream.Duplex(options)<span><a class="mark" href="#stream_new_stream_duplex_options" id="stream_new_stream_duplex_options">#</a></span></h4>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.4.0</td>
+<td><p>The <code>readableHighWaterMark</code> and <code>writableHighWaterMark</code> options are supported now.</p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 传给可读和可写流的构造函数，还有如下字段：<ul>
+<li><code>allowHalfOpen</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 默认是<code>true</code>。如果设置为<code>false</code>, 那么当读端停止时，写端自动停止。</li>
+<li><code>readableObjectMode</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 默认是 <code>false</code>。会为流的读端设置<code>objectMode</code>。如果 <code>objectMode</code>是 <code>true</code>，那就没有任何用。</li>
+<li><code>writableObjectMode</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> 默认是 <code>false</code>。会为流的写端设置<code>objectMode</code>。如果 <code>objectMode</code>是 <code>true</code>，那就没有任何用。</li>
+<li><code>readableHighWaterMark</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 设置 <code>highWaterMark</code> 可读流的缓冲区大小。 如果已经设置 <code>highWaterMark</code>则<code>readableHighWaterMark</code>不起作用。</li>
+<li><code>writableHighWaterMark</code> 
+            <a href="javascript:;" class="type">&lt;number&gt;</a> 设置 <code>highWaterMark</code> 可写流缓冲区大小。如果设置了<code>highWaterMark</code> 则<code>writableHighWaterMark</code>不起作用。</li>
+</ul>
+</li>
+</ul>
+<p>例如:</p>
+<pre><code class="lang-js">const { Duplex } = require(&apos;stream&apos;);
+
+class MyDuplex extends Duplex {
+  constructor(options) {
+    super(options);
+    // ...
+  }
+}
+</code></pre>
+<p>或者, 使用ES6之前的语法来创建构造函数:</p>
+<pre><code class="lang-js">const { Duplex } = require(&apos;stream&apos;);
+const util = require(&apos;util&apos;);
+
+function MyDuplex(options) {
+  if (!(this instanceof MyDuplex))
+    return new MyDuplex(options);
+  Duplex.call(this, options);
+}
+util.inherits(MyDuplex, Duplex);
+</code></pre>
+<p>又或者, 用简化的构造函数:</p>
+<pre><code class="lang-js">const { Duplex } = require(&apos;stream&apos;);
+
+const myDuplex = new Duplex({
+  read(size) {
+    // ...
+  },
+  write(chunk, encoding, callback) {
+    // ...
+  }
+});
+</code></pre>
+<h4>An Example Duplex Stream<span><a class="mark" href="#stream_an_example_duplex_stream" id="stream_an_example_duplex_stream">#</a></span></h4>
+<p>下面是一个可读可写流包装了一个假定的可读可写的底层源对象，
+尽管用了一个与Node.js流不兼容的API。</p>
+<p>下面是一个简单的例子，
+在一个可读可写流中，来的buffers通过<a href="#stream_class_stream_writable">Writable</a> 接口写入数据，再通过<a href="#stream_class_stream_readable">Readable</a>接口读回数据。</p>
+<pre><code class="lang-js">const { Duplex } = require(&apos;stream&apos;);
+const kSource = Symbol(&apos;source&apos;);
+
+class MyDuplex extends Duplex {
+  constructor(source, options) {
+    super(options);
+    this[kSource] = source;
+  }
+
+  _write(chunk, encoding, callback) {
+    // The underlying source only deals with strings
+    if (Buffer.isBuffer(chunk))
+      chunk = chunk.toString();
+    this[kSource].writeSomeData(chunk);
+    callback();
+  }
+
+  _read(size) {
+    this[kSource].fetchSomeData(size, (data, encoding) =&gt; {
+      this.push(Buffer.from(data, encoding));
+    });
+  }
+}
+</code></pre>
+<p>尽管在一个对象实例中共存，读端和写端却是相互独立于彼此，这是可读可写流最为重要的一点。</p>
+<h4>Object Mode Duplex Streams<span><a class="mark" href="#stream_object_mode_duplex_streams" id="stream_object_mode_duplex_streams">#</a></span></h4>
+<p>对可读可写流来说，<code>objectMode</code>可以通过<code>readableObjectMode</code> 和 <code>writableObjectMode</code>选项
+来分别设置读端和写端。</p>
+<p>比如下面的例子。
+创建了一个变换流(一种可读可写流)。
+在写端接收JavaScript数字，在读端转换为16进制字符串。</p>
+<pre><code class="lang-js">const { Transform } = require(&apos;stream&apos;);
+
+// All Transform streams are also Duplex Streams
+const myTransform = new Transform({
+  writableObjectMode: true,
+
+  transform(chunk, encoding, callback) {
+    // Coerce the chunk to a number if necessary
+    chunk |= 0;
+
+    // Transform the chunk into something else.
+    const data = chunk.toString(16);
+
+    // Push the data onto the readable queue.
+    callback(null, &apos;0&apos;.repeat(data.length % 2) + data);
+  }
+});
+
+myTransform.setEncoding(&apos;ascii&apos;);
+myTransform.on(&apos;data&apos;, (chunk) =&gt; console.log(chunk));
+
+myTransform.write(1);
+// Prints: 01
+myTransform.write(10);
+// Prints: 0a
+myTransform.write(100);
+// Prints: 64
+</code></pre>
+<h3>Implementing a Transform Stream<span><a class="mark" href="#stream_implementing_a_transform_stream" id="stream_implementing_a_transform_stream">#</a></span></h3>
+<p>一个<a href="#stream_class_stream_transform">Transform</a>流是一种<a href="#stream_class_stream_duplex">Duplex</a>流，输入经过<a href="#stream_class_stream_transform">Transform</a>流，做某种计算然后输出。
+比如 <a href="zlib.html">zlib</a>流和<a href="crypto.html">crypto</a>流会做压缩，加密和解密数据。</p>
+<p><em>注意</em>: 输出流的大小，有多少数据包，到达时间都不一定非要和输入流一样。
+比如，一个哈希流再输入结束时永远只会输出单个数据块；
+而一个<code>zlib</code>流的输出，可能比输入大得多或小得多。</p>
+<p><code>stream.Transform</code> 类被扩展了，实现了一个<a href="#stream_class_stream_transform">Transform</a>流。</p>
+<p><code>stream.Transform</code>类最初继承自<code>stream.Duplex</code>，并且实现了它自己版本的<code>writable._write()</code>和<code>readable._read()</code>方法。
+一般地，变换流<em>必须</em>实现<a href="#stream_transform_transform_chunk_encoding_callback"><code>transform._transform()</code></a> 方法；
+而<a href="#stream_transform_flush_callback"><code>transform._flush()</code></a> 方法是<em>非必须</em>的。</p>
+<p><em>注意</em>: 用变换流时要注意，如果读端输出没有被消费，那么往写数据可能会引起写端暂停。</p>
+<h4>new stream.Transform([options])<span><a class="mark" href="#stream_new_stream_transform_options" id="stream_new_stream_transform_options">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>options</code> 
+            <a href="javascript:;" class="type">&lt;Object&gt;</a> 传给可读和可写构造函数。
+还有如下字段:<ul>
+<li><code>transform</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 对<a href="#stream_transform_transform_chunk_encoding_callback"><code>stream._transform()</code></a>方法的实现。</li>
+<li><code>flush</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 对<a href="#stream_transform_flush_callback"><code>stream._flush()</code></a>方法的实现。</li>
+</ul>
+</li>
+</ul>
+</div><p>例如:</p>
+<pre><code class="lang-js">const { Transform } = require(&apos;stream&apos;);
+
+class MyTransform extends Transform {
+  constructor(options) {
+    super(options);
+    // ...
+  }
+}
+</code></pre>
+<p>或者，用ES6构造方法:</p>
+<pre><code class="lang-js">const { Transform } = require(&apos;stream&apos;);
+const util = require(&apos;util&apos;);
+
+function MyTransform(options) {
+  if (!(this instanceof MyTransform))
+    return new MyTransform(options);
+  Transform.call(this, options);
+}
+util.inherits(MyTransform, Transform);
+</code></pre>
+<p>又或者, 用简化构造方法:</p>
+<pre><code class="lang-js">const { Transform } = require(&apos;stream&apos;);
+
+const myTransform = new Transform({
+  transform(chunk, encoding, callback) {
+    // ...
+  }
+});
+</code></pre>
+<h4>Events: &apos;finish&apos; and &apos;end&apos;<span><a class="mark" href="#stream_events_finish_and_end" id="stream_events_finish_and_end">#</a></span></h4>
+<p><a href="#stream_event_finish"><code>&apos;finish&apos;</code></a>事件来自<code>stream.Writable</code>；<a href="#stream_event_end"><code>&apos;end&apos;</code></a>事件来自<code>stream.Readable</code>类。</p>
+<p>在调用了<a href="#stream_writable_end_chunk_encoding_callback"><code>stream.end()</code></a>并且<a href="#stream_transform_transform_chunk_encoding_callback"><code>stream._transform()</code></a>处理了全部数据块之后，
+<code>&apos;finish&apos;</code>事件触发。</p>
+<p><a href="#stream_transform_flush_callback"><code>transform._flush()</code></a>中的回调函数被调用之后，所有数据已经输出，此时，<code>&apos;end&apos;</code>事件触发</p>
+<h4>transform._flush(callback)<span><a class="mark" href="#stream_transform_flush_callback" id="stream_transform_flush_callback">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 一个当剩余的数据被冲刷后被调用的回调函数(error参数和data可选)。</li>
+</ul>
+</div><p><em>Note</em>: 应用程序代码禁止直接调用这个函数。它应该由子类来实现，并且只能被内部可读流的类方法调用。</p>
+<p>在某些情况下，转换操作需要在流的末尾发射一块额外的数据。例如，<code>zlib</code> 压缩流会存储一种优先用于压缩输出的内部状态。但是在流结束的时候，那段额外的数据需要被冲刷才能完成数据压缩。</p>
+<p>自定义的 <a href="#stream_class_stream_transform">Transform</a> 实现，可以实现<code>transform._flush()</code>方法。在没有更多的要写的数据被消耗时，会调用这个方法，但是在发射<a href="#stream_event_end"><code>&apos;end&apos;</code></a> 事件之前会发出可读流结束的信号。</p>
+<p>在 <code>transform._flush()</code> 实现里，<code>readable.push()</code>方法会在适当的时候调用零次或者多次。<code>callback</code>在冲刷操作完成的时候一定会被调用。</p>
+<p><code>transform._flush()</code> 方法前缀为下划线，因为它是在定义它的类的内部，绝不应该被用户程序直接调用。</p>
+<h4>transform._transform(chunk, encoding, callback)<span><a class="mark" href="#stream_transform_transform_chunk_encoding_callback" id="stream_transform_transform_chunk_encoding_callback">#</a></span></h4>
+<div class="signature"><ul>
+<li><code>chunk</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> | <span class="type">&lt;any&gt;</span> 被转换的数据块。它总是一个buffer除非在option中配置<code>decodeString</code>为<code>false</code>或者当前流处在<code>object mode</code>下。</li>
+<li><code>encoding</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 如果 chunk 是字符串，那么encoding就是该字符串的字符编码。如果块是Buffer，它是一个特殊的值&apos;buffer&apos;,这种情况encoding可以被忽略。</li>
+<li><code>callback</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a> 当块被处理完成时调用此函数（包含error和data参数）。</li>
+</ul>
+</div><p><em>注意</em>：此函数不得直接由应用程序代码调用。它应该由子类实现，并由内部的Readable类方法调用。</p>
+<p>所有的变换流的执行必须提供一个<code>_transform()</code>方法接收输入并提供输出。<code>transform._transform()</code>的实现会处理写入的字节，做某种计算并输出，然后使用<code>readable.push()</code>方法把这个输出传递到可读流。</p>
+<p>从一个单个输入数据块可能会调用零次或多次<code>transform.push()</code>方法，调用次数取决于每次把多少数据做为一个输出结果。</p>
+<p>有可能从任意给定输入的数据块中没有产生任何输出。</p>
+<p><code>callback</code> 会在当前数据被完全消费之后调用。在处理过程输入的过程中如果出错了,第一个参数是一个错误对象，没有出错Error参数则为null。如果传递第二个参数，它会被转发到<code>readable.push()</code>中。就像下面的例子：</p>
+<pre><code class="lang-js">transform.prototype._transform = function(data, encoding, callback) {
+  this.push(data);
+  callback();
+};
+
+transform.prototype._transform = function(data, encoding, callback) {
+  callback(null, data);
+};
+</code></pre>
+<p><code>transform._transform()</code> 方法前缀为下划线，因为它是定义在它的类的内部，不应该直接被用户程序调用。</p>
+<p><code>transform._transform()</code> 方法永远不能并行调用；流使用了队列机制，不论同步或者异步情况下，都必须先调用callback之后才能接收下一个数据。</p>
+<h4>Class: stream.PassThrough<span><a class="mark" href="#stream_class_stream_passthrough" id="stream_class_stream_passthrough">#</a></span></h4>
+<p><code>stream.PassThrough</code>类是一个极简<a href="#stream_class_stream_transform">Transform</a>流，只是把输入字节原样不动直接输出。
+一开始的目的是用来做例子和测试，但是有时也作为某些新颖的流的基本组成部分起作用。</p>
+<h2>Additional Notes<span><a class="mark" href="#stream_additional_notes" id="stream_additional_notes">#</a></span></h2>
+<!--type=misc-->
+<h3>Compatibility with Older Node.js Versions<span><a class="mark" href="#stream_compatibility_with_older_node_js_versions" id="stream_compatibility_with_older_node_js_versions">#</a></span></h3>
+<!--type=misc-->
+<p>在v0.10之前的Node.js版本中，可读流接口更简单，但功能更弱，功能更少。</p>
+<ul>
+<li>相比需要等待<a href="#stream_readable_read_size"><code>stream.read()</code></a> 方法调用之后才触发，<a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件自己会立即触发。 需要执行一定量工作来决定如何处理数据的应用程序需要将读取数据存储到缓冲区中，以便数据不会丢失。</li>
+<li>The <a href="#stream_readable_pause"><code>stream.pause()</code></a> 方法是建议性的，而不是保证。 这意味着即使流处于暂停状态，仍然需要准备接收<code>data</code>事件。</li>
+</ul>
+<p>在Node.js v0.10中，添加了<a href="#stream_class_stream_readable">Readable</a>类。 为了向后兼容较旧的Node.js程序，当添加<code>data</code>事件处理程序或调用<a href="#stream_readable_resume"><code>stream.resume()</code></a>方法时，可读流将切换到“流动模式”。 结果是，即使不使用新的<a href="#stream_readable_read_size"><code>stream.read()</code></a>方法和<a href="#stream_event_readable"><code>&apos;readable&apos;</code></a>事件，也不必担心丢失<a href="#stream_event_data"><code>&apos;data&apos;</code></a>块。</p>
+<p>虽然大多数应用程序将继续正常工作，但在以下情况下会引入极端情况：</p>
+<ul>
+<li>未添加<a href="#stream_event_data"><code>&apos;data&apos;</code></a> 事件监听。</li>
+<li>未调用<a href="#stream_readable_resume"><code>stream.resume()</code></a>方法。</li>
+<li>通过管道没有传送到任何可写的目的地。</li>
+</ul>
+<p>例如，请考虑以下代码：</p>
+<pre><code class="lang-js">// WARNING!  BROKEN!
+net.createServer((socket) =&gt; {
+
+  // we add an &apos;end&apos; method, but never consume the data
+  socket.on(&apos;end&apos;, () =&gt; {
+    // It will never get here.
+    socket.end(&apos;The message was received but was not processed.\n&apos;);
+  });
+
+}).listen(1337);
+</code></pre>
+<p>在v0.10之前的Node.js版本中，传入的消息数据将会是简单地丢弃。 但是，在Node.js v0.10及更高版本中，套接字仍然存在永远停顿。</p>
+<p>在这种情况下的解决方法是调用<a href="#stream_readable_resume"><code>stream.resume()</code></a> 开始读取数据：</p>
+<pre><code class="lang-js">// Workaround
+net.createServer((socket) =&gt; {
+
+  socket.on(&apos;end&apos;, () =&gt; {
+    socket.end(&apos;The message was received but was not processed.\n&apos;);
+  });
+
+  // start the flow of data, discarding it.
+  socket.resume();
+
+}).listen(1337);
+</code></pre>
+<p>除了新的可读流切换到流动模式之外，pre-v0.10风格的流可以使用包装在Readable类中<a href="#stream_readable_wrap_stream"><code>readable.wrap()</code></a> 方法。</p>
+<h3><code>readable.read(0)</code><span><a class="mark" href="#stream_readable_read_0" id="stream_readable_read_0">#</a></span></h3>
+<p>在某些情况下，需要有机制来触发刷新基础可读流， 而没有实际消费任何数据。在这种情况下，可以调用<code>readable.read(0)</code>，返回<code>null</code>。</p>
+<p>如果内部读取缓冲区低于<code>highWaterMark</code>，并且该流目前未读取，则调用<code>stream.read(0)</code>将触发调用底层 <a href="#stream_readable_read_size_1"><code>stream._read()</code></a>方法。</p>
+<p>虽然大多数应用程序几乎都不需要这样做，但Node.js中会出现这种情况，尤其是在可读流类内部。</p>
+<h3><code>readable.push(&apos;&apos;)</code><span><a class="mark" href="#stream_readable_push" id="stream_readable_push">#</a></span></h3>
+<p>不推荐使用<code>readable.push(&apos;&apos;)</code>。</p>
+<p>向一个不处在object mode的流压入一个<code>Buffer</code>或<code>Uint8Array</code>0字节字符串，会产生有趣的副作用。
+因为调用了<a href="#stream_readable_push_chunk_encoding"><code>readable.push()</code></a>，所以会停止读进程。
+然而，因为参数是一个空字符串，没有可读的数据添加到可读buffer, 所以没有可以供用户消费的数据。</p>
+<h3><code>highWaterMark</code> discrepancy after calling <code>readable.setEncoding()</code><span><a class="mark" href="#stream_highwatermark_discrepancy_after_calling_readable_setencoding" id="stream_highwatermark_discrepancy_after_calling_readable_setencoding">#</a></span></h3>
+<p>The use of <code>readable.setEncoding()</code> will change the behavior of how the
+<code>highWaterMark</code> operates in non-object mode.</p>
+<p>Typically, the size of the current buffer is measured against the
+<code>highWaterMark</code> in <em>bytes</em>. However, after <code>setEncoding()</code> is called, the
+comparison function will begin to measure the buffer&apos;s size in <em>characters</em>.</p>
+<p>This is not a problem in common cases with <code>latin1</code> or <code>ascii</code>. But it is
+advised to be mindful about this behavior when working with strings that could
+contain multi-byte characters.</p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>压缩（Zlib） | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-zlib">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="zlib" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#zlib_zlib">Zlib</a></span><ul>
+<li><span class="stability_undefined"><a href="#zlib_threadpool_usage">Threadpool Usage</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_compressing_http_requests_and_responses">Compressing HTTP requests and responses</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_memory_usage_tuning">Memory Usage Tuning</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_flushing">Flushing</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_constants">Constants</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_options">Class Options</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_deflate">Class: zlib.Deflate</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_deflateraw">Class: zlib.DeflateRaw</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_gunzip">Class: zlib.Gunzip</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_gzip">Class: zlib.Gzip</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_inflate">Class: zlib.Inflate</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_inflateraw">Class: zlib.InflateRaw</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_unzip">Class: zlib.Unzip</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_class_zlib_zlib">Class: zlib.Zlib</a></span><ul>
+<li><span class="stability_undefined"><a href="#zlib_zlib_bytesread">zlib.bytesRead</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_close_callback">zlib.close([callback])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_flush_kind_callback">zlib.flush([kind], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_params_level_strategy_callback">zlib.params(level, strategy, callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_reset">zlib.reset()</a></span></li>
+</ul>
+</li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_constants">zlib.constants</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_createdeflate_options">zlib.createDeflate([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_createdeflateraw_options">zlib.createDeflateRaw([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_creategunzip_options">zlib.createGunzip([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_creategzip_options">zlib.createGzip([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_createinflate_options">zlib.createInflate([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_createinflateraw_options">zlib.createInflateRaw([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_createunzip_options">zlib.createUnzip([options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_convenience_methods">Convenience Methods</a></span><ul>
+<li><span class="stability_undefined"><a href="#zlib_zlib_deflate_buffer_options_callback">zlib.deflate(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_deflatesync_buffer_options">zlib.deflateSync(buffer[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_deflateraw_buffer_options_callback">zlib.deflateRaw(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_deflaterawsync_buffer_options">zlib.deflateRawSync(buffer[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_gunzip_buffer_options_callback">zlib.gunzip(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_gunzipsync_buffer_options">zlib.gunzipSync(buffer[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_gzip_buffer_options_callback">zlib.gzip(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_gzipsync_buffer_options">zlib.gzipSync(buffer[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_inflate_buffer_options_callback">zlib.inflate(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_inflatesync_buffer_options">zlib.inflateSync(buffer[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_inflateraw_buffer_options_callback">zlib.inflateRaw(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_inflaterawsync_buffer_options">zlib.inflateRawSync(buffer[, options])</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_unzip_buffer_options_callback">zlib.unzip(buffer[, options], callback)</a></span></li>
+<li><span class="stability_undefined"><a href="#zlib_zlib_unzipsync_buffer_options">zlib.unzipSync(buffer[, options])</a></span></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>Zlib<span><a class="mark" href="#zlib_zlib" id="zlib_zlib">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><p><code>zlib</code>模块提供通过 Gzip 和 Deflate/Inflate 实现的压缩功能，可以通过这样使用它：</p>
+<pre><code class="lang-js">const zlib = require(&apos;zlib&apos;);
+</code></pre>
+<p>压缩或者解压数据流(例如一个文件)通过<code>zlib</code>流将源数据流传输到目标流中来完成。</p>
+<pre><code class="lang-js">const gzip = zlib.createGzip();
+const fs = require(&apos;fs&apos;);
+const inp = fs.createReadStream(&apos;input.txt&apos;);
+const out = fs.createWriteStream(&apos;input.txt.gz&apos;);
+
+inp.pipe(gzip).pipe(out);
+</code></pre>
+<p>数据的压缩或解压缩也可以只用一个步骤完成：</p>
+<pre><code class="lang-js">const input = &apos;.................................&apos;;
+zlib.deflate(input, (err, buffer) =&gt; {
+  if (!err) {
+    console.log(buffer.toString(&apos;base64&apos;));
+  } else {
+    // 错误处理
+  }
+});
+
+const buffer = Buffer.from(&apos;eJzT0yMAAGTvBe8=&apos;, &apos;base64&apos;);
+zlib.unzip(buffer, (err, buffer) =&gt; {
+  if (!err) {
+    console.log(buffer.toString());
+  } else {
+    // 错误处理
+  }
+});
+</code></pre>
+<h2>Threadpool Usage<span><a class="mark" href="#zlib_threadpool_usage" id="zlib_threadpool_usage">#</a></span></h2>
+<p>Note that all zlib APIs except those that are explicitly synchronous use libuv&apos;s
+threadpool, which can have surprising and negative performance implications for
+some applications, see the <a href="cli.html#cli_uv_threadpool_size_size"><code>UV_THREADPOOL_SIZE</code></a> documentation for more
+information.</p>
+<h2>Compressing HTTP requests and responses<span><a class="mark" href="#zlib_compressing_http_requests_and_responses" id="zlib_compressing_http_requests_and_responses">#</a></span></h2>
+<p><code>zlib</code> 可以用来实现对 <a href="javascript:;">HTTP</a> 中定义的 <code>gzip</code> 和 <code>deflate</code> 内容编码机制的支持。</p>
+<p>HTTP 的 <a href="javascript:;"><code>Accept-Encoding</code></a> 头字段用来标记客户端接受的压缩编码。
+。</p>
+<p><code>注意</code>: 下面给出的示例大幅简化，用以展示了基本的概念。使用 <code>zlib</code> 编码成本会很高, 结果应该被缓存。关于 <code>zlib</code> 使用中有关速度/内存/压缩互相权衡的信息，查阅 <a href="#zlib_memory_usage_tuning">Memory Usage Tuning</a>。</p>
+<pre><code class="lang-js">// 客户端请求示例
+const zlib = require(&apos;zlib&apos;);
+const http = require(&apos;http&apos;);
+const fs = require(&apos;fs&apos;);
+const request = http.get({ host: &apos;example.com&apos;,
+                           path: &apos;/&apos;,
+                           port: 80,
+                           headers: { &apos;Accept-Encoding&apos;: &apos;gzip,deflate&apos; } });
+request.on(&apos;response&apos;, (response) =&gt; {
+  const output = fs.createWriteStream(&apos;example.com_index.html&apos;);
+
+  switch (response.headers[&apos;content-encoding&apos;]) {
+    // 或者, 只是使用 zlib.createUnzip() 方法去处理这两种情况
+    case &apos;gzip&apos;:
+      response.pipe(zlib.createGunzip()).pipe(output);
+      break;
+    case &apos;deflate&apos;:
+      response.pipe(zlib.createInflate()).pipe(output);
+      break;
+    default:
+      response.pipe(output);
+      break;
+  }
+});
+</code></pre>
+<pre><code class="lang-js">// 服务端示例
+// 对每一个请求运行 gzip 操作的成本是十分高昂的.
+// 缓存压缩缓冲区是更加高效的方式.
+const zlib = require(&apos;zlib&apos;);
+const http = require(&apos;http&apos;);
+const fs = require(&apos;fs&apos;);
+http.createServer((request, response) =&gt; {
+  const raw = fs.createReadStream(&apos;index.html&apos;);
+  let acceptEncoding = request.headers[&apos;accept-encoding&apos;];
+  if (!acceptEncoding) {
+    acceptEncoding = &apos;&apos;;
+  }
+
+  // 注意：这不是一个合适的 accept-encoding 解析器.
+  // 查阅 https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.3
+  if (/\bdeflate\b/.test(acceptEncoding)) {
+    response.writeHead(200, { &apos;Content-Encoding&apos;: &apos;deflate&apos; });
+    raw.pipe(zlib.createDeflate()).pipe(response);
+  } else if (/\bgzip\b/.test(acceptEncoding)) {
+    response.writeHead(200, { &apos;Content-Encoding&apos;: &apos;gzip&apos; });
+    raw.pipe(zlib.createGzip()).pipe(response);
+  } else {
+    response.writeHead(200, {});
+    raw.pipe(response);
+  }
+}).listen(1337);
+</code></pre>
+<p>默认情况下, 当解压不完整的数据时 <code>zlib</code> 方法会抛出一个错误. 然而, 如果它已经知道数据是不完整的, 或者仅仅是为了检查已压缩文件的开头, 可以通过改变用来解压最后一个的输入数据块的刷新方法来避免默认的错误处理.</p>
+<pre><code class="lang-js">// 这是一个上面例子中缓存区的不完整版本
+const buffer = Buffer.from(&apos;eJzT0yMA&apos;, &apos;base64&apos;);
+
+zlib.unzip(
+  buffer,
+  { finishFlush: zlib.constants.Z_SYNC_FLUSH },
+  (err, buffer) =&gt; {
+    if (!err) {
+      console.log(buffer.toString());
+    } else {
+      // 错误处理
+    }
+  });
+</code></pre>
+<p>这不会改变其他抛出错误情况下的行为, 例如, 当输入内容的格式无效时. 使用这个方法, 无法确定输入是否过早结束, 或者缺乏完整性检查, 因此有必要人工检查解压结果是否有效.</p>
+<h2>Memory Usage Tuning<span><a class="mark" href="#zlib_memory_usage_tuning" id="zlib_memory_usage_tuning">#</a></span></h2>
+<!--type=misc-->
+<p>来自 <code>zlib/zconf.h</code>, 修改为 node.js 的用法:</p>
+<p>解压所需的内存是(字节为单位):</p>
+<!-- eslint-disable semi -->
+<pre><code class="lang-js">(1 &lt;&lt; (windowBits + 2)) + (1 &lt;&lt; (memLevel + 9))
+</code></pre>
+<p>就是: 当设置为 windowBits=15 和 memLevel = 8 时(默认值), 小的对象需要 128k 加上几千字节. </p>
+<p>例如, 为了将默认内存需求 256k 减少到 128k, 应该这样设置:</p>
+<pre><code class="lang-js">const options = { windowBits: 14, memLevel: 7 };
+</code></pre>
+<p>这能实现, 然而, 通常会降低压缩水平.</p>
+<p>压缩所需的内存是 <code>1 &lt;&lt; windowBits</code> (字节为单位). 既是, 设置为 windowBits=15(默认值)
+时, 小的对象需要 32k 加上几千字节.</p>
+<p>这是一个大小为 <code>chunkSize</code> 单个内部输出 slab 缓冲, 默认为 16k.</p>
+<p><code>level</code> 的设置是影响 <code>zlib</code> 压缩速度最大因素. 更高的等级设置会得到更高的压缩
+水平, 然而需要更长的时间完成. 较低的等级设置会导致较少的压缩, 但会大大加快速度.</p>
+<p>通常来说, 更大的内存使用选项意味着 Node.js 必须减少调用 <code>zlib</code>, 因为它的每个 <code>write</code> 操作
+能够处理更多的数据. 所以, 这是另外一个影响速度的因素, 代价是内存的占用.</p>
+<h2>Flushing<span><a class="mark" href="#zlib_flushing" id="zlib_flushing">#</a></span></h2>
+<p>在压缩流上调用 <a href=""><code>.flush()</code></a> 方法将使 <code>zlib</code> 返回尽可能多的输出. 这可能是以压缩质量下降
+为代价的，但是当需要尽快提供数据时，这可能是有用的</p>
+<p>在以下的实例中,  <code>flush()</code> 方法用于将部分压缩过的 HTTP 响应返回给客户端:</p>
+<pre><code class="lang-js">const zlib = require(&apos;zlib&apos;);
+const http = require(&apos;http&apos;);
+
+http.createServer((request, response) =&gt; {
+  // 为了简单起见，省略了对 Accept-Encoding 的检测
+  response.writeHead(200, { &apos;content-encoding&apos;: &apos;gzip&apos; });
+  const output = zlib.createGzip();
+  output.pipe(response);
+
+  setInterval(() =&gt; {
+    output.write(`The current time is ${Date()}\n`, () =&gt; {
+      // 数据已经传递给了 zlib，但压缩算法看能已经决定缓存数据以便得到更高的压缩效率。
+      output.flush();
+    });
+  }, 1000);
+}).listen(1337);
+</code></pre>
+<h2>Constants<span><a class="mark" href="#zlib_constants" id="zlib_constants">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><!--type=misc-->
+<p>这些被定义在 <code>zlib.h</code> 的全部常量同时也被定义在 <code>require(&apos;zlib&apos;).constants</code> 常量上.
+不需要在正常的操作中使用这些常量. 记录他们为了使他们的存在并不奇怪. 这个章节几乎直接取自<a href="javascript:;">zlib documentation</a>.
+参阅 <a href="javascript:;">https://zlib.net/mamual.html#Constants</a> 获取更多信息.</p>
+<p><em>注意</em>: 以前, 可以直接从 <code>require(&apos;zlib&apos;)</code> 中获取到这些常量, 例如 <code>zlib.Z_NO_FLUSH</code>. 
+目前仍然可以从模块中直接访问这些常量, 但是不推荐使用.</p>
+<p>可接受的 flush 值.</p>
+<ul>
+<li><code>zlib.constants.Z_NO_FLUSH</code></li>
+<li><code>zlib.constants.Z_PARTIAL_FLUSH</code></li>
+<li><code>zlib.constants.Z_SYNC_FLUSH</code></li>
+<li><code>zlib.constants.Z_FULL_FLUSH</code></li>
+<li><code>zlib.constants.Z_FINISH</code></li>
+<li><code>zlib.constants.Z_BLOCK</code></li>
+<li><code>zlib.constants.Z_TREES</code></li>
+</ul>
+<p>返回压缩/解压函数的返回值. 发送错误时为负值, 正值用于特殊但正常的事件.</p>
+<ul>
+<li><code>zlib.constants.Z_OK</code></li>
+<li><code>zlib.constants.Z_STREAM_END</code></li>
+<li><code>zlib.constants.Z_NEED_DICT</code></li>
+<li><code>zlib.constants.Z_ERRNO</code></li>
+<li><code>zlib.constants.Z_STREAM_ERROR</code></li>
+<li><code>zlib.constants.Z_DATA_ERROR</code></li>
+<li><code>zlib.constants.Z_MEM_ERROR</code></li>
+<li><code>zlib.constants.Z_BUF_ERROR</code></li>
+<li><code>zlib.constants.Z_VERSION_ERROR</code></li>
+</ul>
+<p>压缩等级.</p>
+<ul>
+<li><code>zlib.constants.Z_NO_COMPRESSION</code></li>
+<li><code>zlib.constants.Z_BEST_SPEED</code></li>
+<li><code>zlib.constants.Z_BEST_COMPRESSION</code></li>
+<li><code>zlib.constants.Z_DEFAULT_COMPRESSION</code></li>
+</ul>
+<p>压缩策略</p>
+<ul>
+<li><code>zlib.constants.Z_FILTERED</code></li>
+<li><code>zlib.constants.Z_HUFFMAN_ONLY</code></li>
+<li><code>zlib.constants.Z_RLE</code></li>
+<li><code>zlib.constants.Z_FIXED</code></li>
+<li><code>zlib.constants.Z_DEFAULT_STRATEGY</code></li>
+</ul>
+<h2>Class Options<span><a class="mark" href="#zlib_class_options" id="zlib_class_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>dictionary</code> option can be an Uint8Array now.</p>
+</td></tr>
+<tr><td>v5.11.0</td>
+<td><p>The <code>finishFlush</code> option is supported now.</p>
+</td></tr>
+<tr><td>v0.11.1</td>
+<td><p><span>新增于: v0.11.1</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><!--type=misc-->
+<p>每一个类都有一个 <code>options</code> 对象. 所有的选项都是可选的.</p>
+<p>注意一些选项只与压缩相关, 会被解压类忽视.</p>
+<ul>
+<li><code>flush</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> (default: <code>zlib.constants.Z_NO_FLUSH</code>)</li>
+<li><code>finishFlush</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> (default: <code>zlib.constants.Z_FINISH</code>)</li>
+<li><code>chunkSize</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> (default: 16*1024)</li>
+<li><code>windowBits</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a></li>
+<li><code>level</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> (compression only)</li>
+<li><code>memLevel</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> (compression only)</li>
+<li><code>strategy</code> 
+            <a href="javascript:;" class="type">&lt;integer&gt;</a> (compression only)</li>
+<li><code>dictionary</code> 
+            <a href="buffer.html#buffer_class_buffer" class="type">&lt;Buffer&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;TypedArray&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;DataView&gt;</a> (deflate/inflate only, empty dictionary by
+default)</li>
+<li><code>info</code> 
+            <a href="javascript:;" class="type">&lt;boolean&gt;</a> (If <code>true</code>, returns an object with <code>buffer</code> and <code>engine</code>)</li>
+</ul>
+<p>更多信息查阅在 <a href="javascript:;">https://zlib.net/manual.html#Advanced</a> 关于 <code>deflateInit2</code> 以及 <code>inflateInit2</code> 的描述， </p>
+<h2>Class: zlib.Deflate<span><a class="mark" href="#zlib_class_zlib_deflate" id="zlib_class_zlib_deflate">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>使用 deflate 压缩数据。</p>
+<h2>Class: zlib.DeflateRaw<span><a class="mark" href="#zlib_class_zlib_deflateraw" id="zlib_class_zlib_deflateraw">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>使用 deflate 压缩数据，并且不附加一个 <code>zlib</code> 头。</p>
+<h2>Class: zlib.Gunzip<span><a class="mark" href="#zlib_class_zlib_gunzip" id="zlib_class_zlib_gunzip">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v6.0.0</td>
+<td><p>Trailing garbage at the end of the input stream will now result in an <code>error</code> event.</p>
+</td></tr>
+<tr><td>v5.9.0</td>
+<td><p>Multiple concatenated gzip file members are supported now.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>A truncated input stream will now result in an <code>error</code> event.</p>
+</td></tr>
+<tr><td>v0.5.8</td>
+<td><p><span>新增于: v0.5.8</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>解压缩 gzip 流。</p>
+<h2>Class: zlib.Gzip<span><a class="mark" href="#zlib_class_zlib_gzip" id="zlib_class_zlib_gzip">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>使用 gzip 压缩数据。</p>
+<h2>Class: zlib.Inflate<span><a class="mark" href="#zlib_class_zlib_inflate" id="zlib_class_zlib_inflate">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v5.0.0</td>
+<td><p>A truncated input stream will now result in an <code>error</code> event.</p>
+</td></tr>
+<tr><td>v0.5.8</td>
+<td><p><span>新增于: v0.5.8</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>解压一个 deflate 流。</p>
+<h2>Class: zlib.InflateRaw<span><a class="mark" href="#zlib_class_zlib_inflateraw" id="zlib_class_zlib_inflateraw">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v6.8.0</td>
+<td><p>Custom dictionaries are now supported by <code>InflateRaw</code>.</p>
+</td></tr>
+<tr><td>v5.0.0</td>
+<td><p>A truncated input stream will now result in an <code>error</code> event.</p>
+</td></tr>
+<tr><td>v0.5.8</td>
+<td><p><span>新增于: v0.5.8</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><p>解压一个 raw deflate 流。</p>
+<h2>Class: zlib.Unzip<span><a class="mark" href="#zlib_class_zlib_unzip" id="zlib_class_zlib_unzip">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>通过自动检测头信息解压 Gzip 或者 Deflate 压缩的流.</p>
+<h2>Class: zlib.Zlib<span><a class="mark" href="#zlib_class_zlib_zlib" id="zlib_class_zlib_zlib">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>没有被 <code>zlib</code> 模块导出. 它被记录于此因为它是 compressor/decompressor 类的基础类.</p>
+<h3>zlib.bytesRead<span><a class="mark" href="#zlib_zlib_bytesread" id="zlib_zlib_bytesread">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v8.1.0</span>
+</div><ul>
+<li>
+            <a href="javascript:;" class="type">&lt;number&gt;</a></li>
+</ul>
+<p><code>zlib.bytesRead</code> 属性指的是压缩引擎处理之前读取的字节数 (压缩或者解压, 适用于派生类)。</p>
+<h3>zlib.close([callback])<span><a class="mark" href="#zlib_zlib_close_callback" id="zlib_zlib_close_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.9.4</span>
+</div><p>Close the underlying handle.</p>
+<h3>zlib.flush([kind], callback)<span><a class="mark" href="#zlib_zlib_flush_kind_callback" id="zlib_zlib_flush_kind_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p><code>kind</code> 默认为 <code>zlib.constants.Z_FULL_FLUSH</code>.</p>
+<p>刷新挂起的数据. 不要轻易的调用这个方法, 过早的刷新会对压缩算法造成负面影响.</p>
+<p>执行这个操作只会从 <code>zlib</code> 内部状态刷新数据, 不会在流级别上执行任何类型的刷新. 相反, 它的表现
+类似正常的 <code>.write()</code> 调用. 即它将在队列中其他数据写入操作之后执行，并且只会在从流中读取数据之后
+才产生输出。</p>
+<h3>zlib.params(level, strategy, callback)<span><a class="mark" href="#zlib_zlib_params_level_strategy_callback" id="zlib_zlib_params_level_strategy_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.4</span>
+</div><p>动态更新压缩等级和压缩策略. 只对解压算法有效.</p>
+<h3>zlib.reset()<span><a class="mark" href="#zlib_zlib_reset" id="zlib_zlib_reset">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.7.0</span>
+</div><p>重置 compressor/decompressor 为默认值。仅适用于 inflate 和 deflate 算法。</p>
+<h2>zlib.constants<span><a class="mark" href="#zlib_zlib_constants" id="zlib_zlib_constants">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v7.0.0</span>
+</div><p>提供一个列举出 Zlib 相关常数的对象。</p>
+<h2>zlib.createDeflate(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_createdeflate_options" id="zlib_zlib_createdeflate_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 <a href="#zlib_class_options">options</a> 的新的 <a href="#zlib_class_zlib_deflate">Deflate</a> 对象。</p>
+<h2>zlib.createDeflateRaw(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_createdeflateraw_options" id="zlib_zlib_createdeflateraw_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 <a href="#zlib_class_options">options</a> 的新的 <a href="#zlib_class_zlib_deflateraw">DeflateRaw</a> 对象.</p>
+<p><em>Note</em>: An upgrade of zlib from 1.2.8 to 1.2.11 changed behavior when windowBits
+is set to 8 for raw deflate streams. zlib would automatically set windowBits
+to 9 if was initially set to 8. Newer versions of zlib will throw an exception,
+so Node.js restored the original behavior of upgrading a value of 8 to 9,
+since passing <code>windowBits = 9</code> to zlib actually results in a compressed stream
+that effectively uses an 8-bit window only.</p>
+<h2>zlib.createGunzip(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_creategunzip_options" id="zlib_zlib_creategunzip_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 options 的新的 <a href="#zlib_class_zlib_gunzip">Gunzip</a> 对象。</p>
+<h2>zlib.createGzip(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_creategzip_options" id="zlib_zlib_creategzip_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 options 的新的 <a href="#zlib_class_zlib_gzip">Gzip</a> 对象。</p>
+<h2>zlib.createInflate(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_createinflate_options" id="zlib_zlib_createinflate_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 options 的新的 <a href="#zlib_class_zlib_inflate">Inflate</a> 对象。</p>
+<h2>zlib.createInflateRaw(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_createinflateraw_options" id="zlib_zlib_createinflateraw_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 options 的新的 <a href="#zlib_class_zlib_inflateraw">InflateRaw</a> 对象。</p>
+<h2>zlib.createUnzip(<a href="#zlib_class_options">options</a>)<span><a class="mark" href="#zlib_zlib_createunzip_options" id="zlib_zlib_createunzip_options">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.8</span>
+</div><p>创建并返回一个带有给定 options 的新的 <a href="#zlib_class_zlib_unzip">Unzip</a> 对象。</p>
+<h2>Convenience Methods<span><a class="mark" href="#zlib_convenience_methods" id="zlib_convenience_methods">#</a></span></h2>
+<!--type=misc-->
+<p>所有这些方法都将 <a href="buffer.html#buffer_class_buffer"><code>Buffer</code></a>, [<code>TypeArray</code>][], <a href="javascript:;"><code>DataView</code></a>, 或者字符串作为第一个
+参数, 一个回调函数作为可选的第二个参数提供给 <code>zlib</code> 类, 会在 <code>callback(error, result)</code>
+中调用.</p>
+<p>每一个方法相对应的都有一个接受相同参数, 但是没有回调的 <code>*Sync</code> 版本. </p>
+<h3>zlib.deflate(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_deflate_buffer_options_callback" id="zlib_zlib_deflate_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.deflateSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_deflatesync_buffer_options" id="zlib_zlib_deflatesync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_deflate">Deflate</a> 压缩一个 [Buffer][] 或者字符串。</p>
+<h3>zlib.deflateRaw(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_deflateraw_buffer_options_callback" id="zlib_zlib_deflateraw_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.deflateRawSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_deflaterawsync_buffer_options" id="zlib_zlib_deflaterawsync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_deflateraw">DeflateRaw</a> 压缩一个 [Buffer][] 或者字符串。</p>
+<h3>zlib.gunzip(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_gunzip_buffer_options_callback" id="zlib_zlib_gunzip_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.gunzipSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_gunzipsync_buffer_options" id="zlib_zlib_gunzipsync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_gunzip">Gunzip</a> 解压缩一个 [Buffer][] 或者字符串。</p>
+<h3>zlib.gzip(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_gzip_buffer_options_callback" id="zlib_zlib_gzip_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.gzipSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_gzipsync_buffer_options" id="zlib_zlib_gzipsync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_gzip">Gzip</a> 压缩一个 [Buffer][] 或者字符串。</p>
+<h3>zlib.inflate(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_inflate_buffer_options_callback" id="zlib_zlib_inflate_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.inflateSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_inflatesync_buffer_options" id="zlib_zlib_inflatesync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_inflate">Inflate</a> 解压缩一个 [Buffer][] 或者字符串。</p>
+<h3>zlib.inflateRaw(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_inflateraw_buffer_options_callback" id="zlib_zlib_inflateraw_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.inflateRawSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_inflaterawsync_buffer_options" id="zlib_zlib_inflaterawsync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_inflateraw">InflateRaw</a> 解压缩一个 [Buffer][] 或者字符串。</p>
+<h3>zlib.unzip(buffer[, options], callback)<span><a class="mark" href="#zlib_zlib_unzip_buffer_options_callback" id="zlib_zlib_unzip_buffer_options_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.6.0</span>
+</div><h3>zlib.unzipSync(buffer[, options])<span><a class="mark" href="#zlib_zlib_unzipsync_buffer_options" id="zlib_zlib_unzipsync_buffer_options">#</a></span></h3>
+<div class="api_metadata">
+<span>新增于: v0.11.12</span>
+</div><p>使用 <a href="#zlib_class_zlib_unzip">Unzip</a> 解压缩一个 [Buffer][] 或者字符串。</p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="assert.html">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

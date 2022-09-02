@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>断言（Assert） | Node.js 中文文档 | Node.js 中文网</title>
+  <meta name="description" content="Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。Node.js 使用了一个事件驱动、非阻塞式 I/O 的模型，使其轻量又高效。Node.js 的包管理器 npm，是全球最大的开源库生态系统。">
+  <link rel="stylesheet" href="static/css/style.css">
+  <link rel="stylesheet" href="static/css/sh.css">
+  
+  <link rel="apple-touch-icon" href="static/picture/apple-touch-icon.png">
+  
+  
+  
+
+</head>
+<body class="alt apidoc" id="api-section-assert">
+  <div id="content" class="clearfix">
+    <div id="column1" data-id="assert" class="interior">
+      <header>
+        <h1>Node.js v8.x 中文文档</h1>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>目录</h2>
+        <ul>
+<li><span class="stability_2"><a href="#assert_assert">assert - 断言</a></span><ul>
+<li><span class="stability_undefined"><a href="#assert_assert_value_message">assert(value[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_deepequal_actual_expected_message">assert.deepEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_deepstrictequal_actual_expected_message">assert.deepStrictEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_doesnotthrow_block_error_message">assert.doesNotThrow(block[, error][, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_equal_actual_expected_message">assert.equal(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_fail_message">assert.fail(message)</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_fail_actual_expected_message_operator_stackstartfunction">assert.fail(actual, expected[, message[, operator[, stackStartFunction]]])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_iferror_value">assert.ifError(value)</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_notdeepequal_actual_expected_message">assert.notDeepEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_notdeepstrictequal_actual_expected_message">assert.notDeepStrictEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_notequal_actual_expected_message">assert.notEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_notstrictequal_actual_expected_message">assert.notStrictEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_ok_value_message">assert.ok(value[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_strictequal_actual_expected_message">assert.strictEqual(actual, expected[, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_assert_throws_block_error_message">assert.throws(block[, error][, message])</a></span></li>
+<li><span class="stability_undefined"><a href="#assert_caveats">注意事项</a></span></li>
+</ul>
+</li>
+</ul>
+
+      </div>
+<div id="apicontent">
+        <h1>assert - 断言<span><a class="mark" href="#assert_assert" id="assert_assert">#</a></span></h1>
+<!--introduced_in=v0.10.0-->
+<div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">稳定性: 2</a> - 稳定的</div><p><code>assert</code> 模块提供了断言测试的函数，用于测试不变式。</p>
+<h2>assert(value[, message])<span><a class="mark" href="#assert_assert_value_message" id="assert_assert_value_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.5.9</span>
+</div><ul>
+<li><code>value</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p><a href="#assert_assert_ok_value_message"><code>assert.ok()</code></a> 的别名。</p>
+<h2>assert.deepEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_deepequal_actual_expected_message" id="assert_assert_deepequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Set and Map content is also compared</p>
+</td></tr>
+<tr><td>v6.4.0, v4.7.1</td>
+<td><p>Typed array slices are handled correctly now.</p>
+</td></tr>
+<tr><td>v6.1.0, v4.5.0</td>
+<td><p>Objects with circular references can be used as inputs now.</p>
+</td></tr>
+<tr><td>v5.10.1, v4.4.3</td>
+<td><p>Handle non-<code>Uint8Array</code> typed arrays correctly.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>测试 <code>actual</code> 参数与 <code>expected</code> 参数是否深度相等。
+原始值使用<a href="javascript:;">相等运算符</a>（<code>==</code>）比较。</p>
+<p>只测试<a href="javascript:;">可枚举的自身属性</a>，不测试对象的<a href="javascript:;">原型</a>、连接符、或不可枚举的属性（这些情况使用 <a href="#assert_assert_deepstrictequal_actual_expected_message"><code>assert.deepStrictEqual()</code></a>）。
+例如，下面的例子不会抛出 <code>AssertionError</code>，因为 <a href="javascript:;"><code>RegExp</code></a> 对象的属性不是可枚举的：</p>
+<pre><code class="lang-js">// 不会抛出 AssertionError。
+assert.deepEqual(/a/gi, new Date());
+</code></pre>
+<p><a href="javascript:;"><code>Map</code></a> 和 <a href="javascript:;"><code>Set</code></a> 包含的子项也会被测试。</p>
+<p>子对象中可枚举的自身属性也会被测试：</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+const obj1 = {
+  a: {
+    b: 1
+  }
+};
+const obj2 = {
+  a: {
+    b: 2
+  }
+};
+const obj3 = {
+  a: {
+    b: 1
+  }
+};
+const obj4 = Object.create(obj1);
+
+assert.deepEqual(obj1, obj1);
+// 测试通过，对象与自身相等。
+
+assert.deepEqual(obj1, obj2);
+// 抛出 AssertionError: { a: { b: 1 } } deepEqual { a: { b: 2 } }
+// 因为 b 属性的值不同。
+
+assert.deepEqual(obj1, obj3);
+// 测试通过，两个对象相等。
+
+assert.deepEqual(obj1, obj4);
+// 抛出 AssertionError: { a: { b: 1 } } deepEqual {}
+// 因为不测试原型。
+</code></pre>
+<p>如果两个值不相等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.deepStrictEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_deepstrictequal_actual_expected_message" id="assert_assert_deepstrictequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v8.5.0</td>
+<td><p>Error names and messages are now properly compared</p>
+</td></tr>
+<tr><td>v8.0.0</td>
+<td><p>Set and Map content is also compared</p>
+</td></tr>
+<tr><td>v6.4.0, v4.7.1</td>
+<td><p>Typed array slices are handled correctly now.</p>
+</td></tr>
+<tr><td>v6.1.0</td>
+<td><p>Objects with circular references can be used as inputs now.</p>
+</td></tr>
+<tr><td>v5.10.1, v4.4.3</td>
+<td><p>Handle non-<code>Uint8Array</code> typed arrays correctly.</p>
+</td></tr>
+<tr><td>v1.2.0</td>
+<td><p><span>新增于: v1.2.0</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>与 <code>assert.deepEqual()</code> 大致相同，但有一些区别：</p>
+<ol>
+<li>原始值使用<a href="javascript:;">全等运算符</a>（<code>===</code>）比较。<code>Set</code> 的值与 <code>Map</code> 的键使用 <a href="javascript:;">SameValueZero</a> 比较。</li>
+<li>对象的<a href="javascript:;">原型</a>也使用全等运算符比较。</li>
+<li>对象的<a href="javascript:;">类型标签</a>要求相同。</li>
+<li>比较[对象包装器][]时，其对象和里面的值要求相同。</li>
+</ol>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.deepEqual({ a: 1 }, { a: &apos;1&apos; });
+// 测试通过，因为 1 == &apos;1&apos;。
+
+assert.deepStrictEqual({ a: 1 }, { a: &apos;1&apos; });
+// 抛出 AssertionError: { a: 1 } deepStrictEqual { a: &apos;1&apos; }
+// 因为使用全等运算符 1 !== &apos;1&apos;。
+
+// 以下对象都没有自身属性。
+const date = new Date();
+const object = {};
+const fakeDate = {};
+
+Object.setPrototypeOf(fakeDate, Date.prototype);
+
+assert.deepEqual(object, fakeDate);
+// 测试通过，不测试原型。
+assert.deepStrictEqual(object, fakeDate);
+// 抛出 AssertionError: {} deepStrictEqual Date {}
+// 因为原型不同。
+
+assert.deepEqual(date, fakeDate);
+// 测试通过，不测试类型标签。
+assert.deepStrictEqual(date, fakeDate);
+// 抛出 AssertionError: 2017-03-11T14:25:31.849Z deepStrictEqual Date {}
+// 因为类型标签不同。
+
+assert.deepStrictEqual(new Number(1), new Number(2));
+// 测试不通过，因为数值对象包装器里面的数值也会被比较。
+assert.deepStrictEqual(new String(&apos;foo&apos;), Object(&apos;foo&apos;));
+// 测试通过，因为这两个对象和里面的字符串都是相同的
+</code></pre>
+<p>如果两个值不相等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.doesNotThrow(block[, error][, message])<span><a class="mark" href="#assert_assert_doesnotthrow_block_error_message" id="assert_assert_doesnotthrow_block_error_message">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v5.11.0, v4.4.5</td>
+<td><p>The <code>message</code> parameter is respected now.</p>
+</td></tr>
+<tr><td>v4.2.0</td>
+<td><p>The <code>error</code> parameter can now be an arrow function.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>block</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a></li>
+<li><code>error</code> 
+            <a href="javascript:;" class="type">&lt;RegExp&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>断言 <code>block</code> 函数不会抛出错误。</p>
+<p>当 <code>assert.doesNotThrow()</code> 被调用时，它会立即调用 <code>block</code> 函数。</p>
+<p>如果抛出错误且错误类型与 <code>error</code> 参数指定的相同，则抛出 <code>AssertionError</code>。
+如果错误类型不相同，或 <code>error</code> 参数为 <code>undefined</code>，则抛出错误。</p>
+<p>以下例子会抛出 <a href="errors.html#errors_class_typeerror"><code>TypeError</code></a>，因为在断言中没有匹配的错误类型：</p>
+<pre><code class="lang-js">assert.doesNotThrow(
+  () =&gt; {
+    throw new TypeError(&apos;错误信息&apos;);
+  },
+  SyntaxError
+);
+</code></pre>
+<p>以下例子会抛出一个带有 <code>Got unwanted exception (TypeError)..</code> 信息的 <code>AssertionError</code>：</p>
+<pre><code class="lang-js">assert.doesNotThrow(
+  () =&gt; {
+    throw new TypeError(&apos;错误信息&apos;);
+  },
+  TypeError
+);
+</code></pre>
+<p>如果抛出了 <code>AssertionError</code> 且有给 <code>message</code> 参数传值，则 <code>message</code> 参数的值会被附加到 <code>AssertionError</code> 的信息中：</p>
+<pre><code class="lang-js">assert.doesNotThrow(
+  () =&gt; {
+    throw new TypeError(&apos;错误信息&apos;);
+  },
+  TypeError,
+  &apos;抛出错误&apos;
+);
+// 抛出 AssertionError: Got unwanted exception (TypeError). 抛出错误
+</code></pre>
+<h2>assert.equal(actual, expected[, message])<span><a class="mark" href="#assert_assert_equal_actual_expected_message" id="assert_assert_equal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>使用<a href="javascript:;">相等运算符</a>（<code>==</code>）测试 <code>actual</code> 参数与 <code>expected</code> 参数是否相等。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.equal(1, 1);
+// 测试通过，1 == 1。
+assert.equal(1, &apos;1&apos;);
+// 测试通过，1 == &apos;1&apos;。
+
+assert.equal(1, 2);
+// 抛出 AssertionError: 1 == 2
+assert.equal({ a: { b: 1 } }, { a: { b: 1 } });
+// 抛出 AssertionError: { a: { b: 1 } } == { a: { b: 1 } }
+</code></pre>
+<p>如果两个值不相等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.fail(message)<span><a class="mark" href="#assert_assert_fail_message" id="assert_assert_fail_message">#</a></span></h2>
+<h2>assert.fail(actual, expected[, message[, operator[, stackStartFunction]]])<span><a class="mark" href="#assert_assert_fail_actual_expected_message_operator_stackstartfunction" id="assert_assert_fail_actual_expected_message_operator_stackstartfunction">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>operator</code> 
+            <a href="javascript:;" class="type">&lt;string&gt;</a> 默认为 <code>&apos;!=&apos;</code>。</li>
+<li><code>stackStartFunction</code> <span class="type">&lt;function&gt;</span> 默认为 <code>assert.fail</code>。</li>
+</ul>
+<p>抛出 <code>AssertionError</code>。
+如果 <code>message</code> 参数为空，则错误信息为 <code>actual</code> 参数 + <code>operator</code> 参数 + <code>expected</code> 参数。
+如果只提供了 <code>actual</code> 参数与 <code>expected</code> 参数，则 <code>operator</code> 参数默认为 <code>&apos;!=&apos;</code>。
+如果提供了 <code>message</code> 参数，则它会作为错误信息，其他参数会保存在错误对象的属性中。
+如果提供了 <code>stackStartFunction</code> 参数，则该函数上的栈帧都会从栈信息中移除（详见 <a href="errors.html#errors_error_capturestacktrace_targetobject_constructoropt"><code>Error.captureStackTrace</code></a>）。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.fail(1, 2, undefined, &apos;&gt;&apos;);
+// 抛出 AssertionError [ERR_ASSERTION]: 1 &gt; 2
+
+assert.fail(1, 2, &apos;错误信息&apos;);
+// 抛出 AssertionError [ERR_ASSERTION]: 错误信息
+
+assert.fail(1, 2, &apos;错误信息&apos;, &apos;&gt;&apos;);
+// 抛出 AssertionError [ERR_ASSERTION]: 错误信息
+// 上面两个例子的 `actual` 参数、`expected` 参数与 `operator` 参数不影响错误消息。
+
+assert.fail();
+// 抛出 AssertionError [ERR_ASSERTION]: Failed
+
+assert.fail(&apos;错误信息&apos;);
+// 抛出 AssertionError [ERR_ASSERTION]: 错误信息
+
+assert.fail(&apos;a&apos;, &apos;b&apos;);
+// 抛出 AssertionError [ERR_ASSERTION]: &apos;a&apos; != &apos;b&apos;
+</code></pre>
+<p>例子，使用 <code>stackStartFunction</code> 参数拦截异常的栈信息：</p>
+<pre><code class="lang-js">function suppressFrame() {
+  assert.fail(&apos;a&apos;, &apos;b&apos;, undefined, &apos;!==&apos;, suppressFrame);
+}
+suppressFrame();
+// AssertionError [ERR_ASSERTION]: &apos;a&apos; !== &apos;b&apos;
+//     at repl:1:1
+//     at ContextifyScript.Script.runInThisContext (vm.js:44:33)
+//     ...
+</code></pre>
+<h2>assert.ifError(value)<span><a class="mark" href="#assert_assert_iferror_value" id="assert_assert_iferror_value">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.97</span>
+</div><ul>
+<li><code>value</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>如果 <code>value</code> 为真，则抛出 <code>value</code>。
+可用于测试回调函数的 <code>error</code> 参数。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.ifError(null);
+// 测试通过。
+assert.ifError(0);
+// 测试通过。
+assert.ifError(1);
+// 抛出 1。
+assert.ifError(&apos;error&apos;);
+// 抛出 &apos;error&apos;。
+assert.ifError(new Error());
+// 抛出 Error。
+</code></pre>
+<h2>assert.notDeepEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_notdeepequal_actual_expected_message" id="assert_assert_notdeepequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>测试 <code>actual</code> 参数与 <code>expected</code> 参数是否不深度相等。
+与 <a href="#assert_assert_deepequal_actual_expected_message"><code>assert.deepEqual()</code></a> 相反。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+const obj1 = {
+  a: {
+    b: 1
+  }
+};
+const obj2 = {
+  a: {
+    b: 2
+  }
+};
+const obj3 = {
+  a: {
+    b: 1
+  }
+};
+const obj4 = Object.create(obj1);
+
+assert.notDeepEqual(obj1, obj1);
+// 抛出 AssertionError: { a: { b: 1 } } notDeepEqual { a: { b: 1 } }
+
+assert.notDeepEqual(obj1, obj2);
+// 测试通过，obj1 与 obj2 不深度相等。
+
+assert.notDeepEqual(obj1, obj3);
+// 抛出 AssertionError: { a: { b: 1 } } notDeepEqual { a: { b: 1 } }
+
+assert.notDeepEqual(obj1, obj4);
+// 测试通过，obj1 与 obj4 不深度相等。
+</code></pre>
+<p>如果两个值深度相等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.notDeepStrictEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_notdeepstrictequal_actual_expected_message" id="assert_assert_notdeepstrictequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v1.2.0</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>测试 <code>actual</code> 参数与 <code>expected</code> 参数是否不深度全等。
+与 <a href="#assert_assert_deepstrictequal_actual_expected_message"><code>assert.deepStrictEqual()</code></a> 相反。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.notDeepEqual({ a: 1 }, { a: &apos;1&apos; });
+// 抛出 AssertionError: { a: 1 } notDeepEqual { a: &apos;1&apos; }
+
+assert.notDeepStrictEqual({ a: 1 }, { a: &apos;1&apos; });
+// 测试通过。
+</code></pre>
+<p>如果两个值深度全等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.notEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_notequal_actual_expected_message" id="assert_assert_notequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>使用<a href="javascript:;">不等运算符</a>（<code>!=</code>）测试 <code>actual</code> 参数与 <code>expected</code> 参数是否不相等。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.notEqual(1, 2);
+// 测试通过。
+
+assert.notEqual(1, 1);
+// 抛出 AssertionError: 1 != 1
+
+assert.notEqual(1, &apos;1&apos;);
+// 抛出 AssertionError: 1 != &apos;1&apos;
+</code></pre>
+<p>如果两个值相等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.notStrictEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_notstrictequal_actual_expected_message" id="assert_assert_notstrictequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>使用<a href="javascript:;">不全等运算符</a>（<code>!==</code>）测试 <code>actual</code> 参数与 <code>expected</code> 参数是否不全等。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.notStrictEqual(1, 2);
+// 测试通过。
+
+assert.notStrictEqual(1, 1);
+// 抛出 AssertionError: 1 !== 1
+
+assert.notStrictEqual(1, &apos;1&apos;);
+// 测试通过。
+</code></pre>
+<p>如果两个值全等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.ok(value[, message])<span><a class="mark" href="#assert_assert_ok_value_message" id="assert_assert_ok_value_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>value</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>测试 <code>value</code> 是否为真值。
+相当于 <code>assert.equal(!!value, true, message)</code>。</p>
+<p>如果 <code>value</code> 不为真值，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.ok(true);
+// 测试通过。
+assert.ok(1);
+// 测试通过。
+assert.ok(false);
+// 抛出 &quot;AssertionError: false == true&quot;
+assert.ok(0);
+// 抛出 &quot;AssertionError: 0 == true&quot;
+assert.ok(false, &apos;不是真值&apos;);
+// 抛出 &quot;AssertionError: 不是真值&quot;
+</code></pre>
+<h2>assert.strictEqual(actual, expected[, message])<span><a class="mark" href="#assert_assert_strictequal_actual_expected_message" id="assert_assert_strictequal_actual_expected_message">#</a></span></h2>
+<div class="api_metadata">
+<span>新增于: v0.1.21</span>
+</div><ul>
+<li><code>actual</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>expected</code> <span class="type">&lt;any&gt;</span></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>使用<a href="javascript:;">全等运算符</a>（<code>===</code>）测试 <code>actual</code> 参数与 <code>expected</code> 参数是否全等。</p>
+<pre><code class="lang-js">const assert = require(&apos;assert&apos;);
+
+assert.strictEqual(1, 2);
+// 抛出 AssertionError: 1 === 2
+
+assert.strictEqual(1, 1);
+// 测试通过。
+
+assert.strictEqual(1, &apos;1&apos;);
+// 抛出 AssertionError: 1 === &apos;1&apos;
+</code></pre>
+<p>如果两个值不全等，则抛出一个带有 <code>message</code> 属性的 <code>AssertionError</code>，其中 <code>message</code> 属性的值等于传入的 <code>message</code> 参数的值。
+如果 <code>message</code> 参数为 <code>undefined</code>，则赋予默认的错误信息。</p>
+<h2>assert.throws(block[, error][, message])<span><a class="mark" href="#assert_assert_throws_block_error_message" id="assert_assert_throws_block_error_message">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>版本历史</summary>
+<table>
+<tbody><tr><th>版本</th><th>变更</th></tr>
+<tr><td>v4.2.0</td>
+<td><p>The <code>error</code> parameter can now be an arrow function.</p>
+</td></tr>
+<tr><td>v0.1.21</td>
+<td><p><span>新增于: v0.1.21</span></p>
+</td></tr>
+</tbody></table>
+</details>
+</div><ul>
+<li><code>block</code> 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a></li>
+<li><code>error</code> 
+            <a href="javascript:;" class="type">&lt;RegExp&gt;</a> | 
+            <a href="javascript:;" class="type">&lt;Function&gt;</a></li>
+<li><code>message</code> <span class="type">&lt;any&gt;</span></li>
+</ul>
+<p>断言 <code>block</code> 函数会抛出错误。</p>
+<p><code>error</code> 参数可以是构造函数、<a href="javascript:;">正则表达式</a>、或自定义函数。</p>
+<p>如果指定了 <code>message</code> 参数，则当 <code>block</code> 函数不抛出错误时，<code>message</code> 参数会作为 <code>AssertionError</code> 的错误信息。</p>
+<p>例子，<code>error</code> 参数为构造函数：</p>
+<pre><code class="lang-js">assert.throws(
+  () =&gt; {
+    throw new Error(&apos;错误信息&apos;);
+  },
+  Error
+);
+</code></pre>
+<p>例子，<code>error</code> 参数为正则表达式：</p>
+<pre><code class="lang-js">assert.throws(
+  () =&gt; {
+    throw new Error(&apos;错误信息&apos;);
+  },
+  /错误/
+);
+</code></pre>
+<p>例子，<code>error</code> 参数为自定义函数：</p>
+<pre><code class="lang-js">assert.throws(
+  () =&gt; {
+    throw new Error(&apos;错误信息&apos;);
+  },
+  function(err) {
+    if ((err instanceof Error) &amp;&amp; /错误/.test(err)) {
+      return true;
+    }
+  },
+  &apos;不是期望的错误&apos;
+);
+</code></pre>
+<p><code>error</code> 参数不能是字符串。
+如果第二个参数是字符串，则视为省略 <code>error</code> 参数，传入的字符串会被用于 <code>message</code> 参数。
+例如：</p>
+<!-- eslint-disable no-restricted-syntax -->
+<pre><code class="lang-js">// 这是错误的！不要这么做！
+assert.throws(myFunction, &apos;错误信息&apos;, &apos;没有抛出期望的信息&apos;);
+
+// 应该这么做。
+assert.throws(myFunction, /错误信息/, &apos;没有抛出期望的信息&apos;);
+</code></pre>
+<h2>注意事项<span><a class="mark" href="#assert_caveats" id="assert_caveats">#</a></span></h2>
+<p>对于 <a href="javascript:;">SameValueZero</a> 比较，建议使用 ES2015 的 <a href="javascript:;"><code>Object.is()</code></a>。</p>
+<pre><code class="lang-js">const a = 0;
+const b = -a;
+assert.notStrictEqual(a, b);
+// 抛出 AssertionError: 0 !== -0
+// 因为全等运算符不区分 -0 与 +0。
+assert(!Object.is(a, b));
+// 但 Object.is() 可以区分。
+
+const str1 = &apos;foo&apos;;
+const str2 = &apos;foo&apos;;
+assert.strictEqual(str1 / 1, str2 / 1);
+// 抛出 AssertionError: NaN === NaN
+// 因为全等运算符不能用于测试 NaN。
+assert(Object.is(str1 / 1, str2 / 1));
+// 但 Object.is() 可以测试。
+</code></pre>
+<p>详见<a href="javascript:;">MDN的等式比较指南</a>。</p>
+
+      </div>
+    </div>
+
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="index.html" title="Go back to the home page">
+          Node.js 中文文档 | Node.js 中文网
+        </a>
+      </div>
+      
+        <!-- [start-include:_toc.md] -->
+<ul>
+<li><a href="documentation.html">关于本文档</a></li>
+<li><a href="synopsis.html">用法与例子</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="">断言测试</a></li>
+<li><a href="async_hooks.html">异步钩子（Async Hooks）</a></li>
+<li><a href="buffer.html">缓存（Buffer）</a></li>
+<li><a href="addons.html">C++ 插件</a></li>
+<li><a href="n-api.html">C/C++ 插件 - N-API</a></li>
+<li><a href="child_process.html">子进程</a></li>
+<li><a href="cluster.html">集群（Cluster）</a></li>
+<li><a href="cli.html">命令行参数</a></li>
+<li><a href="console.html">控制台（Console）</a></li>
+<li><a href="crypto.html">加密（Crypto）</a></li>
+<li><a href="debugger.html">调试器</a></li>
+<li><a href="deprecations.html">废弃的 API</a></li>
+<li><a href="dns.html">DNS</a></li>
+<li><a href="domain.html">域（Domain）</a></li>
+<li><a href="esm.html">ECMAScript 模块</a></li>
+<li><a href="errors.html">错误（Errors）</a></li>
+<li><a href="events.html">事件（Events）</a></li>
+<li><a href="fs.html">文件系统</a></li>
+<li><a href="globals.html">全局对象（Globals）</a></li>
+<li><a href="http.html">HTTP</a></li>
+<li><a href="http2.html">HTTP/2</a></li>
+<li><a href="https.html">HTTPS</a></li>
+<li><a href="inspector.html">检查工具（Inspector）</a></li>
+<li><a href="intl.html">国际化</a></li>
+<li><a href="modules.html">模块（Modules）</a></li>
+<li><a href="net.html">网络（Net）</a></li>
+<li><a href="os.html">操作系统（OS）</a></li>
+<li><a href="path.html">路径（Path）</a></li>
+<li><a href="perf_hooks.html">性能钩子（Performance Hooks）</a></li>
+<li><a href="process.html">进程</a></li>
+<li><a href="punycode.html">Punycode</a></li>
+<li><a href="querystring.html">查询字符串</a></li>
+<li><a href="readline.html">逐行读取</a></li>
+<li><a href="repl.html">交互式解释器（REPL）</a></li>
+<li><a href="stream.html">流（Stream）</a></li>
+<li><a href="string_decoder.html">字符串解码</a></li>
+<li><a href="timers.html">定时器（Timers）</a></li>
+<li><a href="tls.html">安全传输层（TLS/SSL）</a></li>
+<li><a href="tracing.html">事件跟踪（Tracing）</a></li>
+<li><a href="tty.html">TTY</a></li>
+<li><a href="dgram.html">UDP / 数据报</a></li>
+<li><a href="url.html">URL</a></li>
+<li><a href="util.html">工具集</a></li>
+<li><a href="v8.html">V8</a></li>
+<li><a href="vm.html">虚拟机（VM）</a></li>
+<li><a href="zlib.html">压缩（ZLIB）</a></li>
+</ul>
+<div class="line"></div>
+
+<ul>
+<li><a href="javascript:;">GitHub 仓库和问题跟踪</a></li>
+<li><a href="javascript:;">邮件列表</a></li>
+</ul>
+<!-- [end-include:_toc.md] -->
+
+      
+    </div>
+  </div>
+  <script src="static/js/sh_main.js"></script>
+  <script src="static/js/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>
